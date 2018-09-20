@@ -1,0 +1,31 @@
+{
+  "name": "OhMyFuckingCode/EntityGrid",
+  "type": "component",
+  "description": "EntityGrid component for Nette framework",
+  "keywords": ["EntityGrid","grid","Nette"],
+  "homepage": "https://github.com/OhMyFuckingCode/EntityGrid",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jan Proskovec",
+      "email": "proskovec.jan@gmail.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Jakub Patocka <jax-p>",
+      "email": "jaxpcze@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.2.0",
+    "nette/nette": "~2.0"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

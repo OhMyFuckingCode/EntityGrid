@@ -1,0 +1,215 @@
+
+{*
+ * Perpage - sets how many items per page.
+ * @var $pp int (inherited)
+ *}
+{define perpage}
+    <nav>
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link">{_"content.grid.perpage"}</a>
+            </li>
+            <li n:class="page-item, $pp == $per ? active" n:foreach="$grid::LIMITS as $per">
+                <a n:href="perPage!, $per" class="page-link">
+                    <span>{$per}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{/define}
+
+
+
+{*
+ * Pagination - control for pages
+ * @var $paginator Components/VirtualPaginator (inherited)
+ *}
+{define pagination $link}
+    <nav class="float-right">
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link">{_"content.grid.pagination"}</a>
+            </li>
+            <li n:if="!$paginator->isFirst()" class="page-item">
+                <a href="{plink $link, $paginator->page-1}" class="page-link ajax">
+                    <span aria-hidden="true" class="hidden-xs">předchozí</span>
+                </a>
+            </li>
+
+            {if $paginator->isFirst()}        {var $start_page = 1}
+            {elseif $paginator->isLast()}    {var $start_page = $paginator->getPage() > 5 ? $paginator->getPage() - 5 : 1}
+            {else}                            {var $start_page = $paginator->getPage() - 2}
+            {/if}
+
+            {var $end_page = ($start_page+5) > $paginator->getPageCount() ? $paginator->getPageCount() : ($start_page+5)}
+
+            {for $i = $start_page; $i <= $end_page; $i++}
+                {if $i == $paginator->getPage()}
+                    <li class="page-item active"><span class="page-link">{$i}</span></li>
+                {elseif $i != 0}
+                    <li class="page-item"><a href="{plink $link, $i}" class="page-link ajax">{$i}</a></li>
+                {/if}
+            {/for}
+
+            <li n:if="!$paginator->isLast()" class="page-item">
+                <a href="{plink $link, $paginator->page+1}" class="page-link ajax">
+                    <span class="hidden-xs">další</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{/define}
+
+
+{define hide}
+    <div class="dropdown float-right" n:snippet="show-panel" title="{_"entityGrid.show-n-hide-cols"}">
+        <button class="btn btn-light text-muted no-radius dropdown-toggle" type="button"
+                id="{$ctrlId}-column-visibility-menu" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+            <i class="fas fa-eye"></i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="{$ctrlId}-column-visibility-menu">
+            <h6 class="dropdown-header">{_"entityGrid.visible"}</h6>
+            <a n:foreach="$columns as $key => $column" n:if="!$column->isHidden()"
+                    href="{link HideCol!, $column->getName(),!$column->isHidden()}"
+                    class="dropdown-item ajax" data-naja-history="off">
+                <i class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i>&nbsp;{_$column->getLabel()}
+            </a>
+            <div class="dropdown-divider" n:if="count($hiddenColumns)" ></div>
+            <h6 n:if="count($hiddenColumns)" class="dropdown-header">{_"entityGrid.hidden"}</h6>
+            <a n:foreach="$columns as $key => $column" n:if="$column->isHidden()"
+                    href="{link HideCol!, $column->getName(),!$column->isHidden()}"
+                    class="dropdown-item ajax" data-naja-history="off">
+                <i class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i>&nbsp;{_$column->getLabel()}
+            </a>
+        </div>
+    </div>
+{/define}
+
+
+{*
+ * Sortable - used for sorting items (ORDER).-
+ * @var $by string (must by included)
+ *      - name of the column which is being sorted
+ *      - can sort by COUNT fc (ex: ':extern_table.foreign_key')
+ * @var $order string (inherited)
+ *      - current ordering state
+ *}
+{define sortable, $column}
+    <a n:href="Order!,[$column->getName()=>!$column->getOrder()]" data-naja-history="off"
+            n:class="ajax,sortable-href,$column->getOrder()!==null?text-warning">
+        <i class="fas fa-caret-{$column->getOrder()?'up':'down'}"></i>
+    </a>
+{/define}
+
+{define cell}
+    {var $value = $column->getValue($item)}
+    <div class="grid-cell text-nowrap{if is_string($value)} text-truncate{/if} {$column->getClass()}" >
+        <a n:tag-if="$link = $column->getLink($control,$item)" href="{$link}" class="ajax">
+            {if $column->type == 'bool'}
+                {include bool, value=>$value}
+            {elseif $value!==null}
+                {if $_template = $column->getTemplate()}
+                    {include $_template value=>$value,column=>$column}
+                {elseif $block = $column->getBlock()}
+                    {include #$block value=>$value,column=>$column}
+                {elseif $filters = $column->getFilters()}
+                    {foreach $filters as $filter=>$args}
+                        {if is_numeric($filter)}
+                            {var $value =  call_user_func($this->filters->$args, $value)}
+                        {else}
+                            {var $value =  call_user_func($this->filters->$filter, $value,...(array)$args)}
+                        {/if}
+                    {/foreach}
+                    {if $column->isEscaped()}{$value}{else}{$value|noescape}{/if}
+                {elseif $ref = $column->getRef()}
+                    {var $ref = ($ref|before:'.')}
+                    {ifset #$ref}
+                        {include #$ref value=>$value,column=>$column}
+                    {else}
+                        {include #entity value=>$value,column=>$column}
+                    {/ifset}
+                {elseif $ref = $column->getRelated()}
+                    {var $ref = ($ref|before:'.')}
+                    {foreach $value as $rel}
+                        {ifset #$ref}
+                            {include #$ref value=>$rel,column=>$column}
+                        {else}
+                            {include #entity value=>$rel,column=>$column}
+                        {/ifset}
+                    {/foreach}
+                {else}
+                    {if $column->isEscaped()}{$value}{else}{$value|noescape}{/if}
+                {/if}
+            {else}
+                <small class="faded disabled">null</small>
+            {/if}
+        </a>
+    </div>
+{/define}
+
+<div n:define="order"
+        class="btn btn-sm {$sortable = $grid->isSortable()?'btn-secondary':'btn-light disabled'} sortable-handle"
+        {if !$grid->isSortable()} data-toggle="popover" data-trigger="hover" data-delay="300" data-content="Pro aktivaci seřadtě položky podle sloupce pořadí sestupně. " {/if} >
+    {if $grid->isSortable()} <i class="fa fa-arrow-up"></i><i class="fa fa-arrow-down"></i>&nbsp;{/if}{$value}
+</div>
+
+<div class="badge badge-secondary" n:define="languages">
+    {$value->name}&nbsp;({$value->lang})
+</div>
+<div class="badge badge-secondary" n:define="site">
+    {$value->title}&nbsp;({$value->id})
+</div>
+<div class="badge badge-secondary" n:define="entity">
+    {$value->title??$value->name??null}&nbsp;{ifset $value->id}({$value->id}){/ifset}
+</div>
+<div n:define="images">
+    {if $value instanceof Nette\Database\Table\Selection}
+        <div class="dropdown" n:if="$count = $value->count()">
+            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="{$ctrlId}-{$column->getName()}-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {$count}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="{$ctrlId}-{$column->getName()}-dropdown">
+                <div n:foreach="$value as $_v" class="dropdown-item" >
+                    <div class="row">
+                        <div class="col-auto">{include images value=>$image=$_v->image}</div>
+                        <div class="col"><a href="{plink Entity:detail table=>images,id=>$image->id}">#{$image->id}</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {else}
+        {var $meta = $value->related('images_meta','image_id')->fetch()}
+        <img src="{img $value->namespace/$value->filename ,30x30,exact}" width="30" height="30" class="cursor-pointer"
+             alt="{$meta?$meta->alt:null}"
+             data-toggle="popover" title="{$meta?$meta->alt:null}"
+             data-content="<img class='img-fluid' src='{img $value->namespace/$value->filename,250x250,fit }'>"
+             data-html="true"
+             data-modal="<a class='ajax' href='{plink Entity:detail table=>images,id=>$value->id}'><img class='img-fluid' src='{img $value->namespace/$value->filename }'></a>">
+    {/if}
+</div>
+
+<div n:define="_tree">
+    {control action-expand}
+</div>
+
+<div n:define="youtube">
+    <img class="cursor-pointer" src="{$helpers::YOU_TUBE_THUMB}{$value}/default.jpg" width="40" height="30"
+         title="{$value}"
+         data-modal="{include embed $helpers::YOU_TUBE_EMBED.$value}">
+</div>
+
+<div n:define="embed $src">
+    <div class="embed-responsive embed-responsive-16by9">
+        <iframe src="{$src}" class="embed-responsive-item" frameborder="0"></iframe>
+    </div>
+</div>
+
+{*
+ * Bool
+ * If type is 'bool', show icons and show value in title if it's not 'null'|0|empty string.
+ * @edit: jax 20.8.2018
+ *}
+{define bool}
+    <i n:class="fas, $value ? 'fa-check text-success' : 'fa-times text-muted faded'" {ifset $value}title="{$value}"{/ifset}></i>
+{/define}

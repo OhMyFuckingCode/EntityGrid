@@ -1,0 +1,35 @@
+<div n:snippet="search" class="tr search-row">
+    {* ---- HEADER:SEARCH ---- *}
+    {form searchForm class=>'ajax text-muted d-contents'}
+        <div n:if="$selectable" class="td"></div>
+        <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" class="td" n:inner-if="isset($form[$key])">
+            {if $form[$key] instanceof \Nette\Forms\Container}
+                {formContainer $key}
+                    <a href="#{$ctrlId}-date-to-collapse-{$iterator->getCounter()}"
+                       class="date-to position-absolute text-muted" data-toggle="collapse"><i class="fa fa-retweet"></i></a>
+                {var $inputs= iterator_to_array($form[$key]->getControls())}
+                {var $first = array_shift($inputs)}
+                {input $first}
+                    <div class="collapse" id="{$ctrlId}-date-to-collapse-{$iterator->getCounter()}">
+                        {foreach $inputs as $k =>$_ctrl}
+                            {input $k}
+                        {/foreach}
+                    </div>
+                {/formContainer}
+            {else}
+                {switch $form[$key]->getOption(type)}
+                    {case checkbox}
+                    {$form[$key]->getControlPart()}
+                    {default}
+                    {input $key}
+                {/switch}
+            {/if}
+        </div>
+        <div class="td">
+            <div class="btn-group btn-group-sm float-right" role="group">
+                {input submit class=>'btn btn-primary'}
+                {if $search}{input cancel class=>'btn btn-secondary'}{/if}
+            </div>
+        </div>
+    {/form}
+</div>

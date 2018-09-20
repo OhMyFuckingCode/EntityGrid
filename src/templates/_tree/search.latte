@@ -1,0 +1,21 @@
+<div n:snippet="search" class="grid-row">
+    <div colspan="100%">
+        {* ---- HEADER:SEARCH ---- *}
+        {form searchForm class=>'ajax text-muted d-contents'}
+            <table class="grid-table">
+                <div>
+                    <div n:if="$selectable" class="grid-cell"></div>
+                    <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" class="grid-cell">
+                        {if isset($form[$key])} {input $key}{/if}
+                    </div>
+                    <div class="grid-cell ">
+                        <div class="btn-group btn-group-sm float-right" role="group">
+                            {input submit class=>'btn btn-primary'}
+                            {ifset $form[cancel]}{input cancel class=>'btn btn-secondary'}{/ifset}
+                        </div>
+                    </div>
+                </div>
+            </table>
+        {/form}
+    </div>
+</div>

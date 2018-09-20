@@ -1,0 +1,9 @@
+{var $link = $action->getLink($control)}
+<a n:class="(expand)$action->getClass(),$action->isAjax()?ajax"
+        {if $confirm = $action->getConfirm()}data-confirm="{_$confirm,1,[item=>($control->getRow()->getItem()|title)]}"{/if}
+        {if $link}href="{$link}"{else}href="{link Click!}"{/if}
+        {if $action->getTitle()}title="{_'entityGrid.btn.'.$action->getTitle()}"{/if}
+        {foreach $action->getOff() as $off} data-naja-{$off}="off"{/foreach}>
+    <i n:if="$action->getIcon()" class="{$action->getIcon()}"></i>
+    {if $label = $action->getLabel()}{_$label}{/if}
+</a>

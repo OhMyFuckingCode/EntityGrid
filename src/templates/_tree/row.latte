@@ -1,0 +1,59 @@
+<div>
+    <div colspan="100%">
+        <table>
+            <tr n:snippet="row" data-id="{$item->id}" class="grid-row">
+                {if $editMode}
+                    {form form class=>'ajax d-contents'}
+                        <td n:if="$childes->count()" class="grid-cell">
+                            <a n:href="Expand!">Expand</a>
+                        </td>
+                        <td n:if="$selectable" class="grid-cell">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="{$ctrlId}-selected">
+                                <label class="custom-control-label" for="{$ctrlId}-selected"></label>
+                            </div>
+                        </td>
+                        <td n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" class="grid-cell">
+                            {ifset $form[$key]}{input $key}{/ifset}
+                        </td>
+                        <td class="grid-cell">
+                            <div class="btn-group btn-group-sm">
+                                {input submit class=>'btn btn-primary'}
+                                {input cancel class=>'btn btn-secondary'}
+                            </div>
+                        </td>
+                    {/form}
+                {else}
+                    <td n:if="$childes->count()" class="grid-cell">
+                        <a n:href="Expand!">Expand</a>
+                    </td>
+                    <td n:if="$selectable" class="grid-cell">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="{$ctrlId}-selected">
+                            <label class="custom-control-label" for="{$ctrlId}-selected"></label>
+                        </div>
+                    </td>
+                    {foreach $columns as $key => $column}
+                        {if !$column->isHidden()}{control cell-$key $item}{/if}
+                    {/foreach}
+                    <td class="grid-cell" n:if="$actions">
+                        <div class="float-right" n:inner-foreach="$actions as $action">
+                            {control action-$action}
+                        </div>
+                    </td>
+                {/if}
+            </tr>
+        </table>
+
+        <table>
+
+            <tr class="grid-row" n:snippet="childes">
+                <td class="grid-cell" colspan="100%">
+                    {control section}
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>

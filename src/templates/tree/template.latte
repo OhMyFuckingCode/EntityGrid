@@ -1,0 +1,39 @@
+{import ../@components.latte}
+<section data-control="{$ctrlId}" class="table-responsive" n:snippet="control">
+
+    <div n:snippet=controls data-control="{$ctrlId}">
+        <a href="{plink add}" class="btn btn-light no-radius text-muted float-right ml-1"><i class="fas fa-plus mr-1"></i>{_"entityGrid.add-item"}</a>
+        {include #hide}
+    </div>
+
+    <div class="table-responsive" n:snippet="grid">
+        <div class="table table-tree table-striped table-sm">
+            <div class=thead n:snippet=header>
+                <div class="th">
+                    <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" n:class="$column->type == 'int' ? fit, td,text-nowrap">
+                        <span class="text-truncate">{_$column->getLabel()}</span>
+                        {include sortable $column}
+                        <a n:href="HideCol!, $column->getName(),!$column->isHidden()" class="ajax text-muted"><i
+                                    class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i></a>
+                    </div>
+                    <div class="td text-right">
+                        {_"entityGrid.actions"}
+                    </div>
+                </div>
+
+                {* ---- HEADER:SEARCH ---- *}
+                {control search}
+
+            </div>
+            <div class=tbody n:snippet="items" {if $grid->isSortable()}data-sortable="{$control->link('Sort!')}"  data-control="{$ctrlId}"{/if}>
+                {foreach $control->getItems() as $id => $row}
+                    {control row-$id}
+                {/foreach}
+            </div>
+        </div>
+
+    </div>
+    <hr>
+    {* ---- FOOTER ---- *}
+    <div n:snippet="paginator">{control paginator}</div>
+</section>

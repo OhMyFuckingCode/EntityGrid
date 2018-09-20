@@ -1,0 +1,36 @@
+{import ../@components.latte}
+<div n:class="tr,sortable-item, $control->getDepth() ? 'depth-'.$control->getDepth()" data-id="{$item->id}"
+                                                                                      data-sortable-group="{$item->id}">
+    {foreach $columns as $key => $column}
+        {if !$column->isHidden()}
+            <div class="td">
+                {if $column->position == 1}
+                    <div class="tree-list">
+                        <i n:if="$control->getDepth()" n:for="$depth = 1; $depth < $control->getDepth()+1; $depth++"
+                                class="tree-list-line-y {$depth>1?"line-y-$depth":''}"></i>
+                    </div>
+                    {if $_row->getChildren()->count()}
+                        <a class="btn btn-primary btn-tree ajax"
+                           href="{$control->link('SetExpanded!',[!$_row->isExpanded()])}">
+                            <i class="fas fa-{$_row->isExpanded()?minus:plus}"></i>
+                        </a>
+                    {else}
+                        <span class="btn btn-primary btn-tree btn-tree-empty">
+                            <span></span>
+                        </span>
+                    {/if}
+                {/if}
+                {include #cell column=>$column}
+            </div>
+        {/if}
+    {/foreach}
+    <div class="td" n:if="$actions">
+        <div class="btn-group btn-group-sm float-right" n:inner-foreach="$actions as $name=>$action" n:inner-if="$action->isRenderable()">
+            {control action-$name}
+        </div>
+    </div>
+</div>
+<div class="d-contents" n:snippet="items"  n:inner-foreach="$control->getItems() as $id => $row" n:inner-if="$expanded"
+        {if $grid->isSortable()}data-sortable="{$control->link('Sort!')}"  data-control="{$ctrlId}" data-sortable-group="{$item->id}"{/if}>
+    {control row-$id}
+</div>
