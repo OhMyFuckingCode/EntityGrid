@@ -1,0 +1,22 @@
+{
+  "name": "@quextum/entity-grid",
+  "version": "0.1",
+  "description": "",
+  "keywords": [
+    "grid",
+    "nette",
+    "nette-database"
+  ],
+  "homepage": "https://github.com/Quextum/entity-grid",
+  "author": "Artem Tabalin",
+  "license": "MIT",
+  "main": "client/_EntityGrid.scss",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Quextum/entity-grid"
+  },
+  "dependencies": {}
+}

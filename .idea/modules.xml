@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/EntityGrid.iml" filepath="$PROJECT_DIR$/.idea/EntityGrid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/entity-grid.iml" filepath="$PROJECT_DIR$/.idea/entity-grid.iml" />
     </modules>
   </component>
 </project>
