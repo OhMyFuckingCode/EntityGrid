@@ -6,8 +6,7 @@
 
 namespace Quextum\EntityGrid;
 
-use App\Common\Controls\Multiplier;
-use App\Common\Forms\BaseFormFactory;
+use Nette\Application\UI\Multiplier;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
@@ -36,7 +35,7 @@ class Section extends BaseControl
     /** @var Selection */
     protected $source;
 
-    /** @var  BaseFormFactory */
+    /** @var  IFormFactory */
     protected $formFactory;
 
     /** @var Column[] */
@@ -52,7 +51,6 @@ class Section extends BaseControl
      * Section constructor.
      * @param Selection $source
      * @param $prefix
-     * @internal param BaseFormFactory $formFactory
      */
     public function __construct(Selection $source = null, $prefix)
     {
@@ -87,18 +85,18 @@ class Section extends BaseControl
     }
 
     /**
-     * @return BaseFormFactory
+     * @return IFormFactory
      */
-    public function getFormFactory(): BaseFormFactory
+    public function getFormFactory(): IFormFactory
     {
         return $this->formFactory;
     }
 
     /**
-     * @param BaseFormFactory $formFactory
+     * @param IFormFactory $formFactory
      * @return static
      */
-    public function setFormFactory(BaseFormFactory $formFactory)
+    public function setFormFactory(IFormFactory $formFactory)
     {
         $this->formFactory = $formFactory;
         return $this;

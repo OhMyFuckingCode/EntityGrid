@@ -2,7 +2,7 @@
 
 namespace Quextum\EntityGrid;
 
-use App\Common\Forms\BaseFormFactory;
+
 use Nette\Application\UI\Form;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\Selection;
@@ -36,7 +36,7 @@ class Search extends BaseControl
     /** @var Selection */
     protected $items;
 
-    /** @var  BaseFormFactory */
+    /** @var  IFormFactory */
     protected $formFactory;
 
     protected $prefix;
@@ -48,7 +48,6 @@ class Search extends BaseControl
      * @param Selection $items
      * @param string $prefix
      * @param SessionData $values
-     * @internal param BaseFormFactory $factory
      */
     public function __construct(array $config, array $options, Selection $items, string $prefix, SessionData $values)
     {

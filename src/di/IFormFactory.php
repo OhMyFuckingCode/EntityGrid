@@ -9,20 +9,16 @@
 namespace Quextum\EntityGrid;
 
 
-use Nette\Database\Table\Selection;
-use Nette\Utils\ArrayHash;
+use Nette\Database\Table\IRow;
 
 interface IFormFactory
 {
-    /**
-     * @param array $config
-     */
-    public function create($config);
 
     /**
-     * @param Selection $selection
-     * @param ArrayHash $values
+     * @param IRow $row
      */
-    public function apply($selection, $values);
+    public function create(IRow $row);
+
+
 
 }

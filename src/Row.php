@@ -3,7 +3,7 @@
 namespace Quextum\EntityGrid;
 
 
-use App\Common\Forms\BaseFormFactory;
+
 use App\Common\Forms\Form;
 use Nette\Application\UI\Multiplier;
 use Nette\Database\IRow;
@@ -30,7 +30,7 @@ class Row extends Section
     /** @var  ActiveRow|null */
     protected $item;
 
-    /** @var  BaseFormFactory */
+    /** @var  IFormFactory */
     protected $formFactory;
 
     /** @var Cell[] */
@@ -53,11 +53,11 @@ class Row extends Section
 
     /**
      * GridRow constructor.
-     * @param BaseFormFactory $formFactory
+     * @param IFormFactory $formFactory
      * @param Cell[] $columnDefinitions
      * @param ActiveRow|null $item
      */
-    public function __construct(BaseFormFactory $formFactory = null, array $columnDefinitions = [], $item)
+    public function __construct(IFormFactory $formFactory = null, array $columnDefinitions = [], $item)
     {
         parent::__construct(null,$formFactory);
         $this->templateName = 'row.latte';
