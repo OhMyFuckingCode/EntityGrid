@@ -1,8 +1,7 @@
 <?php
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
-use App\Common\Controls\BaseControl;
 use App\Common\Forms\BaseFormFactory;
 use App\Common\Forms\Form;
 use App\Helpers;
@@ -13,13 +12,12 @@ use Nette\Utils\Html;
 
 /**
  * Class GridRow
- * @package App\AdminModule\Controls\EntityGrid
+ * @package Quextum\EntityGrid
  * @method onSuccess(Search $this, array $values)
  * @method onCancel(Search $this)
  */
 class Search extends BaseControl
 {
-    use TGridComponent;
 
     /** @var  callable[] */
     public $onSuccess;
@@ -47,9 +45,11 @@ class Search extends BaseControl
     /**
      * Search constructor.
      * @param array $config
+     * @param array $options
      * @param Selection $items
-     * @param BaseFormFactory $factory
+     * @param string $prefix
      * @param SessionData $values
+     * @internal param BaseFormFactory $factory
      */
     public function __construct(array $config, array $options, Selection $items, string $prefix, SessionData $values)
     {
@@ -82,7 +82,6 @@ class Search extends BaseControl
      */
     protected function setupForm(Form $form)
     {
-
         /**
          * creates all inputs
          * @var $column
@@ -93,6 +92,13 @@ class Search extends BaseControl
                 case 'int':
                     $form->addInteger($column);
                     break;
+                case 'range':
+                    $cont = $form->addContainer($column);
+                    $from = $cont->addInteger('from');
+                    $to = $cont->addInteger('to');
+                    //$from->addRule(Form::MAX,null,$cont['to']);
+                    //$to->addRule(Form::MIN,null,$cont['from']);
+                    break;
                 case 'select':
                 case 'multiselect':
                     $method = $type === 'select' ? 'addSelect' : 'addMultiSelect';
@@ -100,10 +106,10 @@ class Search extends BaseControl
                     $context = $model->getContext();
                     if ($t = $context->getStructure()->getBelongsToReference($model->getTableName(), $column)) {
                         $belongs = $context->table($t);
-                        $form->$method($column, $column, $this->services->getHelpers()->toPairs($belongs->fetchAll()));
+                        $form->$method($column, $column, $this->config['entityFormatter']($belongs->fetchAll()));
                     } else {
                         $items = (clone $this->items)->select('DISTINCT ?', new SqlLiteral($column))->fetchPairs($column, $column);
-                        $form->$method($column, $column, Helpers::toHtml($items));
+                        $form->$method($column, $column, $this->config['itemFormatter']($items));
                     }
                     break;
                 case 'checkbox':
@@ -140,7 +146,9 @@ class Search extends BaseControl
             ->setName('button')
             ->setHtml('<i class="fa fa-search" title="hledat"></i>');
 
-        /** if there is some current search, create cancel button */
+        /** if there is some current search, create cancel button
+         * @param SubmitButton $button
+         */
         //if ($this->session->search) {
         $form->addSubmit('cancel', '//forms.buttons.cancel')
             ->setValidationScope([])
@@ -179,6 +187,7 @@ class Search extends BaseControl
                     case 'like':
                         $source->where("$key LIKE ?", "%$value%");
                         break;
+                    case 'range':
                     case 'datetimerange':
                         if ($from = $value['from']??null) {
                             $source->where("$key >= ? ", $from);

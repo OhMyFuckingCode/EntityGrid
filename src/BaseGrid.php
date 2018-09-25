@@ -4,7 +4,7 @@
  * @author: Jakub Patočka, 2018
  */
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
 use App\AdminModule\Components\VisualPaginator;
 use App\Common\Model;
@@ -15,13 +15,13 @@ use Nette\InvalidArgumentException;
 
 /**
  * Class EntityGrid
- * @package Jax_p\EntityGrid
+ * @package Quextum\EntityGrid
  */
 class BaseGrid extends Section
 {
 
 
-    const DEFAULT_ORDER = ['id' => 'ASC'];
+    const DEFAULT_ORDER = ['id' => true];
     const DEFAULT_LIMIT = 20;
     const LIMITS = [10, 20, 30, 40, 50, null];
 
@@ -58,10 +58,6 @@ class BaseGrid extends Section
         parent::presenterAttached($presenter);
     }
 
-    protected function startup()
-    {
-
-    }
 
     public function isTree(): bool
     {
@@ -105,11 +101,11 @@ class BaseGrid extends Section
                 $definition->setOrder($this->session->order[$name]);
             }
         }
-        $this->template->selectable = $this->isSelectable();
-        $this->template->columns = $this->columns;
-        $this->template->hiddenColumns = $this->session->hiddenColumns;
-        $this->template->session = $this->session;
-        $this->template->presenter = $this->getPresenter();
+        //$this->template->selectable = $this->isSelectable();
+        //$this->template->columns = $this->columns;
+        //$this->template->hiddenColumns = $this->session->hiddenColumns;
+        //$this->template->session = $this->session;
+        //$this->template->presenter = $this->getPresenter();
     }
 
     public function handleOrder(array $order)
@@ -166,13 +162,13 @@ class BaseGrid extends Section
     {
         $toItem = $fromItem = null;
         $order = filter_var_array($order, FILTER_VALIDATE_INT);
-        if (!$item = $this->model->get($id)->fetch()) {
+        if (!$item = $this->model->get($id)) {
             throw new InvalidArgumentException('nic');
         }
-        if ($from && !$fromItem = $this->model->get($from)->fetch()) {
+        if ($from && !$fromItem = $this->model->get($from)) {
             throw new InvalidArgumentException('nic');
         }
-        if ($to && !$toItem = $this->model->get($to)->fetch()) {
+        if ($to && !$toItem = $this->model->get($to)) {
             throw new InvalidArgumentException('nic');
         }
         $this->model->setOrder($item, $order, $fromItem, $toItem);

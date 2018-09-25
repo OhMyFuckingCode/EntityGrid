@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
 use Nette\Application\UI\Component;
 use Nette\Application\UI\Link;
@@ -10,7 +10,7 @@ use Nette\SmartObject;
 
 /**
  * Class GridRow
- * @package App\AdminModule\Controls\EntityGrid
+ * @package Quextum\EntityGrid
  * @method onClick(Row $row, ActiveRow $item = NULL)
  */
 class Action

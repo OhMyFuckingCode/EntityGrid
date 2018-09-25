@@ -1,23 +1,24 @@
 {import ../@components.latte}
 <section data-control="{$ctrlId}" class="table-responsive" n:snippet="control">
-
-    <div n:snippet=controls data-control="{$ctrlId}">
-        <a href="{plink add}" class="btn btn-light no-radius text-muted float-right ml-1"><i class="fas fa-plus mr-1"></i>{_"entityGrid.add-item"}</a>
+    <div n:snippet=controls class="clearfix">
+        <a href="{plink add}" class="btn btn-light no-radius text-muted float-right ml-1"><i
+                    class="fas fa-plus mr-1"></i>{_"entityGrid.add-item"}</a>
         {include #hide}
     </div>
-
-    <div class="table-responsive" n:snippet="grid">
-        <div class="table table-tree table-striped table-sm">
-            <div class=thead n:snippet=header>
-                <div class="th">
-                    <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" n:class="$column->type == 'int' ? fit, td,text-nowrap">
+    <div class="table-container table-responsive mb-1  border border-top-0">
+        <div class="grid-table  border-bottom table-tree table-striped table-sm" n:snippet="grid">
+            <div class="grid-table-header" n:snippet=header>
+                <div class="grid-row">
+                    <div class="grid-cell">
+                    </div>
+                    <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" n:class="$column->type == 'int' ? fit, grid-cell,text-nowrap,pr-3">
                         <span class="text-truncate">{_$column->getLabel()}</span>
                         {include sortable $column}
-                        <a n:href="HideCol!, $column->getName(),!$column->isHidden()" class="ajax text-muted"><i
-                                    class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i></a>
+                        {*<a n:href="HideCol!, $column->getName(),!$column->isHidden()" class="ajax text-muted"><i
+                                    class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i></a>*}
                     </div>
-                    <div class="td text-right">
-                        {_"entityGrid.actions"}
+                    <div class="grid-cell text-right cell-actions">
+                           <span> {_"entityGrid.actions"}</span>
                     </div>
                 </div>
 
@@ -25,7 +26,7 @@
                 {control search}
 
             </div>
-            <div class=tbody n:snippet="items" {if $grid->isSortable()}data-sortable="{$control->link('Sort!')}"  data-control="{$ctrlId}"{/if}>
+            <div class="grid-table-body" n:snippet="items" {if $grid->isSortable()}data-sortable="{$control->link('Sort!')}"  data-control="{$ctrlId}"{/if}>
                 {foreach $control->getItems() as $id => $row}
                     {control row-$id}
                 {/foreach}
@@ -33,7 +34,8 @@
         </div>
 
     </div>
-    <hr>
-    {* ---- FOOTER ---- *}
-    <div n:snippet="paginator">{control paginator}</div>
+    <div n:snippet="paginator">
+        {include perpage}
+        {control paginator}
+    </div>
 </section>

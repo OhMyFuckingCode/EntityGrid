@@ -232,3 +232,123 @@ $entityGrid-cell-padding-x: 12px;
 
   }
 }
+
+/*
+ * ======== TABLE TREE =========
+ * - for rows with children
+ */
+
+$tree-offset: 16px;
+$treeBtn-size: 14px;
+$treeBtn-size-empty: 8px;
+$treeColor-lighten: 12.5%;
+
+.table-tree {
+
+  .btn-tree {
+    border-radius: 50%;
+    width: $treeBtn-size;
+    height: $treeBtn-size;
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0;
+    border: 0;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 27px;
+      height: 1px;
+      top: 6px;
+      right: 0;
+    }
+    &:empty {
+      width: $treeBtn-size-empty;
+      height: $treeBtn-size-empty;
+      left: 10px;
+    }
+    i {
+      font-size: 10px;
+      line-height: 0;
+      position: absolute;
+      z-index: 100;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    svg {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .tree-list {
+    height: 0;
+    &-line-y {
+      width: 1px;
+      height: 100%;
+      background: #2f87cc;
+      position: absolute;
+      left: 12px;
+      top: -50%;
+      &.line-y-2 {
+        background: lighten($primary, $treeColor-lighten);
+        left: 32px;
+      }
+      &.line-y-3 {
+        background: lighten($primary, $treeColor-lighten*2);
+        left: 52px;
+      }
+    }
+  }
+  .grid-row {
+    @for $i from 1 through 4 {
+      &.depth-#{$i} {
+        .grid-cell:first-child {
+          padding-left: ($tree-offset*2) + ( $i * 20 ) !important;
+          .btn-tree {
+            //left: (12px + $treeBtn-size) + ($tree-offset * ( $i - 1 )) + ( ($i - 1) * 2); //*  ($tree-offset * ( $i - 1.5 ));
+            left: (12px + $treeBtn-size) + ($tree-offset * ( $i - 1 ))  + ( ($i - 1) * 3);
+            background: lighten($primary, $i * $treeColor-lighten);
+            &:empty {
+              width: $treeBtn-size-empty;
+              height: $treeBtn-size-empty;
+              left: ($tree-offset * ($i + 1))  - ($treeBtn-size-empty/2) + ($treeBtn-size-empty * ($i * 0.25));
+            }
+            &:after {
+              background: lighten($primary, $i * $treeColor-lighten);
+            }
+          }
+        }
+      }
+    }
+
+    .chosen {
+      .choices__item {
+        padding: 1px 10px;
+        border-radius: 0;
+      }
+    }
+
+    .grid-cell {
+      &:first-child {
+        padding-left: 32px !important;
+        //background-image: url(icons/icon-parent.svg);
+        background-repeat: no-repeat;
+        background-size: 24px;
+        background-position-y: 50%;
+      }
+    }
+  }
+
+}
+
+
+
+
+

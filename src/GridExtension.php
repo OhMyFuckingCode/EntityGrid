@@ -6,12 +6,13 @@
  * Time: 16:41
  */
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
 
 use App\Common\Model;
 use Nette\Database\Table\Selection;
 use Nette\DI\CompilerExtension;
+use Nette\DI\Config\Helpers;
 use Nette\DI\Container;
 use Nette\Utils\Strings;
 
@@ -35,15 +36,21 @@ class GridExtension extends CompilerExtension
         'groupActions' => []
     ];
 
+    public static function itemFormatter($items)
+    {
+        return $items;
+    }
+
     public function loadConfiguration()
     {
         parent::loadConfiguration();
         $config = $this->getConfig();
+        $defaults = $config['_defaults'];
         $builder = $this->getContainerBuilder();
         foreach ($config as $key => $item) {
             if (!Strings::startsWith($key, '_')) {
                 $this->validateConfig(static::defaults, $item);
-                $config[$key] = array_merge(static::defaults, $item);
+                $config[$key] = Helpers::merge($item,Helpers::merge($defaults,static::defaults));
             }
         }
         $builder->addDefinition($this->prefix('factory'))
@@ -53,40 +60,3 @@ class GridExtension extends CompilerExtension
 
 }
 
-class GridFactory
-{
-
-    /** @var array */
-    protected $config;
-
-    /** @var  Container */
-    protected $context;
-
-    /**
-     * GridFactory constructor.
-     * @param array $config
-     * @param Container $context
-     */
-    public function __construct(Container $context, array $config)
-    {
-        $this->config = $config;
-        $this->context = $context;
-    }
-
-    /**
-     * @param string $key
-     * @param Selection $source
-     * @param Model|null $model
-     * @param string|null $prefix
-     * @return EntityGrid
-     */
-    public function create(string $key, Selection $source, Model $model = null, string $prefix = null)
-    {
-        $config = $this->config[$key];
-        $class = $config['class']??EntityGrid::class;
-        $model = $model ?: $this->context->getByType($config['model']);
-        //$prefix = $prefix ?: 'forms'.get_class($this->model)::TABLE;
-        //$factory = $factory ?: $config['factory']?$this->context->getByType($config['factory'],false):null;
-        return new $class($this->config, $config, $model, $source, $prefix);
-    }
-}

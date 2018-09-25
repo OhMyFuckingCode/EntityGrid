@@ -1,12 +1,12 @@
 <?php
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
 use App\Common\Controls\BaseControl;
 
 /**
  * Class GridRow
- * @package App\AdminModule\Controls\EntityGrid
+ * @package Quextum\EntityGrid
  * @method onClick(Button $button, Action $action)
  */
 class Button extends BaseControl

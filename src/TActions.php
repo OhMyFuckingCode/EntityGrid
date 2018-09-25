@@ -1,12 +1,12 @@
 <?php
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
 use App\Common\Controls\Multiplier;
 
 /**
  * Class TActions
- * @package App\AdminModule\Controls\EntityGrid
+ * @package Quextum\EntityGrid
  */
 trait TActions
 {

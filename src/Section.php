@@ -4,26 +4,25 @@
  * @author: Jakub Patočka, 2018
  */
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
-use App\Common\Controls\BaseControl;
 use App\Common\Controls\Multiplier;
 use App\Common\Forms\BaseFormFactory;
+use Nette\Application\BadRequestException;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Utils\ArrayHash;
+use Nette\Http\Response;
 
 /**
  * Class EntityGrid
- * @package Jax_p\EntityGrid
+ * @package Quextum\EntityGrid
  */
 class Section extends BaseControl
 {
     use TActions;
-    use TGridComponent;
 
     const TREE_VIEW = 'tree';
     const GRID_VIEW = 'grid';
@@ -109,6 +108,8 @@ class Section extends BaseControl
     {
         return $this->tree ? static::TREE_VIEW : static::GRID_VIEW;
     }
+
+
 
     protected function createComponentRow(): Multiplier
     {
@@ -200,6 +201,7 @@ class Section extends BaseControl
         }
         $this->template->selectable = $this->isSelectable();
         $this->template->columns = $this->columns;
+        $this->template->limit = $this->session->limit;
         $this->template->hiddenColumns = $this->session->hiddenColumns;
         $this->template->session = $this->session;
         $this->template->expanded = $this->isExpanded();
@@ -240,6 +242,15 @@ class Section extends BaseControl
     public function handleResetOrder()
     {
         $this->session->order = BaseGrid::DEFAULT_ORDER;
+    }
+
+    public function handleLimit(?int $limit): void
+    {
+        if(!\in_array($limit,BaseGrid::LIMITS,true)){
+            throw new BadRequestException(Response::S406_NOT_ACCEPTABLE);
+        }
+        $this->session->limit = $limit;
+        $this->redrawControl('control');
     }
 
     public function setEditing(int $id, bool $editing = true)
@@ -313,29 +324,4 @@ class Section extends BaseControl
         //$order = filter_var_array($order,FILTER_VALIDATE_INT);
         $this->grid->handleSort(...\func_get_args());
     }
-}
-
-class SessionData extends ArrayHash
-{
-    /** @var  string[] */
-    public $search = [];
-
-    /** @var  string[] */
-    public $order = BaseGrid::DEFAULT_ORDER;
-
-    /** @var  int */
-    public $limit = BaseGrid::DEFAULT_LIMIT;
-
-    /** @var  boolean[] */
-    public $selection = [];
-
-    /** @var boolean[] */
-    public $editing = [];
-
-    /** @var boolean[] */
-    public $hiddenColumns = [];
-
-    /** @var boolean[] */
-    public $expandedRows = [];
-
 }

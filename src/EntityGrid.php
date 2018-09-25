@@ -4,7 +4,7 @@
  * @author: Jakub Patočka, 2018
  */
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
 use App\Common\Forms\Form;
 use App\Common\Model;
@@ -16,7 +16,7 @@ use Nette\Utils\ArrayHash;
 
 /**
  * Class EntityGrid
- * @package Jax_p\EntityGrid
+ * @package Quextum\EntityGrid
  */
 class EntityGrid extends BaseGrid
 {
@@ -74,16 +74,15 @@ class EntityGrid extends BaseGrid
 
     protected function createComponentSearch(): Search
     {
-
         $vp = new Search($this->config, $this->allConfigs['_options'] ?: null, $this->source, $this->prefix, $this->session);
         $vp->onSuccess[] = function (Search $control, array $search) {
             if (\boolval($this->session->search) !== \boolval($search)) {
                 $this->redrawControl('control');
             } else {
+                $this->redrawControl('paginator');
                 $this->redrawControl('items');
             }
             $this->session->search = $search;
-
         };
         $vp->onCancel[] = function (Search $search) {
             $this->redrawControl('control');

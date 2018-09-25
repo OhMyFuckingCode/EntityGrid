@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
 use App\Common\Controls\Multiplier;
 use App\Common\Forms\BaseFormFactory;
@@ -13,14 +13,12 @@ use Nette\Utils\ArrayHash;
 
 /**
  * Class GridRow
- * @package App\AdminModule\Controls\EntityGrid
+ * @package Quextum\EntityGrid
  * @method onSuccess(Row $row, Form $form, IRow $item, ArrayHash $values)
  * @method onCancel(Row $row, SubmitButton $button, IRow $item)
  */
 class Row extends Section
 {
-
-
 
     /** @var  callable[] */
     public $onSuccess;

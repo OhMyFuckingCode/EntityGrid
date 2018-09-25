@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AdminModule\Controls\EntityGrid;
+namespace Quextum\EntityGrid;
 
 use Nette\Application\UI\Component;
 use Nette\Application\UI\Link;
@@ -11,7 +11,7 @@ use Nette\Utils\Strings;
 
 /**
  * Class GridRow
- * @package App\AdminModule\Controls\EntityGrid
+ * @package Quextum\EntityGrid
  */
 class Column
 {

@@ -8,7 +8,7 @@
     "nette-database"
   ],
   "homepage": "https://github.com/Quextum/entity-grid",
-  "author": "Jakub Ptočka",
+  "author": "Jakub Patočka",
   "license": "MIT",
   "main": "client/_EntityGrid.scss",
   "directories": {
