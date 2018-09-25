@@ -9,6 +9,7 @@
 namespace Quextum\EntityGrid;
 
 
+use Nette\Application\UI\Form;
 use Nette\Database\IRow;
 
 interface IFormFactory
@@ -16,6 +17,7 @@ interface IFormFactory
 
     /**
      * @param IRow $row
+     * @return Form
      */
     public function create(IRow $row = null);
 

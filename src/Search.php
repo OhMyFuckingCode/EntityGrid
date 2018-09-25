@@ -7,6 +7,7 @@ use Nette\Application\UI\Form;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\Selection;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Controls\TextInput;
 use Nette\Utils\Html;
 
 /**
@@ -82,16 +83,20 @@ class Search extends BaseControl
     {
         $this->config['searchFactory']->create($this->config['search']);
 
+        $types = $this->options['inputs'];
         /**
          * creates all inputs
          * @var $column
          * @var $type
          */
         foreach ($this->config['search'] as $column => $type) {
+            $classes = $types[$type]??TextInput::class;
+
             switch ($type) {
                 case 'int':
-                    $form->addInteger($column);
+                    $form->addInteger($column,$column)->setNullable();
                     break;
+
                 case 'range':
                     $cont = $form->addContainer($column);
                     $cont->addInteger('from')->setNullable();
@@ -113,24 +118,30 @@ class Search extends BaseControl
                     }
                     break;
                 case 'checkbox':
-                    $form->addRadioList($column, $column, [
-                        null => Html::el('i')->class('fa fa-lg fa-circle text-gray'),
-                        true => Html::el('i')->class('fa fa-lg fa-check-circle text-green'),
-                        false => Html::el('i')->class('fa fa-lg fa-times-circle text-danger')]);
+                    $input = $form[$column] = new $classes($column,
+                        [
+                            null => Html::el('i')->class('fa fa-lg fa-circle text-gray'),
+                            true => Html::el('i')->class('fa fa-lg fa-check-circle text-green'),
+                            false => Html::el('i')->class('fa fa-lg fa-times-circle text-danger')
+                        ]);
                     break;
+                case 'range':
                 case 'datetimerange':
                     $cont = $form->addContainer($column);
-                    $cont->addDateTime('from')->setNullable();
-                    $cont->addDateTime('to')->setNullable();
+                    $input = $cont['from'] = new $classes[0]('from');
+                    $input->setNullable();
+                    $input = $cont['to'] = new $classes[1]('to');
+                    $input->setNullable();
                     break;
                 default:
-                    $form->addText($column)->setNullable();
+                    $input = $form[$column] = new $classes($column);
+                    //$form->addText($column)->setNullable();
                     break;
             }
         }
-
+        $options = $this->options['options'];
         /** if it is bootstrap, setup classes */
-        if ($this->options && $this->options['bootstrap']) {
+        if ($options && $options['bootstrap']) {
             foreach ($form->getControls() as $control) {
                 $control->setAttribute('class', 'form-control');
             }
@@ -142,19 +153,17 @@ class Search extends BaseControl
             ->setName('button')
             ->setHtml('<i class="fa fa-search" title="hledat"></i>');
 
-        /** if there is some current search, create cancel button
-         * @param SubmitButton $button
-         */
-        //if ($this->session->search) {
         $form->addSubmit('cancel', '//forms.buttons.cancel')
             ->setValidationScope([])
-            ->onClick[] = function (SubmitButton $button) {
+            ->getControlPrototype()
+            ->setName('button')
+            ->setHtml('<i class="fa fa-times" title="reset"></i>');
+
+        $form['cancel']->onClick[] = function (SubmitButton $button) {
             $button->form->reset();
             $this->session->search = [];
             $this->onCancel($this);
         };
-        $form['cancel']->getControlPrototype()->setName('button')->setHtml('<i class="fa fa-times" title="reset"></i>');
-        //}
     }
 
     /**
@@ -200,7 +209,7 @@ class Search extends BaseControl
         }
     }
 
-    protected function beforeRender()
+    protected function beforeRender():void
     {
         parent::beforeRender();
         $this->template->selectable = $this->parent->isSelectable();

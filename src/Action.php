@@ -18,20 +18,22 @@ class Action
 
     use SmartObject;
 
+    const DEFAULT_CLASSES = ['btn', 'btn-sm', 'btn-secondary', 'ajax'];
+
     /** @var  callable[] */
     public $onClick;
 
-    /** @var  string */
+    /** @var  string|null */
     protected $icon;
 
-    /** @var  string */
+    /** @var  string|null */
     protected $label;
 
-    /** @var  string */
+    /** @var  string|null */
     protected $title;
 
     /** @var  string[] */
-    protected $class = ['btn', 'btn-sm', 'btn-secondary', 'ajax'];
+    protected $class = self::DEFAULT_CLASSES;
 
     /** @var  Link */
     protected $link;
@@ -70,9 +72,9 @@ class Action
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getIcon()
+    public function getIcon(): ?string
     {
         return $this->icon;
     }
@@ -88,9 +90,9 @@ class Action
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLabel()
+    public function getLabel(): ?string
     {
         return $this->label;
     }
@@ -106,9 +108,9 @@ class Action
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -124,7 +126,7 @@ class Action
     }
 
     /**
-     * @param Component|TGridComponent $component
+     * @param Component|BaseControl $component
      * @return Link|string
      */
     public function getLink(Component $component)
@@ -135,7 +137,10 @@ class Action
         if ($this->link instanceof Link) {
             return $this->link;
         }
-        $item = $component->lookup(Row::class)->getItem();
+        /** @var Row $row */
+        $row = $component->lookup(Row::class);
+        /** @var ActiveRow $item */
+        $item = $row->getItem();
         if (\is_array($this->link)) {
             list($destination, $params) = $this->link;
             $params = array_intersect_key($item->toArray(), array_flip($params));

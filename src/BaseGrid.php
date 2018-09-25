@@ -19,9 +19,9 @@ class BaseGrid extends Section
 {
 
 
-    const DEFAULT_ORDER = ['id' => true];
-    const DEFAULT_LIMIT = 20;
-    const LIMITS = [10, 20, 30, 40, 50, null];
+    public const DEFAULT_ORDER = ['id' => true];
+    public const DEFAULT_LIMIT = 20;
+    public const LIMITS = [10, 20, 30, 40, 50, null];
 
     /** @var IModel */
     protected $model;
@@ -39,7 +39,7 @@ class BaseGrid extends Section
      */
     public function __construct(IModel $model, Selection $source, $prefix)
     {
-        $prefix = $prefix ?: 'entities.' . \get_class($model)::TABLE;
+        $prefix = $prefix ?: 'entities.' . $model::TABLE;
         parent::__construct($source, $prefix);
         $this->templateName = 'template.latte';
         $this->model = $model;
@@ -47,7 +47,7 @@ class BaseGrid extends Section
         $this->section = $this;
     }
 
-    protected function presenterAttached(Presenter $presenter)
+    protected function presenterAttached(Presenter $presenter):void
     {
         $session = $this->presenter->getSession($this->getSessionSectionName());
         $this->session = $session->data ?? $session->data = new SessionData([
@@ -85,7 +85,7 @@ class BaseGrid extends Section
         return $this->items = $this->source->fetchPairs('id');
     }
 
-    protected function beforeRender()
+    protected function beforeRender():void
     {
         parent::beforeRender();
         $iterator = 1;
@@ -101,12 +101,12 @@ class BaseGrid extends Section
         }
     }
 
-    public function handleOrder(array $order)
+    public function handleOrder(array $order):void
     {
         $this->session->order = filter_var_array($order, FILTER_VALIDATE_BOOLEAN);
     }
 
-    public function handleHideCol(string $col, bool $hide = true)
+    public function handleHideCol(string $col, bool $hide = true):void
     {
         if ($hide) {
             $this->session->hiddenColumns[$col] = TRUE;
@@ -137,10 +137,12 @@ class BaseGrid extends Section
 
     /**
      * @param boolean $sortable
+     * @return static
      */
     public function setSortable(bool $sortable)
     {
         $this->sortable = $sortable;
+        return $this;
     }
 
     /**
@@ -151,7 +153,7 @@ class BaseGrid extends Section
         return $this->sortable && $this->session->order === ['order' => true];
     }
 
-    public function handleSort(array $order, int $id = null, int $from = null, int $to = null)
+    public function handleSort(array $order, int $id = null, int $from = null, int $to = null):void
     {
         $toItem = $fromItem = null;
         $order = filter_var_array($order, FILTER_VALIDATE_INT);

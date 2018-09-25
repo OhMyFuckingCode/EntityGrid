@@ -28,14 +28,14 @@ class Button extends BaseControl
         $this->action = $action;
     }
 
-    protected function beforeRender()
+    protected function beforeRender():void
     {
         parent::beforeRender();
         $this->template->action = $this->action;
     }
 
 
-    public function handleClick()
+    public function handleClick():void
     {
         $this->onClick($this, $this->action);
     }
@@ -50,10 +50,12 @@ class Button extends BaseControl
 
     /**
      * @param Action $action
+     * @return static
      */
     public function setAction(Action $action)
     {
         $this->action = $action;
+        return $this;
     }
 
 

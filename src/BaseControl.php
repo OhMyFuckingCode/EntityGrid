@@ -50,7 +50,7 @@ abstract class BaseControl extends Control
     protected $section;
 
 
-    protected function gridAttached(BaseGrid $grid)
+    protected function gridAttached(BaseGrid $grid): void
     {
 
     }
@@ -107,21 +107,25 @@ abstract class BaseControl extends Control
 
     /**
      * @param mixed $templateFile
+     * @return static
      */
     public function setTemplateFile($templateFile)
     {
         $this->templateFile = $templateFile;
+        return $this;
     }
 
     /**
      * @param string $templateName
+     * @return static
      */
     public function setTemplateName(string $templateName)
     {
         $this->templateName = $templateName;
+        return $this;
     }
 
-    protected function init()
+    protected function init():void
     {
 
     }
@@ -134,7 +138,7 @@ abstract class BaseControl extends Control
         return $this->templateName;
     }
 
-    protected function beforeRender()
+    protected function beforeRender():void
     {
         $this->onBeforeRender($this, $this->template);
         if (isset($this->template->flashes) && $this->getPresenter()->isAjax()) {
@@ -142,7 +146,7 @@ abstract class BaseControl extends Control
         }
     }
 
-    public function render()
+    public function render():void
     {
         $this->init();
         $this->beforeRender();
@@ -155,8 +159,12 @@ abstract class BaseControl extends Control
         return $this->getPresenter()->getUser();
     }
 
+    public function lookupRow():?Row
+    {
+        return $this->lookup(Row::class,false);
+    }
 
-    protected function presenterAttached(Presenter $presenter)
+    protected function presenterAttached(Presenter $presenter):void
     {
         if (!$this->translator) {
             $this->translator = $presenter->getTranslator();

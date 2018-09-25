@@ -84,7 +84,7 @@ class Column
             $this->type = $this->checkType($type, $column);
         } elseif (\is_array($type)) {
             foreach ($type as $key => $value) {
-                $this->$key = ($key == 'type') ? $this->checkType($value, $column) : $value;
+                $this->$key = $key === 'type' ? $this->checkType($value, $column) : $value;
             }
         }
     }
