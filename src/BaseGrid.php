@@ -6,7 +6,6 @@
 
 namespace Quextum\EntityGrid;
 
-use App\AdminModule\Components\VisualPaginator;
 use Nette\Application\UI\Presenter;
 use Nette\Database\DriverException;
 use Nette\Database\Table\Selection;
@@ -100,11 +99,6 @@ class BaseGrid extends Section
                 $definition->setOrder($this->session->order[$name]);
             }
         }
-        //$this->template->selectable = $this->isSelectable();
-        //$this->template->columns = $this->columns;
-        //$this->template->hiddenColumns = $this->session->hiddenColumns;
-        //$this->template->session = $this->session;
-        //$this->template->presenter = $this->getPresenter();
     }
 
     public function handleOrder(array $order)

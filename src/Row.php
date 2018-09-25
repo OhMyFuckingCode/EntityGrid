@@ -4,7 +4,7 @@ namespace Quextum\EntityGrid;
 
 
 
-use App\Common\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Application\UI\Multiplier;
 use Nette\Database\IRow;
 use Nette\Database\Table\ActiveRow;

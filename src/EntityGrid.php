@@ -6,7 +6,7 @@
 
 namespace Quextum\EntityGrid;
 
-use App\Common\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
