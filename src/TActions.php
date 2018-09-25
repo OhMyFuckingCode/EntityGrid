@@ -24,7 +24,7 @@ trait TActions
     /** @var  Action[] */
     protected $actions = [];
 
-    public function injectActions()
+    protected function initTraitActions(): void
     {
         $this->onPresenterAttached[] = function () {
             /** @var BaseGrid $grid */
