@@ -7,7 +7,6 @@
 namespace Quextum\EntityGrid;
 
 use App\AdminModule\Components\VisualPaginator;
-use App\Common\Model;
 use Nette\Application\UI\Presenter;
 use Nette\Database\DriverException;
 use Nette\Database\Table\Selection;
@@ -25,7 +24,7 @@ class BaseGrid extends Section
     const DEFAULT_LIMIT = 20;
     const LIMITS = [10, 20, 30, 40, 50, null];
 
-    /** @var Model */
+    /** @var IModel */
     protected $model;
 
     protected $order = self::DEFAULT_ORDER;
@@ -35,11 +34,11 @@ class BaseGrid extends Section
 
     /**
      * EntityGrid constructor.
-     * @param Model $model
+     * @param IModel $model
      * @param Selection $source
      * @param $prefix
      */
-    public function __construct(Model $model, Selection $source, $prefix)
+    public function __construct(IModel $model, Selection $source, $prefix)
     {
         $prefix = $prefix ?: 'entities.' . \get_class($model)::TABLE;
         parent::__construct($source, $prefix);
@@ -176,9 +175,9 @@ class BaseGrid extends Section
     }
 
     /**
-     * @return Model
+     * @return IModel
      */
-    public function getModel(): Model
+    public function getModel(): IModel
     {
         return $this->model;
     }

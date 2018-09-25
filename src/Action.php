@@ -292,4 +292,12 @@ class Action
         $this->ajax = $ajax;
         return $this;
     }
+
+    /**
+     * @param \callable[] $onClick
+     */
+    public function setOnClick(array $onClick)
+    {
+        $this->onClick = $onClick;
+    }
 }

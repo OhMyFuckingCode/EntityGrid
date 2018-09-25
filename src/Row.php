@@ -2,9 +2,10 @@
 
 namespace Quextum\EntityGrid;
 
-use App\Common\Controls\Multiplier;
+
 use App\Common\Forms\BaseFormFactory;
 use App\Common\Forms\Form;
+use Nette\Application\UI\Multiplier;
 use Nette\Database\IRow;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\GroupedSelection;

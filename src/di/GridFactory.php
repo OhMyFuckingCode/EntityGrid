@@ -8,45 +8,54 @@
 
 namespace Quextum\EntityGrid;
 
-
-use App\Common\Model;
 use Nette\Database\Table\Selection;
 use Nette\DI\Container;
 
-class GridFactory
+class GridFactory implements IGridFactory
 {
 
-    /** @var array */
+    /**
+     * Configuration of grids
+     * @var array
+     */
     protected $config;
+
+    /**
+     * Global configuration and definitions
+     * @var array
+     */
+    protected $settings;
 
     /** @var  Container */
     protected $context;
 
     /**
      * GridFactory constructor.
-     * @param array $config
      * @param Container $context
+     * @param array $config
+     * @param array $settings
      */
-    public function __construct(Container $context, array $config)
+    public function __construct(Container $context, array $config, array $settings)
     {
-        $this->config = $config;
         $this->context = $context;
+        $this->config = $config;
+        $this->settings = $settings;
     }
 
     /**
      * @param string $key
      * @param Selection $source
-     * @param Model|null $model
+     * @param IModel|null $model
      * @param string|null $prefix
      * @return EntityGrid
      */
-    public function create(string $key, Selection $source, Model $model = null, string $prefix = null)
+    public function create(string $key, Selection $source, IModel $model = null, string $prefix = null)
     {
         $config = $this->config[$key];
         $class = $config['class']??EntityGrid::class;
         $model = $model ?: $this->context->getByType($config['model']);
         //$prefix = $prefix ?: 'forms'.get_class($this->model)::TABLE;
         //$factory = $factory ?: $config['factory']?$this->context->getByType($config['factory'],false):null;
-        return new $class($this->config, $config, $model, $source, $prefix);
+        return new $class($this->settings, $config, $model, $source, $prefix);
     }
 }

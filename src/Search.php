@@ -3,8 +3,7 @@
 namespace Quextum\EntityGrid;
 
 use App\Common\Forms\BaseFormFactory;
-use App\Common\Forms\Form;
-use App\Helpers;
+use Nette\Application\UI\Form;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\Selection;
 use Nette\Forms\Controls\SubmitButton;
@@ -82,6 +81,8 @@ class Search extends BaseControl
      */
     protected function setupForm(Form $form)
     {
+        $this->config['searchFactory']->create($this->config['search']);
+
         /**
          * creates all inputs
          * @var $column
@@ -94,10 +95,10 @@ class Search extends BaseControl
                     break;
                 case 'range':
                     $cont = $form->addContainer($column);
-                    $from = $cont->addInteger('from');
-                    $to = $cont->addInteger('to');
-                    //$from->addRule(Form::MAX,null,$cont['to']);
-                    //$to->addRule(Form::MIN,null,$cont['from']);
+                    $cont->addInteger('from')->setNullable();
+                    $cont->addInteger('to')->setNullable();
+                    //$cont['from']->addRule(Form::MAX,null,$cont['to']);
+                    //$cont['to']->addRule(Form::MIN,null,$cont['from']);
                     break;
                 case 'select':
                 case 'multiselect':
@@ -113,10 +114,6 @@ class Search extends BaseControl
                     }
                     break;
                 case 'checkbox':
-                    /* $form->addSelect($column, $column, [
-                         true => Html::el('div')->addHtml(Html::el('i')->class('fa fa-check-circle')),
-                         false => Html::el('div')->addHtml(Html::el('i')->class('fa fa-times-circle'))])
-                         ->setPrompt(Html::el('div')->addHtml(Html::el('i')->class('fa fa-circle')));*/
                     $form->addRadioList($column, $column, [
                         null => Html::el('i')->class('fa fa-lg fa-circle text-gray'),
                         true => Html::el('i')->class('fa fa-lg fa-check-circle text-green'),
@@ -124,8 +121,8 @@ class Search extends BaseControl
                     break;
                 case 'datetimerange':
                     $cont = $form->addContainer($column);
-                    $cont->addDateTime('from');
-                    $cont->addDateTime('to');
+                    $cont->addDateTime('from')->setNullable();
+                    $cont->addDateTime('to')->setNullable();
                     break;
                 default:
                     $form->addText($column)->setNullable();

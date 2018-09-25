@@ -1,8 +1,8 @@
 <?php
 
 namespace Quextum\EntityGrid;
+use Nette\Application\UI\Multiplier;
 
-use App\Common\Controls\Multiplier;
 
 /**
  * Class TActions

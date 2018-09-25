@@ -8,12 +8,8 @@
 
 namespace Quextum\EntityGrid;
 
-
-use App\Common\Model;
-use Nette\Database\Table\Selection;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Config\Helpers;
-use Nette\DI\Container;
 use Nette\Utils\Strings;
 
 class GridExtension extends CompilerExtension
@@ -24,7 +20,7 @@ class GridExtension extends CompilerExtension
         'tree' => false,
         'order' => [],
         'factory' => null,
-        'searchFactory' => SearchFormFactory::class,
+        'searchFactory' => '@Quextum\EntityGrid\SearchFormFactory',
         'model' => null,
         'detail' => 'detail',
         'columns' => [],
@@ -45,8 +41,12 @@ class GridExtension extends CompilerExtension
     {
         parent::loadConfiguration();
         $config = $this->getConfig();
-        $defaults = $config['_defaults'];
+        $settings = $config['_settings']??[];
+        $defaults = $settings['defaults']??[];
+        unset($config['_settings']);
         $builder = $this->getContainerBuilder();
+        $builder->addDefinition($this->prefix('searchFactory'))
+            ->setFactory(SearchFormFactory::class);
         foreach ($config as $key => $item) {
             if (!Strings::startsWith($key, '_')) {
                 $this->validateConfig(static::defaults, $item);
@@ -54,7 +54,8 @@ class GridExtension extends CompilerExtension
             }
         }
         $builder->addDefinition($this->prefix('factory'))
-            ->setFactory(GridFactory::class, ['config' => $config]);
+            ->setType(IGridFactory::class)
+            ->setFactory(GridFactory::class, ['config' => $config,'settings'=>$settings]);
     }
 
 

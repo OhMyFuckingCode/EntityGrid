@@ -7,7 +7,6 @@
 namespace Quextum\EntityGrid;
 
 use App\Common\Forms\Form;
-use App\Common\Model;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
@@ -27,7 +26,7 @@ class EntityGrid extends BaseGrid
     /** @var  array */
     protected $allConfigs;
 
-    public function __construct(array $allConfigs, array $config, Model $model, Selection $source, $prefix)
+    public function __construct(array $allConfigs, array $config, IModel $model, Selection $source, $prefix)
     {
         parent::__construct($model, $source, $prefix);
         $this->config = $config;
@@ -61,8 +60,8 @@ class EntityGrid extends BaseGrid
                 } elseif (\is_array($callback)) {
                     $action = $this->_addAction($type, $column)->setArgs($callback);
                 }
-                if (isset($this->allConfigs['_actions'][$column])) {
-                    foreach ($this->allConfigs['_actions'][$column] as $prop => $value) {
+                if (isset($this->allConfigs['actions'][$column])) {
+                    foreach ($this->allConfigs['actions'][$column] as $prop => $value) {
                         $method = (strpos($prop, 'set') === false && strpos($prop, 'add') === false) ? 'set' . ucfirst($prop) : $prop;
                         $action->$method($value);
                     }
@@ -74,7 +73,7 @@ class EntityGrid extends BaseGrid
 
     protected function createComponentSearch(): Search
     {
-        $vp = new Search($this->config, $this->allConfigs['_options'] ?: null, $this->source, $this->prefix, $this->session);
+        $vp = new Search($this->config, $this->allConfigs['options'] ?: null, $this->source, $this->prefix, $this->session);
         $vp->onSuccess[] = function (Search $control, array $search) {
             if (\boolval($this->session->search) !== \boolval($search)) {
                 $this->redrawControl('control');
