@@ -15,7 +15,10 @@ use Nette\Application\UI\Control;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Localization\ITranslator;
+use Nette\Reflection\ClassType;
 use Nette\Security\User;
+use Nette\Utils\Strings;
+use ReflectionMethod;
 
 
 /**
@@ -99,8 +102,19 @@ abstract class BaseControl extends Control
             $this->template->grid = $this->grid;
             $this->template->section = $this->section;
         };
+        $this->initTraits();
     }
 
+    private function initTraits(): void
+    {
+        $reflection = new ClassType($this);
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PROTECTED) as $method) {
+            $name = $method->getName();
+            if (Strings::startsWith($name, 'initTrait')) {
+                $this->$name();
+            }
+        }
+    }
 
     /**
      * @param mixed $templateFile
