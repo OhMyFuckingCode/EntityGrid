@@ -102,19 +102,8 @@ abstract class BaseControl extends Control
             $this->template->grid = $this->grid;
             $this->template->section = $this->section;
         };
-        $this->initTraits();
     }
 
-    private function initTraits(): void
-    {
-        $reflection = new ClassType($this);
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PROTECTED) as $method) {
-            $name = $method->getName();
-            if (Strings::startsWith($name, 'initTrait')) {
-                $this->$name();
-            }
-        }
-    }
 
     /**
      * @param mixed $templateFile
@@ -148,7 +137,7 @@ abstract class BaseControl extends Control
     protected function beforeRender()
     {
         $this->onBeforeRender($this, $this->template);
-        if (isset($this->getTemplate()->flashes) && $this->getPresenter()->isAjax()) {
+        if (isset($this->template->flashes) && $this->getPresenter()->isAjax()) {
             $this->redrawControl('flashes');
         }
     }

@@ -58,6 +58,7 @@ class Section extends BaseControl
         $this->templateName = 'section.latte';
         $this->source = $source;
         $this->prefix = $prefix;
+        $this->initTraitActions();
     }
 
     protected function presenterAttached(Presenter $presenter)
