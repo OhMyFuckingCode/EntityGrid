@@ -17,7 +17,7 @@ interface IFormFactory
     /**
      * @param IRow $row
      */
-    public function create(IRow $row);
+    public function create(?IRow $row = null);
 
 
 
