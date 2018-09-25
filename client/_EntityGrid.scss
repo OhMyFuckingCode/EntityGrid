@@ -1,13 +1,33 @@
 /**
  * ==== VARIABLES ====
  */
-$entityGrid-cell-padding-y: 6px;
-$entityGrid-cell-padding-x: 12px;
 
+// Variables : Paddings
+$eg-cell-padding-y: 6px !default;
+$eg-cell-padding-x: 12px !default;
+
+// Variables : Grays
+$eg-gray-100: #ccc !default;
+$eg-gray-200: darken($eg-gray-100, 2%) !default;
+$eg-gray-300: darken($eg-gray-100, 3%) !default;
+$eg-gray-600: darken($eg-gray-100, 6%) !default;
+
+// Variables : Colors
+$eg-color-danger: darkred;
+
+// Variables : Tables
+$eg-table-border-width: 1px !default;
+$eg-table-border-color: $eg-gray-100;
+
+
+
+// @explanation: Why 240px?
 .table-container {
   height: calc(100vh - 240px);
   position: relative;
 }
+
+
 
 /**
  * ==== GRID ====
@@ -77,8 +97,8 @@ $entityGrid-cell-padding-x: 12px;
     position: relative;
     display: table-cell;
     vertical-align: middle;
-    padding: $entityGrid-cell-padding-y $entityGrid-cell-padding-x;
-    border-top: $table-border-width solid $table-border-color;
+    padding: $eg-cell-padding-y $eg-cell-padding-x;
+    border-top: $eg-table-border-width solid $eg-table-border-color;
     &.fit {
       width: 1%
     }
@@ -118,21 +138,21 @@ $entityGrid-cell-padding-x: 12px;
  */
 .search {
   &-row {
-    background-color: $gray-100;
+    background-color: $eg-gray-100;
 
     input:not([type=submit]):not([type=button]),
     select,
     .chosen-choices {
       border: none;
       background: none;
-      border-bottom: 1px solid $gray-200;
-      color: $gray-600;
+      border-bottom: 1px solid $eg-gray-200;
+      color: $eg-gray-600;
       transition: .6s;
       @include placeholder {
-        color: $gray-300;
+        color: $eg-gray-300;
       }
       &:focus, &:hover {
-        background-color: $gray-200;
+        background-color: $eg-gray-200;
       }
     }
     .choices__inner {
@@ -177,14 +197,14 @@ $entityGrid-cell-padding-x: 12px;
     }
 
     select option:first-child {
-      color: $gray-300;
+      color: $eg-gray-300;
     }
 
     .date-to {
       top: 50%;
       right: 5px;
       transform: translateY(-50%);
-      background-color: $gray-200;
+      background-color: $eg-gray-200;
       padding: 4px;
       border-radius: 50%;
       opacity: 0.25;
@@ -198,7 +218,7 @@ $entityGrid-cell-padding-x: 12px;
     }
 
     /*.grid-cell:not(:last-of-type):not(:first-child) {
-      padding: $entityGrid-cell-padding-y $entityGrid-cell-padding-x/2;
+      padding: $eg-cell-padding-y $eg-cell-padding-x/2;
     }*/
 
     /* chosen.js */
@@ -214,7 +234,7 @@ $entityGrid-cell-padding-x: 12px;
         width: 100%;
         height: 100%;
         opacity: 0;
-        background: $danger;
+        background: $eg-color-danger;
         transition: .4s;
         &:after {
           content: '×';
@@ -232,123 +252,3 @@ $entityGrid-cell-padding-x: 12px;
 
   }
 }
-
-/*
- * ======== TABLE TREE =========
- * - for rows with children
- */
-
-$tree-offset: 16px;
-$treeBtn-size: 14px;
-$treeBtn-size-empty: 8px;
-$treeColor-lighten: 12.5%;
-
-.table-tree {
-
-  .btn-tree {
-    border-radius: 50%;
-    width: $treeBtn-size;
-    height: $treeBtn-size;
-    position: absolute;
-    left: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 0;
-    border: 0;
-    &:after {
-      content: '';
-      position: absolute;
-      width: 27px;
-      height: 1px;
-      top: 6px;
-      right: 0;
-    }
-    &:empty {
-      width: $treeBtn-size-empty;
-      height: $treeBtn-size-empty;
-      left: 10px;
-    }
-    i {
-      font-size: 10px;
-      line-height: 0;
-      position: absolute;
-      z-index: 100;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-    svg {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-  }
-
-  .tree-list {
-    height: 0;
-    &-line-y {
-      width: 1px;
-      height: 100%;
-      background: #2f87cc;
-      position: absolute;
-      left: 12px;
-      top: -50%;
-      &.line-y-2 {
-        background: lighten($primary, $treeColor-lighten);
-        left: 32px;
-      }
-      &.line-y-3 {
-        background: lighten($primary, $treeColor-lighten*2);
-        left: 52px;
-      }
-    }
-  }
-  .grid-row {
-    @for $i from 1 through 4 {
-      &.depth-#{$i} {
-        .grid-cell:first-child {
-          padding-left: ($tree-offset*2) + ( $i * 20 ) !important;
-          .btn-tree {
-            //left: (12px + $treeBtn-size) + ($tree-offset * ( $i - 1 )) + ( ($i - 1) * 2); //*  ($tree-offset * ( $i - 1.5 ));
-            left: (12px + $treeBtn-size) + ($tree-offset * ( $i - 1 ))  + ( ($i - 1) * 3);
-            background: lighten($primary, $i * $treeColor-lighten);
-            &:empty {
-              width: $treeBtn-size-empty;
-              height: $treeBtn-size-empty;
-              left: ($tree-offset * ($i + 1))  - ($treeBtn-size-empty/2) + ($treeBtn-size-empty * ($i * 0.25));
-            }
-            &:after {
-              background: lighten($primary, $i * $treeColor-lighten);
-            }
-          }
-        }
-      }
-    }
-
-    .chosen {
-      .choices__item {
-        padding: 1px 10px;
-        border-radius: 0;
-      }
-    }
-
-    .grid-cell {
-      &:first-child {
-        padding-left: 32px !important;
-        //background-image: url(icons/icon-parent.svg);
-        background-repeat: no-repeat;
-        background-size: 24px;
-        background-position-y: 50%;
-      }
-    }
-  }
-
-}
-
-
-
-
-
