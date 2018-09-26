@@ -3,7 +3,6 @@
 namespace Quextum\EntityGrid;
 
 
-
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Multiplier;
 use Nette\Database\IRow;
@@ -27,15 +26,6 @@ class Row extends Section
     /** @var  callable[] */
     public $onCancel;
 
-    /** @var  ActiveRow|null */
-    protected $item;
-
-    /** @var  IFormFactory */
-    protected $formFactory;
-
-    /** @var Cell[] */
-    protected $columns;
-
     /** @var  boolean */
     protected $editMode;
 
@@ -54,12 +44,12 @@ class Row extends Section
     /**
      * GridRow constructor.
      * @param IFormFactory $formFactory
-     * @param Cell[] $columnDefinitions
+     * @param Column[] $columnDefinitions
      * @param ActiveRow|null $item
      */
     public function __construct(IFormFactory $formFactory = null, array $columnDefinitions = [], $item)
     {
-        parent::__construct(null,$formFactory);
+        parent::__construct(null, $formFactory);
         $this->templateName = 'row.latte';
         $this->item = $item;
         $this->formFactory = $formFactory;
@@ -67,7 +57,8 @@ class Row extends Section
     }
 
 
-    public function getSource(){
+    public function getSource()
+    {
         return $this->item->related($this->grid->tree);
     }
 
@@ -97,15 +88,15 @@ class Row extends Section
         $this->selected = $selected;
     }
 
-    protected function beforeRender()
+    protected function beforeRender():void
     {
         parent::beforeRender();
         $this->template->editable = $this->isEditable();
         $this->template->columns = $this->columns;
         $this->template->item = $this->item;
+        $this->template->selectable = $this->selectable;
         $this->template->editMode = isset($this->session->editing[$this->item->id]);
         $this->template->selected = isset($this->session->selection[$this->item->id]);
-        $this->template->selectable = $this->selectable;
         $this->template->expanded = isset($this->session->expandedRows[$this->item->id]);
         $this->template->_row = $this;
     }

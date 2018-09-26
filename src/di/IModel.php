@@ -9,6 +9,7 @@
 namespace Quextum\EntityGrid;
 
 
+use Nette\Database\Context;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\ArrayHash;
 
@@ -22,5 +23,12 @@ interface IModel
     public function update(ActiveRow $row, ArrayHash $values);
 
     public function delete(ActiveRow $row);
+
+    public function getTableName():string;
+
+    /**
+     * @return Context
+     */
+    public function getContext();
 
 }

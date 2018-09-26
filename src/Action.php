@@ -18,20 +18,22 @@ class Action
 
     use SmartObject;
 
+    const DEFAULT_CLASSES = ['btn', 'btn-sm', 'btn-secondary', 'ajax'];
+
     /** @var  callable[] */
     public $onClick;
 
-    /** @var  string */
+    /** @var  string|null */
     protected $icon;
 
-    /** @var  string */
+    /** @var  string|null */
     protected $label;
 
-    /** @var  string */
+    /** @var  string|null */
     protected $title;
 
     /** @var  string[] */
-    protected $class = ['btn', 'btn-sm', 'btn-secondary', 'ajax'];
+    protected $class = self::DEFAULT_CLASSES;
 
     /** @var  Link */
     protected $link;
@@ -70,9 +72,9 @@ class Action
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getIcon()
+    public function getIcon(): ?string
     {
         return $this->icon;
     }
@@ -88,9 +90,9 @@ class Action
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLabel()
+    public function getLabel(): ?string
     {
         return $this->label;
     }
@@ -106,9 +108,9 @@ class Action
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -124,7 +126,7 @@ class Action
     }
 
     /**
-     * @param Component|TGridComponent $component
+     * @param Component|BaseControl $component
      * @return Link|string
      */
     public function getLink(Component $component)
@@ -135,20 +137,26 @@ class Action
         if ($this->link instanceof Link) {
             return $this->link;
         }
-        $item = $component->lookup(Row::class)->getItem();
+        /** @var Row $row */
+        $row = $component->lookup(Row::class,false);
+        if($row){
+            /** @var ActiveRow $item */
+            $item = $row->getItem();
+        }
+        $params = null;
         if (\is_array($this->link)) {
             list($destination, $params) = $this->link;
-            $params = array_intersect_key($item->toArray(), array_flip($params));
+            isset($item) && $params = array_intersect_key($item->toArray(), array_flip($params));
         }
         if (\is_string($this->link)) {
             $destination = $this->link;
-            $params = null;
+            //$params = null;
         }
         if (strpos($destination, ':') === 0) {
             $component = $component->getPresenter();
         }
         foreach ($this->params as $key => $value) {
-            if (is_numeric($key)) {
+            if (is_numeric($key) && isset($item)) {
                 unset($this->params[$key]);
                 $this->params[$value] = $item->$value;
             } else {
@@ -156,7 +164,7 @@ class Action
             }
         }
 
-        return new Link($component, $destination, array_merge($params, $this->params));
+        return new Link($component, $destination, array_merge((array)$params, $this->params));
     }
 
     /**

@@ -23,8 +23,8 @@ class Section extends BaseControl
 {
     use TActions;
 
-    const TREE_VIEW = 'tree';
-    const GRID_VIEW = 'grid';
+    public const TREE_VIEW = 'tree';
+    public const GRID_VIEW = 'grid';
 
     /** @var  ActiveRow */
     protected $item;
@@ -58,9 +58,10 @@ class Section extends BaseControl
         $this->templateName = 'section.latte';
         $this->source = $source;
         $this->prefix = $prefix;
+        $this->initTraitActions();
     }
 
-    protected function presenterAttached(Presenter $presenter)
+    protected function presenterAttached(Presenter $presenter):void
     {
         parent::presenterAttached($presenter);
         $this->startup();
@@ -108,7 +109,6 @@ class Section extends BaseControl
     }
 
 
-
     protected function createComponentRow(): Multiplier
     {
         return new Multiplier(function (int $id) {
@@ -123,7 +123,7 @@ class Section extends BaseControl
 
     protected function createComponentNew(): Row
     {
-        $row = new Row($this->formFactory, $this->columns,$this->grid->getModel()->create());
+        $row = new Row($this->formFactory, $this->columns, $this->grid->getModel()->create());
         $row->setView($this->detectView());
         $row->onSuccess[] = [$this, 'addFormSucceeded'];
         $row->onCancel[] = [$this, 'endCreating'];
@@ -144,7 +144,8 @@ class Section extends BaseControl
         return $this->source;
     }
 
-    protected function applyOrder(Selection $source){
+    protected function applyOrder(Selection $source)
+    {
         if ($order = $this->session->order) {
             foreach ($order as $column => $direction) {
                 $source->order("$column " . ($direction ? 'ASC' : 'DESC'));
@@ -188,7 +189,7 @@ class Section extends BaseControl
         return $this->items ?: $this->loadItems();
     }
 
-    protected function beforeRender()
+    protected function beforeRender():void
     {
         parent::beforeRender();
         foreach ($this->columns as $name => $definition) {
@@ -244,7 +245,7 @@ class Section extends BaseControl
 
     public function handleLimit(?int $limit): void
     {
-        if(!\in_array($limit,BaseGrid::LIMITS,true)){
+        if (!\in_array($limit, BaseGrid::LIMITS, true)) {
             throw new BadRequestException(Response::S406_NOT_ACCEPTABLE);
         }
         $this->session->limit = $limit;

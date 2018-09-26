@@ -15,7 +15,7 @@ use Nette\Utils\Strings;
 class GridExtension extends CompilerExtension
 {
 
-    const defaults = [
+    public const defaults = [
         'sortable' => false,
         'tree' => false,
         'order' => [],

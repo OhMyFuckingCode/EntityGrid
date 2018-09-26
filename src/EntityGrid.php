@@ -55,11 +55,14 @@ class EntityGrid extends BaseGrid
                 if (\is_numeric($column)) {
                     $column = $callback;
                     $action = $this->_addAction($type, $column, [$this, $callback]);
+                } elseif ($callback === true) {
+                    $action = $this->_addAction($type, $column, [$this, $column]);
                 } elseif (\is_callable($callback)) {
                     $action = $this->_addAction($type, $column, $callback);
                 } elseif (\is_array($callback)) {
                     $action = $this->_addAction($type, $column)->setArgs($callback);
                 }
+                // Aplikace předdefinovanch akcí
                 if (isset($this->allConfigs['actions'][$column])) {
                     foreach ($this->allConfigs['actions'][$column] as $prop => $value) {
                         $method = (strpos($prop, 'set') === false && strpos($prop, 'add') === false) ? 'set' . ucfirst($prop) : $prop;
@@ -73,7 +76,7 @@ class EntityGrid extends BaseGrid
 
     protected function createComponentSearch(): Search
     {
-        $vp = new Search($this->config, $this->allConfigs['options'] ?: null, $this->source, $this->prefix, $this->session);
+        $vp = new Search($this->config, $this->allConfigs ?: null, $this->source, $this->prefix, $this->session);
         $vp->onSuccess[] = function (Search $control, array $search) {
             if (\boolval($this->session->search) !== \boolval($search)) {
                 $this->redrawControl('control');
@@ -128,7 +131,7 @@ class EntityGrid extends BaseGrid
         $this->redrawControl('items');
     }
 
-    protected function beforeRender()
+    protected function beforeRender():void
     {
         if ($this->session->search) {
             $this->tree = null;

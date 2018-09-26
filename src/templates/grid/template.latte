@@ -1,18 +1,26 @@
 {import ../@components.latte}
 
-<section data-control="{$ctrlId}" n:snippet="control" >
-    <div n:snippet=controls class="clearfix">
-
-        <a href="{plink add}" class="btn btn-light no-radius text-muted float-right ml-1"><i
-                    class="fas fa-plus mr-1"></i>{_"entityGrid.add-item"}</a>
-        {include #hide}
+<section data-control="{$ctrlId}" n:snippet="control" class="grid">
+    <div class="grid-header d-flex">
+        <div class="grid-title " n:if="$title">
+            <h2>{$title}</h2>
+        </div>
+        <div n:snippet=controls class="clearfix grid-actions ml-auto btn-group">
+            {foreach $globalActions as $name=>$action}
+                {if $action->isRenderable()}
+                    {control globalAction-$name}
+                {/if}
+            {/foreach}
+            {include #hide}
+        </div>
     </div>
-    <div class="table-container table-responsive mb-1">
 
-        <div class="grid-table border-bottom" n:snippet="grid">
+    <div class="grid-container table-responsive mb-1">
+        <div class="grid-table" n:snippet="grid">
             <div class="grid-table-colgroup">
                 <div class="grid-table-col bg-white" ></div>
             </div>
+
             {* ---- HEADER ---- *}
             <div n:snippet="header" class="grid-header">
 
@@ -29,7 +37,6 @@
                             {_"entityGrid.actions"}
                     </div>
                 </div>
-
                 {* ---- HEADER:SEARCH ---- *}
                 {control search}
             </div>
