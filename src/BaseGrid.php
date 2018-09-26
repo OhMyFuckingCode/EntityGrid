@@ -29,6 +29,8 @@ class BaseGrid extends Section
     protected $order = self::DEFAULT_ORDER;
 
     protected $sortable = false;
+    /** @var  string|bool|null */
+    protected $title;
 
 
     /**
@@ -88,6 +90,7 @@ class BaseGrid extends Section
     protected function beforeRender():void
     {
         parent::beforeRender();
+        $this->template->title = $this->title;
         $iterator = 1;
         foreach ($this->columns as $name => $definition) {
             $definition->setHidden($hidden = isset($this->session->hiddenColumns[$name]));
@@ -177,5 +180,23 @@ class BaseGrid extends Section
     {
         return $this->model;
     }
+
+    /**
+     * @return bool|null|string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param bool|null|string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+
 }
 

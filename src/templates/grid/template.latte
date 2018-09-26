@@ -1,12 +1,18 @@
 {import ../@components.latte}
 
 <section data-control="{$ctrlId}" n:snippet="control" >
-    <div n:snippet=controls class="clearfix">
-
-        <a href="{plink add}" class="btn btn-light no-radius text-muted float-right ml-1"><i
-                    class="fas fa-plus mr-1"></i>{_"entityGrid.add-item"}</a>
-        {include #hide}
+    <div class="grid-header d-flex">
+        <div class="grid-title " n:if="$title">
+            <h2>{$title}</h2>
+        </div>
+        <div n:snippet=controls class="clearfix grid-actions ml-auto btn-group">
+            <a href="{plink add}" class="btn btn-light no-radius text-muted ml-1">
+                <i class="fas fa-plus mr-1"></i>{_"entityGrid.add-item"}
+            </a>
+            {include #hide}
+        </div>
     </div>
+
     <div class="table-container table-responsive mb-1  border border-top-0">
 
 

@@ -96,7 +96,6 @@ class Search extends BaseControl
                 case 'int':
                     $form->addInteger($column,$column)->setNullable();
                     break;
-
                 case 'range':
                     $cont = $form->addContainer($column);
                     $cont->addInteger('from')->setNullable();
