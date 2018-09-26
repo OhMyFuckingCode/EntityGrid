@@ -154,7 +154,7 @@
 {/define}
 
 <div n:define="order"
-        class="btn btn-sm {$sortable = $grid->isSortable()?'btn-secondary':'btn-light disabled'} sortable-handle"
+        class="btn btn-sm {$sortable = $grid->isSortable()?'btn-secondary':'btn-dark disabled'} sortable-handle"
         {if !$grid->isSortable()} data-toggle="popover" data-trigger="hover" data-delay="300" data-content="Pro aktivaci seřadtě položky podle sloupce pořadí sestupně. " {/if} >
     {if $grid->isSortable()} <i class="fa fa-arrow-up"></i><i class="fa fa-arrow-down"></i>&nbsp;{/if}{$value}
 </div>
