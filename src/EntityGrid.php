@@ -55,11 +55,14 @@ class EntityGrid extends BaseGrid
                 if (\is_numeric($column)) {
                     $column = $callback;
                     $action = $this->_addAction($type, $column, [$this, $callback]);
+                } elseif ($callback === true) {
+                    $action = $this->_addAction($type, $column, [$this, $column]);
                 } elseif (\is_callable($callback)) {
                     $action = $this->_addAction($type, $column, $callback);
                 } elseif (\is_array($callback)) {
                     $action = $this->_addAction($type, $column)->setArgs($callback);
                 }
+                // Aplikace předdefinovanch akcí
                 if (isset($this->allConfigs['actions'][$column])) {
                     foreach ($this->allConfigs['actions'][$column] as $prop => $value) {
                         $method = (strpos($prop, 'set') === false && strpos($prop, 'add') === false) ? 'set' . ucfirst($prop) : $prop;

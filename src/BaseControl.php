@@ -60,7 +60,7 @@ abstract class BaseControl extends Control
      */
     public function getTemplateFile()
     {
-        return __DIR__ . '/templates/' . $this->grid->detectView() . '/' . $this->templateName;
+        return __DIR__ . '/templates/' . ($this->view ? "$this->view/" : '') . $this->templateName;
     }
 
     /**
@@ -161,7 +161,7 @@ abstract class BaseControl extends Control
 
     public function lookupRow():?Row
     {
-        return $this->lookup(Row::class,false);
+        return $this->lookup(Row::class, false);
     }
 
     protected function presenterAttached(Presenter $presenter):void

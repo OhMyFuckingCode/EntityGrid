@@ -2,7 +2,6 @@
 
 namespace Quextum\EntityGrid;
 
-use App\Common\Controls\BaseControl;
 
 /**
  * Class GridRow
@@ -24,14 +23,16 @@ class Button extends BaseControl
     public function __construct(Action $action)
     {
         parent::__construct();
-        $this->templateName = 'templates/button.latte';
+        $this->templateName = 'button.latte';
         $this->action = $action;
     }
 
     protected function beforeRender():void
     {
         parent::beforeRender();
+        $this->view = null;
         $this->template->action = $this->action;
+        $this->template->setTranslator($this->translator->domain('entityGrid.btn'));
     }
 
 
@@ -63,5 +64,7 @@ class Button extends BaseControl
     {
         return $this->lookup(Row::class);
     }
+
+
 
 }

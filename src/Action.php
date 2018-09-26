@@ -138,22 +138,25 @@ class Action
             return $this->link;
         }
         /** @var Row $row */
-        $row = $component->lookup(Row::class);
-        /** @var ActiveRow $item */
-        $item = $row->getItem();
+        $row = $component->lookup(Row::class,false);
+        if($row){
+            /** @var ActiveRow $item */
+            $item = $row->getItem();
+        }
+        $params = null;
         if (\is_array($this->link)) {
             list($destination, $params) = $this->link;
-            $params = array_intersect_key($item->toArray(), array_flip($params));
+            isset($item) && $params = array_intersect_key($item->toArray(), array_flip($params));
         }
         if (\is_string($this->link)) {
             $destination = $this->link;
-            $params = null;
+            //$params = null;
         }
         if (strpos($destination, ':') === 0) {
             $component = $component->getPresenter();
         }
         foreach ($this->params as $key => $value) {
-            if (is_numeric($key)) {
+            if (is_numeric($key) && isset($item)) {
                 unset($this->params[$key]);
                 $this->params[$value] = $item->$value;
             } else {
@@ -161,7 +164,7 @@ class Action
             }
         }
 
-        return new Link($component, $destination, array_merge($params, $this->params));
+        return new Link($component, $destination, array_merge((array)$params, $this->params));
     }
 
     /**
