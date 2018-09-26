@@ -3,6 +3,10 @@
 namespace Quextum\EntityGrid;
 
 
+//use Nette\Application\UI\Component;
+use Nette\Utils\Html;
+
+
 /**
  * Class GridRow
  * @package Quextum\EntityGrid
@@ -16,6 +20,8 @@ class Button extends BaseControl
     /** @var  Action */
     protected $action;
 
+    protected $control;
+
     /**
      * Button constructor.
      * @param Action $action
@@ -23,6 +29,7 @@ class Button extends BaseControl
     public function __construct(Action $action)
     {
         parent::__construct();
+        $this->control = Html::el('a');
         $this->templateName = 'button.latte';
         $this->action = $action;
     }
@@ -65,6 +72,34 @@ class Button extends BaseControl
         return $this->lookup(Row::class);
     }
 
+    /*public function getControl():Html
+      {
+          $control = clone $this->control;
+          $action = $this->action;
+          $link = $action->getLink($this->getParent())?:$this->link('Click!');
+          $control->href($link);
+          $label = $action->getLabel();
+          $control->addClass($action->getClass());
+          $action->isAjax() && $control->addClass('ajax');
+          $confirm = $action->getConfirm();
+          $confirm && $control->data('confirm',$confirm);
 
+          $title =  $action->getTitle();
+          $title && $control->title($title);
 
+          foreach ($action->getOff() as $off) {
+              $control->data('naja-'.$off,'off');
+          }
+          $icon = $action->getIcon();
+          $icon && $control->addHtml(Html::el('i')->class($icon)->addClass($label?'mr-2':null));
+          $control->addText($label);
+
+          return $control;
+      }
+
+      public function render()
+      {
+          echo (string)$this->getControl();
+      }
+  */
 }
