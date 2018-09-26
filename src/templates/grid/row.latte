@@ -12,7 +12,7 @@
             <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" class="grid-cell">
                 {ifset $form[$key]}{if $form[$key]->getOption(type)==='textarea'}{input $key class=>'form-control',rows=>1}{else}{input $key class=>'form-control'}{/if}{/ifset}
             </div>
-            <div class="grid-cell cell-actions">
+            <div class="grid-cell grid-cell-actions">
                 <div class="btn-group btn-group-sm">
                     {input submit class=>'btn btn-primary'}
                     {input cancel class=>'btn btn-secondary'}
@@ -29,7 +29,7 @@
         {foreach $columns as $key => $column}
             {if !$column->isHidden()}{include #cell column=>$column}{/if}
         {/foreach}
-        <div class="grid-cell cell-actions" n:if="$actions">
+        <div class="grid-cell grid-cell-actions" n:if="$actions">
             <div class="btn-group btn-group-sm float-right" n:inner-foreach="$actions as $name=>$action" n:inner-if="$action->isRenderable()">
                 {control action-$name}
             </div>

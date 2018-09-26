@@ -11,13 +11,13 @@
             {include #hide}
         </div>
     </div>
-    <div class="table-container table-responsive mb-1  border border-top-0">
+    <div class="table-container table-responsive mb-1 border">
         <div class="grid-table  border-bottom table-tree table-striped table-sm" n:snippet="grid">
             <div class="grid-table-header" n:snippet=header>
                 <div class="grid-row">
                     <div class="grid-cell">
                     </div>
-                    <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" n:class="$column->type == 'int' ? fit, grid-cell,text-nowrap,pr-3">
+                    <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" n:class="$column->type == 'int' ? grid-cell--fit, grid-cell,text-nowrap,pr-3">
                         <span class="text-truncate">{_$column->getLabel()}</span>
                         {include sortable $column}
                         {*<a n:href="HideCol!, $column->getName(),!$column->isHidden()" class="ajax text-muted"><i

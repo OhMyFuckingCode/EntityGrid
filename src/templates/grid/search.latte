@@ -1,12 +1,12 @@
-<div n:snippet="search" class="grid-row search-row">
+<div n:snippet="search" class="grid-row grid-search-row">
     {* ---- HEADER:SEARCH ---- *}
     {form searchForm class=>'ajax text-muted d-contents'}
         <div n:if="$selectable" class="grid-cell"></div>
-        <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" class="grid-cell" n:inner-ifset="$form[$key]">
+        <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" class="grid-cell grid-search-cell grid-header-cell" n:inner-ifset="$form[$key]">
             {if $form[$key] instanceof \Nette\Forms\Container}
                 {formContainer $key}
                     <a href="#{$ctrlId}-date-to-collapse-{$iterator->getCounter()}"
-                       class="date-to position-absolute text-muted" data-toggle="collapse"><i class="fa fa-retweet"></i></a>
+                       class="grid-search-date-to position-absolute text-muted" data-toggle="collapse"><i class="fa fa-retweet"></i></a>
                 {var $inputs= iterator_to_array($form[$key]->getControls())}
                 {var $first = array_shift($inputs)}
                 {input $first}
@@ -21,7 +21,7 @@
                     {case checkbox}
                     {$form[$key]->getControlPart()}
                     {case radio}
-                    <div class="search-radio">
+                    <div class="grid-search-radio">
                         {foreach $form[$key]->items as $_key=>$__label}
                             {input $form[$key]:$_key class=>'sr-only'}{label $form[$key]:$_key}
                         {/foreach}
@@ -31,7 +31,7 @@
                 {/switch}
             {/if}
         </div>
-        <div class="grid-cell cell-actions">
+        <div class="grid-cell grid-cell-actions">
                 <div class="btn-group btn-group-sm float-right" role="group">
                     {input submit class=>'btn btn-primary'}
                     {if $search}{input cancel class=>'btn btn-secondary'}{/if}
