@@ -6,6 +6,7 @@
 
 namespace Quextum\EntityGrid;
 
+use Kdyby\Translation\ITranslator;
 use Nette\Application\UI\Multiplier;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Presenter;
@@ -46,6 +47,8 @@ class Section extends BaseControl
 
     /** @var  string */
     protected $prefix;
+
+
 
     /**
      * Section constructor.
@@ -323,4 +326,7 @@ class Section extends BaseControl
         //$order = filter_var_array($order,FILTER_VALIDATE_INT);
         $this->grid->handleSort(...\func_get_args());
     }
+
+
+
 }

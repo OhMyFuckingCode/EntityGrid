@@ -53,12 +53,12 @@ class Search extends BaseControl
     public function __construct(array $config, array $options, Selection $items, string $prefix, SessionData $values)
     {
         parent::__construct();
-        $this->templateName = 'search.latte';
+        $this->items = $items;
         $this->config = $config;
         $this->prefix = $prefix;
         $this->session = $values;
-        $this->items = $items;
         $this->options = $options;
+        $this->templateName = 'search.latte';
     }
 
     /**
@@ -68,7 +68,7 @@ class Search extends BaseControl
     protected function createComponentSearchForm(): Form
     {
         $form = new Form();
-        $form->setTranslator($this->translator->domain($this->prefix));
+        $this->translator && $form->setTranslator($this->translator->domain($this->prefix));
         $this->setupForm($form);
         $form->onSuccess[] = [$this, 'searchFormSucceeded'];
         $form->setDefaults($this->session->search);

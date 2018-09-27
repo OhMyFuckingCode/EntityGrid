@@ -1,24 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: prosky
- * Date: 26.06.18
- * Time: 13:56
- */
 
 namespace Quextum\EntityGrid;
 
 
-use App\Common\Controls\TControl;
-use Kdyby\Translation\Translator;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Localization\ITranslator;
-use Nette\Reflection\ClassType;
 use Nette\Security\User;
-use Nette\Utils\Strings;
-use ReflectionMethod;
 
 
 /**
@@ -30,12 +19,16 @@ use ReflectionMethod;
  */
 abstract class BaseControl extends Control
 {
-
+    /** @var  callable[] */
     public $onPresenterAttached;
+
+    /** @var  callable[] */
     public $onBeforeRender;
-    /** @var  ITranslator */
+
+    /** @var  ITranslator|null */
     protected $translator;
-    protected $templateFile;
+
+    /** @var string */
     protected $templateName = 'template.latte';
 
     /** @var  SessionData */
@@ -46,9 +39,37 @@ abstract class BaseControl extends Control
 
     /** @var  BaseGrid */
     protected $grid;
+
     /** @var  Section */
     protected $section;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->monitor(Presenter::class, function (Presenter $presenter) {
+            $this->presenterAttached($presenter);
+            $this->onPresenterAttached($presenter);
+        });
+        $this->monitor(BaseGrid::class, function (BaseGrid $grid) {
+            $this->grid = $grid;
+            $this->session = $grid->getSession();
+            $this->translator = $grid->getTranslator();
+            $this->gridAttached($grid);
+        });
+        $this->monitor(Section::class, function (Section $section) {
+            $this->section = $section;
+        });
+        $this->onBeforeRender[] = function () {
+            $this->view = $this->grid->getView();
+            $this->template->grid = $this->grid;
+            $this->template->section = $this->section;
+        };
+    }
+
+    protected function presenterAttached(Presenter $presenter):void
+    {
+
+    }
 
     protected function gridAttached(BaseGrid $grid): void
     {
@@ -82,29 +103,6 @@ abstract class BaseControl extends Control
     }
 
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->monitor(Presenter::class, function ($presenter) {
-            $this->presenterAttached($presenter);
-            $this->onPresenterAttached($presenter);
-        });
-        $this->monitor(BaseGrid::class, function ($grid) {
-            $this->grid = $grid;
-            $this->session = $this->grid->getSession();
-            $this->gridAttached($grid);
-        });
-        $this->monitor(Section::class, function ($section) {
-            $this->section = $section;
-        });
-        $this->onBeforeRender[] = function () {
-            $this->view = $this->grid->getView();
-            $this->template->grid = $this->grid;
-            $this->template->section = $this->section;
-        };
-    }
-
-
     /**
      * @param mixed $templateFile
      * @return static
@@ -125,12 +123,8 @@ abstract class BaseControl extends Control
         return $this;
     }
 
-    protected function init():void
-    {
 
-    }
-
-    /*
+    /**
      * @return string
      */
     public function getTemplateName(): string
@@ -154,6 +148,11 @@ abstract class BaseControl extends Control
         $this->template->render();
     }
 
+    protected function init():void
+    {
+
+    }
+
     public function getUser(): User
     {
         return $this->getPresenter()->getUser();
@@ -164,10 +163,22 @@ abstract class BaseControl extends Control
         return $this->lookup(Row::class, false);
     }
 
-    protected function presenterAttached(Presenter $presenter):void
+
+    /**
+     * @return ITranslator
+     */
+    public function getTranslator(): ?ITranslator
     {
-        if (!$this->translator) {
-            $this->translator = $presenter->getTranslator();
-        }
+        return $this->translator;
+    }
+
+    /**
+     * @param ITranslator $translator
+     * @return static
+     */
+    public function setTranslator(?ITranslator $translator)
+    {
+        $this->translator = $translator;
+        return $this;
     }
 }

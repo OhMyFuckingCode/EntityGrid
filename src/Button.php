@@ -3,7 +3,9 @@
 namespace Quextum\EntityGrid;
 
 
-//use Nette\Application\UI\Component;
+use Kdyby\Translation\Translator;
+use Nette\Application\UI\Component;
+use Nette\Localization\ITranslator;
 use Nette\Utils\Html;
 
 
@@ -12,7 +14,7 @@ use Nette\Utils\Html;
  * @package Quextum\EntityGrid
  * @method onClick(Button $button, Action $action)
  */
-class Button extends BaseControl
+class Button extends Component
 {
     /** @var  callable[] */
     public $onClick;
@@ -22,6 +24,9 @@ class Button extends BaseControl
 
     protected $control;
 
+    /** @var  ITranslator|Translator */
+    protected $translator;
+
     /**
      * Button constructor.
      * @param Action $action
@@ -30,18 +35,14 @@ class Button extends BaseControl
     {
         parent::__construct();
         $this->control = Html::el('a');
-        $this->templateName = 'button.latte';
         $this->action = $action;
+        $this->monitor(BaseControl::class, [$this, 'onAttached']);
     }
 
-    protected function beforeRender():void
+    public function onAttached(BaseControl $grid): void
     {
-        parent::beforeRender();
-        $this->view = null;
-        $this->template->action = $this->action;
-        $this->template->setTranslator($this->translator->domain('entityGrid.btn'));
+        $this->setTranslator($grid->getTranslator());
     }
-
 
     public function handleClick():void
     {
@@ -72,34 +73,58 @@ class Button extends BaseControl
         return $this->lookup(Row::class);
     }
 
-    /*public function getControl():Html
-      {
-          $control = clone $this->control;
-          $action = $this->action;
-          $link = $action->getLink($this->getParent())?:$this->link('Click!');
-          $control->href($link);
-          $label = $action->getLabel();
-          $control->addClass($action->getClass());
-          $action->isAjax() && $control->addClass('ajax');
-          $confirm = $action->getConfirm();
-          $confirm && $control->data('confirm',$confirm);
+    public function getControl():Html
+    {
+        $control = clone $this->control;
+        $action = $this->action;
+        //Link
+        $link = $action->getLink($this) ?: $this->link('Click!');
+        $control->href($link);
+        //Classes
+        $class = $action->getClass();
+        $class && $control->addClass($action->getClass());
+        $action->isAjax() && $control->addClass('ajax');
+        // Confirm
+        $confirm = $action->getConfirm();
+        $confirm && $control->data('confirm', $this->translate($confirm));
+        // Title
+        $title = $action->getTitle();
+        $title && $control->title($this->translate($title));
+        //Off
+        foreach ($action->getOff() as $off) {
+            $control->data('naja-' . $off, 'off');
+        }
+        //Label, Icon
+        $icon = $action->getIcon();
+        $label = $action->getLabel();
 
-          $title =  $action->getTitle();
-          $title && $control->title($title);
+        $icon && $control->addHtml(Html::el('i')->class($icon)->addClass($label ? 'mr-2' : null));
+        $label && $control->addText($this->translate($label));
 
-          foreach ($action->getOff() as $off) {
-              $control->data('naja-'.$off,'off');
-          }
-          $icon = $action->getIcon();
-          $icon && $control->addHtml(Html::el('i')->class($icon)->addClass($label?'mr-2':null));
-          $control->addText($label);
+        return $control;
+    }
 
-          return $control;
-      }
+    private function translate($key)
+    {
+        return $this->translator ? $this->translator->translate($key) : $key;
+    }
 
-      public function render()
-      {
-          echo (string)$this->getControl();
-      }
-  */
+    /**
+     * @param Translator|ITranslator $translator
+     * @return static
+     */
+    public function setTranslator($translator)
+    {
+        if ($translator instanceof Translator) {
+            $translator = $translator->domain('entityGrid.btn');
+        }
+        $this->translator = $translator;
+        return $this;
+    }
+
+    public function render():void
+    {
+        echo (string)$this->getControl();
+    }
+
 }
