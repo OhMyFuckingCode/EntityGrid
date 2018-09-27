@@ -21,8 +21,10 @@ class DropDownCheckboxList extends CheckboxList
         });
     }
 
-    public function getControlPart($key = null)
+
+    public function getControl()
     {
+
         $el = Html::el('div', ['class' => 'dropdown']);
         $btn = Html::el('button',
             [
@@ -35,10 +37,19 @@ class DropDownCheckboxList extends CheckboxList
             ->data('toggle', 'dropdown')
             ->addText($this->translate($this->caption));
         $el->addHtml($btn);
-        $dropDown = Html::el('div', ['class'=>'dropdown-menu','aria-labelledby' => $id]);
-        $dropDown->addHtml(parent::getControlPart($key));
+        $dropDown = Html::el('div', ['class' => 'dropdown-menu', 'aria-labelledby' => $id]);
+        $dropDown->addHtml(parent::getControl());
         $el->addHtml($dropDown);
         return $el;
     }
+
+    public function getControlPart($key = null)
+    {
+        if($key === null){
+            return parent::getControl();
+        }
+        return parent::getControlPart($key);
+    }
+
 
 }

@@ -5,9 +5,11 @@
             <h2>{$title}</h2>
         </div>
         <div n:snippet=controls class="clearfix grid-actions ml-auto btn-group">
-            <a href="{plink add}" class="btn btn-light no-radius text-muted ml-1">
-                <i class="fas fa-plus mr-1"></i>{_"entityGrid.add-item"}
-            </a>
+            {foreach $globalActions as $name=>$action}
+                {if $action->isRenderable()}
+                    {control globalAction-$name}
+                {/if}
+            {/foreach}
             {include #hide}
         </div>
     </div>

@@ -19,8 +19,8 @@
                 {/formContainer}
             {else}
                 {switch $form[$key]->getOption(type)}
-                    {case checkbox}
-                    {$form[$key]->getControlPart()}
+                    {*case checkbox}
+                    {$form[$key]->getControlPart()*}
                     {default}
                     {input $key}
                 {/switch}

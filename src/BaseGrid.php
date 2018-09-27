@@ -52,7 +52,7 @@ class BaseGrid extends Section
     protected function presenterAttached(Presenter $presenter):void
     {
         $session = $this->presenter->getSession($this->getSessionSectionName());
-        $this->session = $session->data ?? $session->data = new SessionData([
+        $this->session = $session->data instanceof SessionData ? $session->data : $session->data = new SessionData([
                 'order' => $this->order
             ]);
         parent::presenterAttached($presenter);
@@ -153,6 +153,9 @@ class BaseGrid extends Section
      */
     public function isSortable(): bool
     {
+        if(!method_exists($this->model,'setOrder')){
+            return false;
+        }
         return $this->sortable && $this->session->order === ['order' => true];
     }
 

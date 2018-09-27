@@ -18,8 +18,8 @@
                 {/formContainer}
             {else}
                 {switch $form[$key]->getOption(type)}
-                    {case checkbox}
-                    {$form[$key]->getControlPart()}
+                    {*case checkbox}
+                    {$form[$key]->getControlPart()*}
                     {case radio}
                     <div class="grid-search-radio">
                         {foreach $form[$key]->items as $_key=>$__label}

@@ -69,6 +69,7 @@ class EntityGrid extends BaseGrid
                         $action->$method($value);
                     }
                 }
+                bdump($action);
             }
         }
     }

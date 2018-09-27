@@ -34,7 +34,7 @@ $eg-table-border-color:     $eg-gray-lighter !default;
 $eg-date-btn-size:          24px !default;
 
 // settings
-$eg-fixed-height:           calc(100vh - 240px) !default; // 'false' | value
+$eg-fixed-height:           100% !default; // 'false' | value
 $eg-fade-overflow:          35px !default; // 'false'
 
 //nevim
