@@ -31,9 +31,6 @@ class Search extends BaseControl
     /** @var  array */
     protected $options;
 
-    /** @var string */
-    protected $domain;
-
     /** @var Selection */
     protected $items;
 
@@ -75,6 +72,17 @@ class Search extends BaseControl
         return $form;
     }
 
+    protected function addInput(Form $form,  $method, string $column, $values = null)
+    {
+        if (\is_array($method)) {
+            $cont = $form->addContainer($column);
+            $cont->{$method[0]}(...array_filter(['from', 'from', $values]));
+            $cont->{$method[1]}(...array_filter(['to', 'to', $values]));
+        } else {
+            $form->$method(...array_filter([$column, $column, $values]));
+        }
+    }
+
     /**
      * Setups form and creates inputs and buttons of form
      * @param Form $form
@@ -90,53 +98,30 @@ class Search extends BaseControl
          * @var $type
          */
         foreach ($this->config['search'] as $column => $type) {
-            $classes = $types[$type]??TextInput::class;
-
+            $values = null;
+            $method = $types[$type]??'addText';
             switch ($type) {
-                case 'int':
-                    $form->addInteger($column,$column)->setNullable();
-                    break;
-                case 'range':
-                    $cont = $form->addContainer($column);
-                    $cont->addInteger('from')->setNullable();
-                    $cont->addInteger('to')->setNullable();
-                    //$cont['from']->addRule(Form::MAX,null,$cont['to']);
-                    //$cont['to']->addRule(Form::MIN,null,$cont['from']);
-                    break;
                 case 'select':
                 case 'multiselect':
-                    $method = $type === 'select' ? 'addSelect' : 'addMultiSelect';
                     $model = $this->grid->getModel();
                     $context = $model->getContext();
                     if ($t = $context->getStructure()->getBelongsToReference($model->getTableName(), $column)) {
                         $belongs = $context->table($t);
-                        $form->$method($column, $column, $this->config['entityFormatter']($belongs->fetchAll()));
+                        $values = $this->config['entityFormatter']($belongs->fetchAll());
                     } else {
                         $items = (clone $this->items)->select('DISTINCT ?', new SqlLiteral($column))->fetchPairs($column, $column);
-                        $form->$method($column, $column, $this->config['itemFormatter']($items));
+                        $values = $this->config['itemFormatter']($items);
                     }
                     break;
                 case 'checkbox':
-                    $input = $form[$column] = new $classes($column,
-                        [
-                            null => Html::el('i')->class('fa fa-lg fa-circle text-gray'),
-                            true => Html::el('i')->class('fa fa-lg fa-check-circle text-green'),
-                            false => Html::el('i')->class('fa fa-lg fa-times-circle text-danger')
-                        ]);
-                    break;
-                case 'range':
-                case 'datetimerange':
-                    $cont = $form->addContainer($column);
-                    $input = $cont['from'] = new $classes[0]('from');
-                    $input->setNullable();
-                    $input = $cont['to'] = new $classes[1]('to');
-                    $input->setNullable();
-                    break;
-                default:
-                    $input = $form[$column] = new $classes($column);
-                    //$form->addText($column)->setNullable();
+                    $values = [
+                        null => Html::el('i')->class('fa fa-lg fa-circle text-gray'),
+                        true => Html::el('i')->class('fa fa-lg fa-check-circle text-green'),
+                        false => Html::el('i')->class('fa fa-lg fa-times-circle text-danger')
+                    ];
                     break;
             }
+            $this->addInput($form, $method, $column, $values??null);
         }
         $options = $this->options['options'];
         /** if it is bootstrap, setup classes */
@@ -192,13 +177,11 @@ class Search extends BaseControl
                         $source->where("$key LIKE ?", "%$value%");
                         break;
                     case 'range':
+                    case 'timerange':
+                    case 'daterange':
                     case 'datetimerange':
-                        if ($from = $value['from']??null) {
-                            $source->where("$key >= ? ", $from);
-                        }
-                        if ($to = $value['to']??null) {
-                            $source->where("$key <= ? ", $to);
-                        }
+                    !empty($value['from']) && $source->where("$key >= ? ", $value['from']);
+                    !empty($value['to']) && $source->where("$key <= ? ", $value['to']);
                         break;
                     default:
                         $source->where([$key => $value]);

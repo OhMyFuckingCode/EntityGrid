@@ -10,7 +10,10 @@ namespace Quextum\EntityGrid;
 
 use Nette\DI\CompilerExtension;
 use Nette\DI\Config\Helpers;
+use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\PhpLiteral;
 use Nette\Utils\Strings;
+use Quextum\EntityGrid\Forms\DropDownCheckboxList;
 
 class GridExtension extends CompilerExtension
 {
@@ -58,6 +61,14 @@ class GridExtension extends CompilerExtension
             ->setFactory(GridFactory::class, ['config' => $config,'settings'=>$settings]);
     }
 
-
+    public function afterCompile(ClassType $classType)
+    {
+        $init = $classType->getMethod('initialize');
+        foreach ([
+            DropDownCheckboxList::class         => 'addDropDownCheckBoxList'
+                 ] as $class => $method) {
+            $init->addBody('?::register(?);', [new PhpLiteral($class), $method]);
+        }
+    }
 }
 
