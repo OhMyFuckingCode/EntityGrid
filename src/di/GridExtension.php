@@ -141,7 +141,7 @@ class GridExtension extends CompilerExtension
     {
         parent::loadConfiguration();
         $config = $this->getConfig();
-        $settings = Helpers::merge(static::defaultSettings, $config['_settings']??[]);
+        $settings = Helpers::merge($config['_settings']??[],static::defaultSettings);
         $defaults = $settings['defaults']??[];
         unset($config['_settings']);
         $builder = $this->getContainerBuilder();

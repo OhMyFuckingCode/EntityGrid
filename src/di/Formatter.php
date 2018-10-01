@@ -8,8 +8,6 @@
 
 namespace Quextum\EntityGrid;
 
-
-use Nette\Utils\Callback;
 use Nette\Utils\Html;
 
 class Formatter implements IFormatter
