@@ -60,7 +60,7 @@ abstract class BaseControl extends Control
             $this->section = $section;
         });
         $this->onBeforeRender[] = function () {
-            $this->view = $this->grid->getView();
+            //$this->view = $this->grid->getView();
             $this->template->grid = $this->grid;
             $this->template->section = $this->section;
         };
@@ -81,16 +81,16 @@ abstract class BaseControl extends Control
      */
     public function getTemplateFile()
     {
-        return __DIR__ . '/templates/' . ($this->view ? "$this->view/" : '') . $this->templateName;
+        return __DIR__ . '/templates/' /*. ($this->view ? "$this->view/" : '')*/ . $this->templateName;
     }
 
     /**
      * @return string
      */
-    public function getView(): string
+    /*public function getView(): string
     {
         return $this->view;
-    }
+    }*/
 
     /**
      * @param string $view

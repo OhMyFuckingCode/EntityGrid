@@ -1,4 +1,6 @@
-{import ../@components.latte}
+{import @components.latte}
+
+{dump $grid->isTree()}
 
 <section data-control="{$ctrlId}" n:snippet="control" class="grid">
     <div class="grid-header d-flex">
@@ -34,7 +36,7 @@
                                     class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i></a>*}
                     </div>
                     <div class="text-right grid-cell grid-cell-actions">
-                        {_"entityGrid.actions"}
+                            {_"entityGrid.actions"}
                     </div>
                 </div>
                 {* ---- HEADER:SEARCH ---- *}
