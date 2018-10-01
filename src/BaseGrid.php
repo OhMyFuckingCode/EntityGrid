@@ -61,7 +61,7 @@ class BaseGrid extends Section
 
     public function isTree(): bool
     {
-        return $this->view === static::TREE_VIEW;
+        return $this->tree;
     }
 
     public function addColumn($name, $label, $column = null, $type): Column

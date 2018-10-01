@@ -34,7 +34,7 @@ class EntityGrid extends BaseGrid
         $this->tree = $config['tree'];
         $this->order = $config['order'];
         $this->sortable = $config['sortable'];
-        $this->view = $this->detectView();
+        //$this->view = $this->detectView();
     }
 
     /**
@@ -79,7 +79,7 @@ class EntityGrid extends BaseGrid
     {
         $vp = new Search($this->config, $this->allConfigs ?: null, $this->source, $this->prefix, $this->session);
         $vp->onSuccess[] = function (Search $control, array $search) {
-            if (\boolval($this->session->search) !== \boolval($search)) {
+            if ((bool)$this->session->search !== (bool)$search) {
                 $this->redrawControl('control');
             } else {
                 $this->redrawControl('paginator');

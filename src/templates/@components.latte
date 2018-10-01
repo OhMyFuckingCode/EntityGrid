@@ -110,6 +110,18 @@
 {define cell}
     {var $value = $column->getValue($item)}
     <div class="grid-cell text-nowrap{if is_string($value)} text-truncate{/if} {$column->getClass()}" >
+
+        {if $grid->isTree() && $column->position == 1}
+            {dump $control->getDepth()}
+            {if $_row->getChildren()->count()}
+                <a n:class="'grid-point grid-point-openable ajax', $control->getDepth() ? 'grid-point-depth-'.$control->getDepth()" href="{$control->link('SetExpanded!',[!$_row->isExpanded()])}">
+                    <i class="fas fa-{$_row->isExpanded()?minus:plus}"></i>
+                </a>
+            {else}
+                <span n:class="'grid-point grid-point-empty', $control->getDepth() ? 'grid-point-depth-'.$control->getDepth()"><span></span></span>
+            {/if}
+        {/if}
+
         <a n:tag-if="$link = $column->getLink($control,$item)" href="{$link}" class="ajax">
             {if $column->type == 'bool'}
                 {include bool, value=>$value}
