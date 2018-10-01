@@ -325,3 +325,8 @@ $treeColor-lighten: 12.5%;
   }
 
 }
+.dropdown-checkbox-list{
+  input:checked + .dropdown-item{
+    background-color: $primary;
+  }
+}

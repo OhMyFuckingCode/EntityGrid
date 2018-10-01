@@ -41,8 +41,7 @@ class BaseGrid extends Section
      */
     public function __construct(IModel $model, Selection $source, $prefix)
     {
-        $prefix = $prefix ?: 'entities.' . $model::TABLE;
-        parent::__construct($source, $prefix);
+        parent::__construct($source, $prefix ?: 'entities.' . $model::TABLE);
         $this->templateName = 'template.latte';
         $this->model = $model;
         $this->grid = $this;

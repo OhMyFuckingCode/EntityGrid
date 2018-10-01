@@ -54,8 +54,6 @@ class GridFactory implements IGridFactory
         $config = $this->config[$key];
         $class = $config['class']??EntityGrid::class;
         $model = $model ?: $this->context->getByType($config['model']);
-        //$prefix = $prefix ?: 'forms'.get_class($this->model)::TABLE;
-        //$factory = $factory ?: $config['factory']?$this->context->getByType($config['factory'],false):null;
         return new $class($this->settings, $config, $model, $source, $prefix);
     }
 }

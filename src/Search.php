@@ -31,10 +31,7 @@ class Search extends BaseControl
     /** @var  array */
     protected $options;
 
-    /** @var Selection */
-    protected $items;
-
-    /** @var  IFormFactory */
+    /** @var  ISearchFormFactory */
     protected $formFactory;
 
     protected $prefix;
@@ -43,19 +40,18 @@ class Search extends BaseControl
      * Search constructor.
      * @param array $config
      * @param array $options
-     * @param Selection $items
      * @param string $prefix
      * @param SessionData $values
      */
-    public function __construct(array $config, array $options, Selection $items, string $prefix, SessionData $values)
+    public function __construct(array $config, array $options, string $prefix, SessionData $values)
     {
         parent::__construct();
-        $this->items = $items;
         $this->config = $config;
         $this->prefix = $prefix;
         $this->session = $values;
         $this->options = $options;
         $this->templateName = 'search.latte';
+        $this->formFactory = $this->config['searchFactory'];
     }
 
     /**
@@ -64,96 +60,45 @@ class Search extends BaseControl
      */
     protected function createComponentSearchForm(): Form
     {
-        $form = new Form();
-        $this->translator && $form->setTranslator($this->translator->domain($this->prefix));
-        $this->setupForm($form);
+        $form = $this->setupForm();
+        if ($this->translator && !$form->getTranslator()) {
+            $form->setTranslator($this->translator->domain($this->prefix));
+        }
         $form->onSuccess[] = [$this, 'searchFormSucceeded'];
         $form->setDefaults($this->session->search);
         return $form;
     }
 
-    protected function addInput(Form $form,  $method, string $column, $values = null)
-    {
-        if (\is_array($method)) {
-            $cont = $form->addContainer($column);
-            $cont->{$method[0]}(...array_filter(['from', 'from', $values]));
-            $cont->{$method[1]}(...array_filter(['to', 'to', $values]));
-        } else {
-            $form->$method(...array_filter([$column, $column, $values]));
-        }
-    }
+
 
     /**
      * Setups form and creates inputs and buttons of form
-     * @param Form $form
      */
-    protected function setupForm(Form $form)
+    protected function setupForm():Form
     {
-        $this->config['searchFactory']->create($this->config['search']);
-
-        $types = $this->options['inputs'];
-        /**
-         * creates all inputs
-         * @var $column
-         * @var $type
-         */
-        foreach ($this->config['search'] as $column => $type) {
-            $values = null;
-            $method = $types[$type]??'addText';
-            switch ($type) {
-                case 'select':
-                case 'multiselect':
-                    $model = $this->grid->getModel();
-                    $context = $model->getContext();
-                    if ($t = $context->getStructure()->getBelongsToReference($model->getTableName(), $column)) {
-                        $belongs = $context->table($t);
-                        $values = $this->config['entityFormatter']($belongs->fetchAll());
-                    } else {
-                        $items = (clone $this->items)->select('DISTINCT ?', new SqlLiteral($column))->fetchPairs($column, $column);
-                        $values = $this->config['itemFormatter']($items);
-                    }
-                    break;
-                case 'checkbox':
-                    $values = [
-                        null => Html::el('i')->class('fa fa-lg fa-circle text-gray'),
-                        true => Html::el('i')->class('fa fa-lg fa-check-circle text-green'),
-                        false => Html::el('i')->class('fa fa-lg fa-times-circle text-danger')
-                    ];
-                    break;
-            }
-            $this->addInput($form, $method, $column, $values??null);
-        }
-        $options = $this->options['options'];
-        /** if it is bootstrap, setup classes */
-        if ($options && $options['bootstrap']) {
-            foreach ($form->getControls() as $control) {
-                $control->setAttribute('class', 'form-control');
-            }
-        }
-
+        $form = $this->formFactory->create($this->grid,$this->config,$this->options);
         /** submit with FontAwesome icons */
         $form->addSubmit('submit', '//forms.buttons.submit')
             ->getControlPrototype()
             ->setName('button')
             ->setHtml('<i class="fa fa-search" title="hledat"></i>');
-
         $form->addSubmit('cancel', '//forms.buttons.cancel')
             ->setValidationScope([])
             ->getControlPrototype()
             ->setName('button')
             ->setHtml('<i class="fa fa-times" title="reset"></i>');
-
         $form['cancel']->onClick[] = function (SubmitButton $button) {
             $button->form->reset();
             $this->session->search = [];
             $this->onCancel($this);
         };
+        return $form;
     }
 
     /**
      * @param Form $form
      */
-    public function searchFormSucceeded(Form $form)
+    public function searchFormSucceeded(Form $form): void
     {
         $this->onSuccess($this, Helpers::array_filter_recursive($form->getValues()));
     }
@@ -161,34 +106,9 @@ class Search extends BaseControl
     /**
      * @param Selection $source
      */
-    public function apply(Selection $source)
+    public function apply(Selection $source): void
     {
-        if ($this->session->search) {
-            foreach ($this->session->search as $key => $value) {
-                $type = $this->config['search'][$key]??null;
-                switch ($type) {
-                    case 'regexp':
-                        $source->where("$key REGEXP ?", $value);
-                        break;
-                    case 'match':
-                        $source->where(" MATCH ($key) AGAINST ?", $value);
-                        break;
-                    case 'like':
-                        $source->where("$key LIKE ?", "%$value%");
-                        break;
-                    case 'range':
-                    case 'timerange':
-                    case 'daterange':
-                    case 'datetimerange':
-                    !empty($value['from']) && $source->where("$key >= ? ", $value['from']);
-                    !empty($value['to']) && $source->where("$key <= ? ", $value['to']);
-                        break;
-                    default:
-                        $source->where([$key => $value]);
-                        break;
-                }
-            }
-        }
+        $this->formFactory->apply($source, $this->session->search);
     }
 
     protected function beforeRender():void

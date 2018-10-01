@@ -69,7 +69,6 @@ class EntityGrid extends BaseGrid
                         $action->$method($value);
                     }
                 }
-                bdump($action);
             }
         }
     }
@@ -77,7 +76,7 @@ class EntityGrid extends BaseGrid
 
     protected function createComponentSearch(): Search
     {
-        $vp = new Search($this->config, $this->allConfigs ?: null, $this->source, $this->prefix, $this->session);
+        $vp = new Search($this->config, $this->allConfigs , $this->prefix, $this->session);
         $vp->onSuccess[] = function (Search $control, array $search) {
             if (\boolval($this->session->search) !== \boolval($search)) {
                 $this->redrawControl('control');

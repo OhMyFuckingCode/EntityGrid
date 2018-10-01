@@ -22,7 +22,7 @@ class DropDownCheckboxList extends CheckboxList
     }
 
 
-    public function getControl()
+    public function getControl():Html
     {
 
         $el = Html::el('div', ['class' => 'dropdown']);
@@ -37,15 +37,29 @@ class DropDownCheckboxList extends CheckboxList
             ->data('toggle', 'dropdown')
             ->addText($this->translate($this->caption));
         $el->addHtml($btn);
-        $dropDown = Html::el('div', ['class' => 'dropdown-menu', 'aria-labelledby' => $id]);
-        $dropDown->addHtml(parent::getControl());
+        $dropDown = Html::el('div', ['class' => 'dropdown-menu dropdown-checkbox-list  x-hidden', 'aria-labelledby' => $id]);
+
+        $items = $this->getItems();
+        reset($items);
+        $items = $this->translate($items);
+
+        foreach ($items as $key=>$option) {
+            $item = Html::el('div')->class('custom-control custom-checkbox d-contents');
+            $item->addHtml($this->getControlPart($key)->class('custom-control-input'));
+            $item->addHtml($this->getLabelPart($key)->class('dropdown-item custom-control-label'));
+            //bdump($option,$key);
+            $dropDown->addHtml($item);
+        }
+
+
+
         $el->addHtml($dropDown);
         return $el;
     }
 
-    public function getControlPart($key = null)
+    public function getControlPart($key = null):Html
     {
-        if($key === null){
+        if ($key === null) {
             return parent::getControl();
         }
         return parent::getControlPart($key);
