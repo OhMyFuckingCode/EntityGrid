@@ -1,0 +1,17 @@
+actions: Akce
+visible: Zobrazené
+hidden: Skryté
+add-item: Přidat položku
+show-n-hide-cols: Zobrazit/Skrýt sloupce
+search: Hledat
+no-results: Žádné výsledky
+select: Zvolte
+
+btn:
+    import: Importovat
+    create: Přidat položku
+    delete: Smazat
+    edit-in-row: Upravit v řádku
+    detail: Zobrazit detail
+    link: Odkaz
+    synchronize: Synchronizovat

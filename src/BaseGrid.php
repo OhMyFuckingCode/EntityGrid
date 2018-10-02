@@ -52,15 +52,15 @@ class BaseGrid extends Section
     {
         $session = $this->presenter->getSession($this->getSessionSectionName());
         $this->session = $session->data instanceof SessionData ? $session->data : $session->data = new SessionData([
-                'order' => $this->order
-            ]);
+            'order' => $this->order
+        ]);
         parent::presenterAttached($presenter);
     }
 
 
     public function isTree(): bool
     {
-        return $this->tree;
+        return (bool)$this->tree;
     }
 
     public function addColumn($name, $label, $column = null, $type): Column
@@ -152,7 +152,7 @@ class BaseGrid extends Section
      */
     public function isSortable(): bool
     {
-        if(!method_exists($this->model,'setOrder')){
+        if (!method_exists($this->model, 'setOrder')) {
             return false;
         }
         return $this->sortable && $this->session->order === ['order' => true];

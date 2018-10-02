@@ -8,13 +8,16 @@
 
 namespace Quextum\EntityGrid;
 
+use Kdyby\Translation\DI\ITranslationProvider;
+use Kdyby\Translation\Translator;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Config\Helpers;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpLiteral;
+use Quextum\EntityGrid\Forms\AjaxSelectBox;
 use Quextum\EntityGrid\Forms\DropDownCheckboxList;
 
-class GridExtension extends CompilerExtension
+class GridExtension extends CompilerExtension implements ITranslationProvider
 {
 
     public const defaultGridConfig = [
@@ -104,13 +107,16 @@ class GridExtension extends CompilerExtension
         ],
         'inputs' => [
             'checkbox' => 'addRadioList',
+            'like' => 'addText',
+            'match' => 'addText',
+            'regexp' => 'addText',
             'text' => 'addText',
             'article' => 'addTextArea',
             'datetime' => 'addDateTime',
             'date' => 'addDate',
             'time' => 'addTime',
-            'multiselect' => 'addMultiselect',
-            'select' => 'addSelect',
+            'ajaxselect' => 'addAjaxSelectBox',
+            'select' => 'addMultiselect',
             'int' => 'addInteger',
             'range' => [
                 'addInteger',
@@ -141,7 +147,7 @@ class GridExtension extends CompilerExtension
     {
         parent::loadConfiguration();
         $config = $this->getConfig();
-        $settings = Helpers::merge($config['_settings']??[],static::defaultSettings);
+        $settings = Helpers::merge($config['_settings']??[], static::defaultSettings);
         $defaults = $settings['defaults']??[];
         unset($config['_settings']);
         $builder = $this->getContainerBuilder();
@@ -152,7 +158,8 @@ class GridExtension extends CompilerExtension
             $c = $config[$key] = Helpers::merge($item, Helpers::merge($defaults, static::defaultGridConfig));
             if (isset($c['search'])) {
                 foreach ($c['search'] as $name => $def) {
-                    $config[$key]['search'][$name] = new SearchDefinition($name, $def, $settings['inputs']);
+                    $config[$key]['search'][$name] = $def = new SearchDefinition($name, $def, $settings['inputs']);
+
                 }
             }
 
@@ -165,16 +172,37 @@ class GridExtension extends CompilerExtension
             ->setType(IFormatter::class)
             ->setFactory(Formatter::class, [$settings['imageLink']]);
 
+
     }
+
+    public function beforeCompile()
+    {
+        parent::beforeCompile();
+        $builder = $this->getContainerBuilder();
+        $builder->getDefinitionByType(Translator::class);
+
+    }
+
 
     public function afterCompile(ClassType $classType):void
     {
         $init = $classType->getMethod('initialize');
         foreach ([
+                     AjaxSelectBox::class => 'addAjaxSelectBox',
                      DropDownCheckboxList::class => 'addDropDownCheckBoxList'
                  ] as $class => $method) {
             $init->addBody('?::register(?);', [new PhpLiteral($class), $method]);
         }
+    }
+
+    /**
+     * Return array of directories, that contain resources for translator.
+     *
+     * @return string[]
+     */
+    public function getTranslationResources():array
+    {
+        return [__DIR__ . '/../lang'];
     }
 }
 

@@ -8,6 +8,8 @@
 
 namespace Quextum\EntityGrid;
 
+use Nette\Database\Table\ActiveRow;
+use Nette\Database\Table\Selection;
 use Nette\Utils\Html;
 
 class Formatter implements IFormatter
@@ -30,35 +32,35 @@ class Formatter implements IFormatter
     }
 
 
-    public function item($item, SearchDefinition $column)
+    public function item(ActiveRow $item, SearchDefinition $column)
+    {
+        $label = $column->getLabel();
+        $value = $column->getValue();
+        if ($label) {
+            $text = $item->$label ?: $item->$value;
+        }elseif($id = $item->getPrimary(false) ){
+            $text = '#'.$id;
+        }else{
+            $text = array_values($item->toArray())[0];
+        }
+        return Html::el()->setText($text);
+    }
+
+    public function entity(ActiveRow $item, SearchDefinition $column)
     {
         $label = $column->getLabel();
         $value = $column->getValue();
         $el = Html::el('div');
         if ($img = $this->image($item, $column)) {
-            $el->addHtml($img);
+            $el->addHtml($img)->data('image', $img);
         }
         if ($label) {
-            $el->addText($item->$label?:$item->$value);
+            $el->addText($item->$label ?: $item->$value);
         }
         return $el;
     }
 
-    public function entity($item, SearchDefinition $column)
-    {
-        $label = $column->getLabel();
-        $value = $column->getValue();
-        $el = Html::el('div');
-        if ($img = $this->image($item, $column)) {
-            $el->addHtml($img)->data('image',$img);
-        }
-        if ($label) {
-            $el->addText($item->$label?:$item->$value);
-        }
-        return $el;
-    }
-
-    public function entities(\Traversable $items, SearchDefinition $column)
+    public function entities(Selection $items, SearchDefinition $column)
     {
 
         $ret = [];
@@ -70,7 +72,7 @@ class Formatter implements IFormatter
 
     }
 
-    public function items(\Traversable $items, SearchDefinition $column)
+    public function items(Selection $items, SearchDefinition $column)
     {
         $ret = [];
         $id = $column->getColumn();
@@ -83,15 +85,8 @@ class Formatter implements IFormatter
 
     public function image($item, SearchDefinition $column)
     {
-        $image = $column->getImage();
-        if ($image) {
-            $img = Html::el('img');
-            if ($image === true) {
-                $img->src = ($this->imageLinkFactory)($item,...$this->imageLinkParams);
-            } else {
-                $img->src = ($this->imageLinkFactory)($item->$image,...$this->imageLinkParams);
-            }
-            return $img;
+        if ($image = $column->getImage()) {
+            return Html::el('img')->setAttribute('src', ($this->imageLinkFactory)($image === true ? $item : $item->$image, ...$this->imageLinkParams));
         }
         return null;
     }

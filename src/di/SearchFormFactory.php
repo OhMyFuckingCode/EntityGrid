@@ -39,7 +39,7 @@ class SearchFormFactory implements ISearchFormFactory
      * @param array $options
      * @return Form
      */
-    public function create(BaseGrid $grid,$config,$options):Form
+    public function create(BaseGrid $grid, $config, $options):Form
     {
         $form = new Form();
 
@@ -51,31 +51,48 @@ class SearchFormFactory implements ISearchFormFactory
          * @var $type
          */
         foreach ($search as $_column => $def) {
-            $values = null;
+            $nextArgs = [];
             $column = $def->getColumn();
-            $method = $def->getMethod();
             switch ($def->getType()) {
-                case 'select':
-                case 'multiselect':
-                    $model = $grid->getModel();
-                    $context = $model->getContext();
-                    if ($t = $context->getStructure()->getBelongsToReference($model->getTableName(), $column)) {
+                case 'ajaxselect':
+                    $context = $this->context;
+                    if ($t = $context->getStructure()->getBelongsToReference( $grid->getSource()->getName(), $column)) {
                         $belongs = $context->table($t);
-                        $values = $config['formatter']->entities($belongs, $def);
+                        $nextArgs[] = $belongs;
                     } else {
                         $items = (clone $grid->getSource())->select('DISTINCT ?', new SqlLiteral($column));
-                        $values = $config['formatter']->items($items, $def);
+                        $nextArgs[] = $items;
                     }
+                    $nextArgs[] = $def->getValue();
+                    $nextArgs[] = $def->getLabel();
+                    $def->getImage() && $nextArgs[] = function ($item) use ($config, $def) {
+                        return $config['formatter']->image($item, $def);
+                    };
+                    break;
+                case 'select':
+                    $context = $this->context;
+                    if ($t = $context->getStructure()->getBelongsToReference( $grid->getSource()->getName(), $column)) {
+                        $belongs = $context->table($t);
+                        $nextArgs[] = $config['formatter']->entities($belongs, $def);
+                    } else {
+                        $items = (clone $grid->getSource())->select('DISTINCT ?', new SqlLiteral($column));
+                        $nextArgs[] = $config['formatter']->items($items, $def);
+                    }
+                    $nextArgs[] = $def->getValue();
+                    $nextArgs[] = $def->getLabel();
+                    $def->getImage() && $nextArgs[] = function ($item) use ($config, $def) {
+                        return $config['formatter']->image($item, $def);
+                    };
                     break;
                 case 'checkbox':
-                    $values = [
+                    $nextArgs[] = [
                         null => Html::el('i')->class('fa fa-lg fa-circle text-gray'),
                         true => Html::el('i')->class('fa fa-lg fa-check-circle text-green'),
                         false => Html::el('i')->class('fa fa-lg fa-times-circle text-danger')
                     ];
                     break;
             }
-            $this->addInput($form, $method, $column, $values);
+            $this->addInput($form, $def->getMethod(), $column, ...$nextArgs);
         }
         $options = $options['options'];
         /** if it is bootstrap, setup classes */
@@ -87,14 +104,14 @@ class SearchFormFactory implements ISearchFormFactory
         return $form;
     }
 
-    protected function addInput(Form $form, $method, string $column, $values = null): void
+    protected function addInput(Form $form, $method, string $column, ...$nextArgs): void
     {
         if (\is_array($method)) {
             $cont = $form->addContainer($column);
-            $cont->{$method[0]}(...array_filter(['from', 'from', $values]));
-            $cont->{$method[1]}(...array_filter(['to', 'to', $values]));
+            $cont->{$method[0]}('from', 'from', ...$nextArgs);
+            $cont->{$method[1]}('to', 'to', ...$nextArgs);
         } else {
-            $form->$method(...array_filter([$column, $column, $values]));
+            $form->$method($column, $column, ...$nextArgs);
         }
     }
 

@@ -26,9 +26,4 @@ interface IModel
 
     public function getTableName():string;
 
-    /**
-     * @return Context
-     */
-    public function getContext();
-
 }
