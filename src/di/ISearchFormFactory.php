@@ -27,6 +27,6 @@ interface ISearchFormFactory
      * @param Selection $selection
      * @param ArrayHash $values
      */
-    public function apply(Selection $selection, $values);
+    public function apply(Selection $selection,$config, $values);
 
 }

@@ -112,7 +112,6 @@
     <div class="grid-cell text-nowrap{if is_string($value)} text-truncate{/if} {$column->getClass()}" >
 
         {if $grid->isTree() && $column->position == 1}
-            {dump $control->getDepth()}
             {if $_row->getChildren()->count()}
                 <a n:class="'grid-point grid-point-openable ajax', $control->getDepth() ? 'grid-point-depth-'.$control->getDepth()" href="{$control->link('SetExpanded!',[!$_row->isExpanded()])}">
                     <i class="fas fa-{$_row->isExpanded()?minus:plus}"></i>
@@ -178,7 +177,7 @@
     {$value->title}&nbsp;({$value->id})
 </div>
 <div class="badge badge-secondary" n:define="entity">
-    {$value->title??$value->name??null}&nbsp;{ifset $value->id}({$value->id}){/ifset}
+    {$format($value)}&nbsp;#{$value->getPrimary(false)}
 </div>
 <div n:define="images">
     {if $value instanceof Nette\Database\Table\Selection}

@@ -119,12 +119,20 @@ class SearchFormFactory implements ISearchFormFactory
      * @param Selection $selection
      * @param ArrayHash $values
      */
-    public function apply(Selection $selection, $values)
+    public function apply(Selection $selection,$config, $values)
     {
         if ($values) {
             foreach ($values as $key => $value) {
-                $type = $this->config['search'][$key]??null;
-                switch ($type) {
+                if($value === null || $value === 'null'){
+                    $selection->where([$key => null]);
+                    continue;
+                }
+                if($value === 'not null'){
+                    $selection->where(["$key IS NOT NULL"]);
+                    continue;
+                }
+                $def = $config['search'][$key];
+                switch ($def->getType()) {
                     case 'regexp':
                         $selection->where("$key REGEXP ?", $value);
                         break;

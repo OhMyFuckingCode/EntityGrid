@@ -37,6 +37,11 @@ class EntityGrid extends BaseGrid
         //$this->view = $this->detectView();
     }
 
+    public function getFormatter()
+    {
+        return $this->config['formatter'];
+    }
+
     /**
      * Metoda pro sestavení definic sloupců.
      */

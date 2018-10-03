@@ -293,7 +293,7 @@ class Column
         if ($this->related) {
             return $row->related($this->related, $this->column);
         }
-        return $row->{$this->column}??NULL;
+        return $row->{$this->column};
     }
 
     /**

@@ -92,6 +92,7 @@ class Search extends BaseControl
             $this->session->search = [];
             $this->onCancel($this);
         };
+
         return $form;
     }
 
@@ -108,7 +109,7 @@ class Search extends BaseControl
      */
     public function apply(Selection $source): void
     {
-        $this->formFactory->apply($source, $this->session->search);
+        $this->formFactory->apply($source, $this->config,$this->session->search);
     }
 
     protected function beforeRender():void

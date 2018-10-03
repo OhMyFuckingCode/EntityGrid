@@ -6,6 +6,7 @@ namespace Quextum\EntityGrid;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
+use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
 use Nette\Security\User;
 
@@ -63,6 +64,11 @@ abstract class BaseControl extends Control
             //$this->view = $this->grid->getView();
             $this->template->grid = $this->grid;
             $this->template->section = $this->section;
+            $this->template->format = function (ActiveRow $entity) {
+                $data = (object)$entity->toArray();
+                return $data->label??$data->title??$data->name??$entity->getPrimary(false);
+            };
+
         };
     }
 

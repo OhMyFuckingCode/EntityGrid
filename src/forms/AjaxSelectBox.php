@@ -47,6 +47,7 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
     public function __construct(string $label, Selection $items, string $valueField, string $labelFiled, ?callable $imageCallback = null, ?array $searchFields = null)
     {
         parent::__construct($label, []);
+        $this->checkAllowedValues = false;
         $this->controlPrototype->data('provide', 'select');
         $this->selection = $items;
         $this->valueField = $valueField;
@@ -79,14 +80,17 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
 
     public function getControl():Html
     {
-        $control = parent::getControl();
-        /*$control->data('selectr',[
+        $data = [];
+        if ($this->value) {
+            $data = $this->fetchData((clone $this->selection)->where([$this->valueField => $this->value]),true);
+        }
 
-        ]);*/
+        $control = parent::getControl();
         /** @var Presenter $presenter */
         $presenter = $this->lookup(Presenter::class);
         $do = $this->lookupPath(Presenter::class) . self::NAME_SEPARATOR . static::LOAD_SIGNAL;
         $control->data('select', array_filter(array_merge([
+            'data' => $data,
             'searchHighlight' => true,
             'ajax' => $presenter->link('this', [Presenter::SIGNAL_KEY => $do]),
             'placeholderText' => $this->translate($control->placeholder??'//entityGrid.select.placeholder'),
@@ -97,6 +101,18 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
         }));
 
         return $control;
+    }
+
+    /**
+     * Returns selected keys.
+     * @return array
+     */
+    public function getValue()
+    {
+       /* if($this->value){
+            return array_values((clone $this->selection)->select($this->valueField)->where([$this->valueField => $this->value])->fetchPairs($this->valueField, $this->valueField));
+        }*/
+        return $this->value;
     }
 
     /**
@@ -223,25 +239,40 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
     }
 
 
-    protected function loadData(?string $search = null)
+    protected function loadData($search = null)
     {
         $selection = clone $this->selection;
-        $this->onFilter($this, $selection, $search);
+        if (\is_array($search)) {
+            $selection->where([$this->valueField => $search]);
+        } else {
+            $this->onFilter($this, $selection, $search);
+            $selection->limit($this->limit);
+        }
+        return $this->fetchData($selection);
+    }
+
+    protected function fetchData(Selection $selection, bool $selected = false)
+    {
         $response = [];
-        foreach ($selection->limit($this->limit) as $item) {
+        foreach ($selection as $item) {
             /** @var ActiveRow $item */
             $val = [
+                'selected' => $selected,
                 'value' => $value = $this->valueField ? $item->{$this->valueField} : $item->getPrimary(),
                 'text' => $text = ($this->labelField ? $item->{$this->labelField} : $item->label??$item->title??$item->name??null) . '#' . $value
             ];
             if ($this->imageCallback) {
-                $val['innerHTML'] = (string)Html::el()
-                    ->addHtml(($this->imageCallback)($item))
-                    ->addHtml('&nbsp;')
-                    ->addText($text);
+                $val['innerHTML'] = (string)Html::el()->addHtml(($this->imageCallback)($item))->addHtml('&nbsp;')->addText($text);
             }
-            $response[$value] = $val;
+            $response[] = $val;
         }
         return $response;
+    }
+
+    protected static function toHTML(array $items)
+    {
+        return array_map(function ($value) {
+            return Html::el()->setText($value['text']);
+        }, $items);
     }
 }
