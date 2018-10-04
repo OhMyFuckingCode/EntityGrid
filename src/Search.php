@@ -4,11 +4,8 @@ namespace Quextum\EntityGrid;
 
 
 use Nette\Application\UI\Form;
-use Nette\Database\SqlLiteral;
 use Nette\Database\Table\Selection;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Forms\Controls\TextInput;
-use Nette\Utils\Html;
 
 /**
  * Class GridRow
@@ -48,7 +45,6 @@ class Search extends BaseControl
         parent::__construct();
         $this->config = $config;
         $this->prefix = $prefix;
-        $this->session = $values;
         $this->options = $options;
         $this->templateName = 'search.latte';
         $this->formFactory = $this->config['searchFactory'];
@@ -91,6 +87,21 @@ class Search extends BaseControl
             $button->form->reset();
             $this->session->search = [];
             $this->onCancel($this);
+        };
+        $form->onError[] = function(Form $form){
+            foreach ($form->getOwnErrors() as $ownError) {
+                $this->parent->flashMessage($ownError,'danger');
+            }
+            foreach ($form->getControls() as $input) {
+                foreach ($input->getErrors() as $error) {
+                    $input->getControlPrototype()
+                        ->addClass('is-invalid')
+                        ->data('toggle','popover')
+                        ->data('trigger','auto')
+                        ->data('placement','bottom')
+                        ->data('content',$error);
+                }
+            }
         };
 
         return $form;

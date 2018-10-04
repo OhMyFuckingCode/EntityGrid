@@ -93,7 +93,10 @@ $eg-fade-overflow:          35px !default; // 'false'
       }
     }
   }
+  &-selection{
+    line-height: .9;
 
+  }
   &-header { display: table-header-group; width: 100%;
     &-row {
       &:first-of-type, &:nth-of-type(2) {

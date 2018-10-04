@@ -1,0 +1,32 @@
+<nav aria-label="Entity Grid Pagination">
+    <ul class="pagination" n:snippet="control">
+        <li class="page-item disabled">
+            <a class="page-link">{_"content.grid.pagination"}</a>
+        </li>
+        <li n:class="page-item,$paginator->isFirst()?disabled">
+            {if $paginator->isFirst()}
+                <span class="page-link"><i class="fas fa-angle-left"></i></span>
+            {else}
+                <a n:href="this,'page'=>$paginator->page - 1" class="page-link ajax"
+                                                              data-post="{['_do'=>$path.'goTo',$path.'page'=>$paginator->page - 1 ]|json}">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            {/if}
+
+        </li>
+        <li n:foreach="$steps as $step" n:class="page-item, $step == $paginator->page ? active">
+            <a n:href="this, 'page' => $step" class="page-link ajax"
+                                              data-post="{['_do'=>$path.'goTo',$path.'page'=>$step ]|json}">{$step}</a>
+        </li>
+        <li n:class="page-item,$paginator->isLast()?disabled">
+            {if $paginator->isLast()}
+                <span class="page-link"><i class="fas fa-angle-right"></i></span>
+            {else}
+                <a n:href="this,'page'=>$p = $paginator->page + 1" class="page-link ajax"
+                                                                   data-post="{['_do'=>$path.'goTo',$path.'page'=>$paginator->page + 1 ]|json}">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            {/if}
+        </li>
+    </ul>
+</nav>

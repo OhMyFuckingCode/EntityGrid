@@ -11,7 +11,7 @@ use Nette\SmartObject;
 /**
  * Class GridRow
  * @package Quextum\EntityGrid
- * @method onClick(Row $row, ActiveRow $item = NULL)
+ * @method onClick(Section $section, ?ActiveRow $item = NULL)
  */
 class Action
 {
@@ -34,6 +34,9 @@ class Action
 
     /** @var  string[] */
     protected $class = self::DEFAULT_CLASSES;
+
+    /** @var  string[] */
+    protected $data = [];
 
     /** @var  Link */
     protected $link;
@@ -186,6 +189,13 @@ class Action
     }
 
     /**
+     * @return \string[]
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+    /**
      * @param \string[] $class
      * @return Action
      */
@@ -202,6 +212,16 @@ class Action
     public function addClass(array $class): Action
     {
         $this->class = array_merge($this->class, $class);
+        return $this;
+    }
+
+    /**
+     * @param \string[] $data
+     * @return Action
+     */
+    public function addData(array $data): Action
+    {
+        $this->data = array_merge($this->data, $data);
         return $this;
     }
 

@@ -7,6 +7,7 @@
 namespace Quextum\EntityGrid;
 
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Multiplier;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
@@ -34,6 +35,7 @@ class EntityGrid extends BaseGrid
         $this->tree = $config['tree'];
         $this->order = $config['order'];
         $this->sortable = $config['sortable'];
+
         //$this->view = $this->detectView();
     }
 
@@ -81,20 +83,42 @@ class EntityGrid extends BaseGrid
 
     protected function createComponentSearch(): Search
     {
-        $vp = new Search($this->config, $this->allConfigs , $this->prefix, $this->session);
+        $vp = new Search($this->config, $this->allConfigs, $this->prefix, $this->session);
         $vp->onSuccess[] = function (Search $control, array $search) {
-            if ((bool)$this->session->search !== (bool)$search) {
-                $this->redrawControl('control');
-            } else {
-                $this->redrawControl('paginator');
-                $this->redrawControl('items');
-            }
+            $this['paginator']->redrawControl();
+            $this->redrawControl('selection');
+            $this->redrawControl('items');
             $this->session->search = $search;
         };
         $vp->onCancel[] = function (Search $search) {
             $this->redrawControl('control');
         };
         return $vp;
+    }
+
+    protected function createComponentGroupAction(): Multiplier
+    {
+        return new Multiplier(function ($name) {
+            $action = $this->groupActions[$name];
+            $button = new Button($action);
+            $button->onClick[] = function (Button $button) {
+                $post = $this->getPresenter()->getHttpRequest()->getPost();
+                $post = filter_var_array($post, [
+                    'exclude' => FILTER_VALIDATE_BOOLEAN,
+                    'ids' => [
+                        'filter' => FILTER_VALIDATE_INT,
+                        'flags' => FILTER_FORCE_ARRAY | FILTER_REQUIRE_ARRAY,
+                    ]
+                ]);
+                $source = clone $this->source;
+                $source->where($post['exclude'] ? 'NOT ' : '' . "{$source->getPrimary()} IN ?", array_filter($post['ids']));
+                foreach ($source as $item) {
+                    bdump($item);
+                    //$button->getAction()->onClick($this,$item);
+                }
+            };
+            return $button;
+        });
     }
 
     /**
@@ -124,23 +148,27 @@ class EntityGrid extends BaseGrid
         $gridRow->redrawControl('row');
     }
 
-    public function delete(Row $gridRow, ActiveRow $row)
+
+    public function delete(Section $section, ?ActiveRow $row = null)
     {
-        $this->deleteEntity($row);
+        if ($section instanceof Row) {
+            //$this->deleteEntity($row);
+        } elseif ($section instanceof self) {
+
+        }
+
         $this->redrawControl('items');
     }
 
-    public function deleteEntity(ActiveRow $item)
+    public function deleteEntity(ActiveRow $item): void
     {
         $this->model->delete($item);
-        $this->redrawControl('items');
     }
 
     protected function beforeRender():void
     {
         if ($this->session->search) {
             $this->tree = null;
-            $this->setView(static::GRID_VIEW);
         }
         parent::beforeRender();
     }

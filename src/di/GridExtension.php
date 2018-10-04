@@ -91,6 +91,16 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                 'title' => 'delete',
                 'confirm' => 'forms.confirm.delete',
             ],
+            'groupDelete'=>[
+                'icon' => 'fa fa-trash',
+                'class' => [
+                    'btn',
+                    'btn-danger'
+                ],
+                'label' => 'delete',
+                'title' => 'delete',
+                'confirm' => 'forms.confirm.delete',
+            ],
             'detail' => [
                 'icon' => 'fas fa-pen',
                 'class' => [

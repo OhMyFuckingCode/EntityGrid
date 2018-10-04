@@ -10,7 +10,7 @@ select: Zvolte
 btn:
     import: Importovat
     create: Přidat položku
-    delete: Smazat
+    delete: Odstranit
     edit-in-row: Upravit v řádku
     detail: Zobrazit detail
     link: Odkaz

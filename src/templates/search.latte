@@ -1,13 +1,21 @@
 <div n:snippet="search" class="grid-row grid-search-row">
     {* ---- HEADER:SEARCH ---- *}
     {form searchForm class=>'ajax text-muted d-contents'}
-        <div n:if="$selectable" class="grid-cell"></div>
-        <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" class="grid-cell grid-search-cell grid-header-cell" n:inner-ifset="$form[$key]">
-            {if $form[$key] instanceof \Nette\Forms\Container}
+        <div n:if="$selectable" class="grid-cell grid-header-cell grid-cell--fit grid-search-cell text-center">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="{$ctrlId}-selected" data-row-select="all" >
+                <label class="custom-control-label" for="{$ctrlId}-selected">&nbsp;</label>
+            </div>
+        </div>
+        <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()"
+                class="grid-cell grid-search-cell grid-header-cell" n:inner-ifset="$form[$key]">
+            {var $input = $form[$key]}
+            {if $input instanceof \Nette\Forms\Container}
                 {formContainer $key}
                     <a href="#{$ctrlId}-date-to-collapse-{$iterator->getCounter()}"
-                       class="grid-search-date-to position-absolute text-muted" data-toggle="collapse"><i class="fa fa-retweet"></i></a>
-                {var $inputs= iterator_to_array($form[$key]->getControls())}
+                       class="grid-search-date-to position-absolute text-muted" data-toggle="collapse">
+                        <i class="fa fa-retweet"></i></a>
+                {var $inputs= iterator_to_array($input->getControls())}
                 {var $first = array_shift($inputs)}
                 {input $first}
                     <div class="collapse" id="{$ctrlId}-date-to-collapse-{$iterator->getCounter()}">
@@ -17,25 +25,32 @@
                     </div>
                 {/formContainer}
             {else}
-                {switch $form[$key]->getOption(type)}
+
+                {switch $input->getOption(type)}
                     {*case checkbox}
                     {$form[$key]->getControlPart()*}
                     {case radio}
                     <div class="grid-search-radio">
-                        {foreach $form[$key]->items as $_key=>$__label}
-                            {input $form[$key]:$_key class=>'sr-only'}{label $form[$key]:$_key}
+                        {foreach $input->items as $_key=>$__label}
+                            {input $input:$_key class=>'sr-only'}{label $input:$_key}
                         {/foreach}
                     </div>
                     {default}
                     {input $key}
+
                 {/switch}
+                {if $errors = $input->getErrors()}
+                    <ul class="errors">
+                        <li n:foreach="$errors as $error">{$error}</li>
+                    </ul>
+                {/if}
             {/if}
         </div>
         <div class="grid-cell grid-cell-actions grid-header-cell grid-search-cell">
-                <div class="btn-group btn-group-sm float-right" role="group">
-                    {input submit class=>'btn btn-primary'}
-                    {if $search}{input cancel class=>'btn btn-secondary'}{/if}
-                </div>
+            <div class="btn-group btn-group-sm float-right" role="group">
+                {input submit class=>'btn btn-primary'}
+                {if $search}{input cancel class=>'btn btn-secondary'}{/if}
+            </div>
         </div>
     {/form}
 </div>

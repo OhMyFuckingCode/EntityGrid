@@ -35,9 +35,6 @@ abstract class BaseControl extends Control
     /** @var  SessionData */
     protected $session;
 
-    /** @var  string */
-    protected $view;
-
     /** @var  BaseGrid */
     protected $grid;
 
@@ -87,36 +84,7 @@ abstract class BaseControl extends Control
      */
     public function getTemplateFile()
     {
-        return __DIR__ . '/templates/' /*. ($this->view ? "$this->view/" : '')*/ . $this->templateName;
-    }
-
-    /**
-     * @return string
-     */
-    /*public function getView(): string
-    {
-        return $this->view;
-    }*/
-
-    /**
-     * @param string $view
-     * @return BaseControl|static
-     */
-    public function setView(string $view):self
-    {
-        $this->view = $view;
-        return $this;
-    }
-
-
-    /**
-     * @param mixed $templateFile
-     * @return static
-     */
-    public function setTemplateFile($templateFile)
-    {
-        $this->templateFile = $templateFile;
-        return $this;
+        return __DIR__ . '/templates/'. $this->templateName;
     }
 
     /**
@@ -128,7 +96,6 @@ abstract class BaseControl extends Control
         $this->templateName = $templateName;
         return $this;
     }
-
 
     /**
      * @return string

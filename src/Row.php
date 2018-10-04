@@ -8,6 +8,7 @@ use Nette\Application\UI\Multiplier;
 use Nette\Database\IRow;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\GroupedSelection;
+use Nette\Database\Table\Selection;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Utils\ArrayHash;
 
@@ -57,27 +58,9 @@ class Row extends Section
     }
 
 
-    public function getSource()
+    public function getSource():Selection
     {
         return $this->item->related($this->grid->tree);
-    }
-
-    /**
-     * @return Action[]
-     */
-    public function getActions(): array
-    {
-        return $this->actions;
-    }
-
-    /**
-     * @param Action[] $actions
-     * @return Row
-     */
-    public function setActions(array $actions): Row
-    {
-        $this->actions = $actions;
-        return $this;
     }
 
     /**
@@ -91,6 +74,7 @@ class Row extends Section
     protected function beforeRender():void
     {
         parent::beforeRender();
+        $this->selectable = $this->selectable ?? (bool)$this->groupActions;
         $this->template->editable = $this->isEditable();
         $this->template->columns = $this->columns;
         $this->template->item = $this->item;

@@ -82,8 +82,12 @@ class Button extends Component
         $control->href($link);
         //Classes
         $class = $action->getClass();
-        $class && $control->addClass($action->getClass());
+        $class && $control->addClass($class);
         $action->isAjax() && $control->addClass('ajax');
+        //Data
+        foreach ($action->getData() as $d => $v) {
+            $control->data($d, $v);
+        }
         // Confirm
         $confirm = $action->getConfirm();
         $confirm && $control->data('confirm', $this->translate($confirm));

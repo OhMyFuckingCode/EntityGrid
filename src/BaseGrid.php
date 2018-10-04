@@ -10,6 +10,7 @@ use Nette\Application\UI\Presenter;
 use Nette\Database\DriverException;
 use Nette\Database\Table\Selection;
 use Nette\InvalidArgumentException;
+use Nette\Utils\Strings;
 
 /**
  * Class EntityGrid
@@ -29,6 +30,7 @@ class BaseGrid extends Section
     protected $order = self::DEFAULT_ORDER;
 
     protected $sortable = false;
+
     /** @var  string|bool|null */
     protected $title;
 
@@ -70,25 +72,36 @@ class BaseGrid extends Section
 
     public function getSessionSectionName():string
     {
-        return $this->getUniqueId() . $this->model->getTableName();
+        return implode('-', [Strings::webalize($this->getPresenter()->getAction(true)), $this->getUniqueId(), $this->model->getTableName()]);
     }
 
-    public function loadItems()
+    /**
+     * @return Selection
+     */
+    public function getSelection():Selection
     {
+        $selection = clone $this->source;
+        $this['search']->apply($selection);
+        return $selection;
+    }
+
+    public function loadItems():array
+    {
+        $source = $this->getSelection();
         if ($this->tree) {
-            $this->source->where($this->tree, NULL);
+            $source->where($this->tree, NULL);
         }
-        $this['search']->apply($this->source);
-        $this->applyOrder($this->source);
         $paginator = $this['paginator']->getPaginator();
-        $paginator->setItemCount($this->source->count());
-        $this->source->limit($paginator->getItemsPerPage(), $paginator->getOffset());
-        return $this->items = $this->source->fetchPairs('id');
+        $paginator->setItemCount($source->count());
+        $this->applyOrder($source);
+        $source->limit($paginator->getItemsPerPage(), $paginator->getOffset());
+        return $this->items = $source->fetchPairs('id');
     }
 
     protected function beforeRender():void
     {
         parent::beforeRender();
+        $this->template->uniqueId = $this->getSessionSectionName();
         $this->template->title = $this->title;
         $iterator = 1;
         foreach ($this->columns as $name => $definition) {
@@ -124,6 +137,9 @@ class BaseGrid extends Section
     protected function createComponentPaginator():VisualPaginator
     {
         $vp = new VisualPaginator();
+        $vp->onChange[] = function () {
+            $this->redrawControl('items');
+        };
         $paginator = $vp->getPaginator();
         try {
             $paginator->setItemCount($this->source->count());

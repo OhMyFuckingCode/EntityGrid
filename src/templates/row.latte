@@ -4,10 +4,7 @@
     {if $editMode}
         {form form class=>'ajax'}
             <div n:if="$selectable" class="grid-cell">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="{$ctrlId}-selected">
-                    <label class="custom-control-label" for="{$ctrlId}-selected"></label>
-                </div>
+
             </div>
             <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" class="grid-cell">
                 {ifset $form[$key]}{if $form[$key]->getOption(type)==='textarea'}{input $key class=>'form-control',rows=>1}{else}{input $key class=>'form-control'}{/if}{/ifset}
@@ -20,10 +17,10 @@
             </div>
         {/form}
     {else}
-        <div n:if="$selectable" class="grid-cell">
+        <div n:if="$selectable" class="grid-cell grid-cell--fit grid-cell-select">
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="{$ctrlId}-selected">
-                <label class="custom-control-label" for="{$ctrlId}-selected"></label>
+                <input type="checkbox" class="custom-control-input" id="{$ctrlId}-selected" data-row-select="{$item->id}">
+                <label class="custom-control-label" for="{$ctrlId}-selected">&nbsp;</label>
             </div>
         </div>
         {foreach $columns as $key => $column}

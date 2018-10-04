@@ -6,9 +6,8 @@
 
 namespace Quextum\EntityGrid;
 
-use Kdyby\Translation\ITranslator;
-use Nette\Application\UI\Multiplier;
 use Nette\Application\BadRequestException;
+use Nette\Application\UI\Multiplier;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
@@ -24,8 +23,8 @@ class Section extends BaseControl
 {
     use TActions;
 
-    public const TREE_VIEW = 'tree';
-    public const GRID_VIEW = 'grid';
+    //public const TREE_VIEW = 'tree';
+    //public const GRID_VIEW = 'grid';
 
     /** @var  ActiveRow */
     protected $item;
@@ -33,7 +32,7 @@ class Section extends BaseControl
     /** @var  ActiveRow[] */
     protected $items;
 
-    /** @var Selection */
+    /** @var Selection|null */
     protected $source;
 
     /** @var  IFormFactory */
@@ -47,7 +46,6 @@ class Section extends BaseControl
 
     /** @var  string */
     protected $prefix;
-
 
 
     /**
@@ -106,17 +104,10 @@ class Section extends BaseControl
         return $this;
     }
 
-    public function detectView(): string
-    {
-        return $this->tree ? static::TREE_VIEW : static::GRID_VIEW;
-    }
-
-
     protected function createComponentRow(): Multiplier
     {
         return new Multiplier(function (int $id) {
             $row = new Row($this->formFactory, $this->columns, $this->fetchItem($id));
-            $row->setView($this->detectView());
             $row->setSelectable($this->isSelectable());
             $row->onSuccess[] = [$this, 'editFormSucceeded'];
             $row->onCancel[] = [$this, 'endEditing'];
@@ -127,7 +118,6 @@ class Section extends BaseControl
     protected function createComponentNew(): Row
     {
         $row = new Row($this->formFactory, $this->columns, $this->grid->getModel()->create());
-        $row->setView($this->detectView());
         $row->onSuccess[] = [$this, 'addFormSucceeded'];
         $row->onCancel[] = [$this, 'endCreating'];
         return $row;
@@ -140,11 +130,19 @@ class Section extends BaseControl
     }
 
     /**
-     * @return Selection
+     * @return Selection|null
      */
-    public function getSource()
+    public function getSource():?Selection
     {
         return $this->source;
+    }
+
+    /**
+     * @return Selection|null
+     */
+    public function getSelection():?Selection
+    {
+        return $this->source ? clone $this->source : null;
     }
 
     protected function applyOrder(Selection $source)
@@ -156,22 +154,29 @@ class Section extends BaseControl
         }
     }
 
-    public function loadItems()
+    /**
+     * @return ActiveRow[]
+     */
+    public function loadItems():array
     {
-        $source = $this->getSource();
+        $source = $this->getSelection();
         $this->applyOrder($source);
         return $this->items = $source->fetchPairs($source->getPrimary());
     }
 
+    /**
+     * @param int $id
+     * @return false|ActiveRow
+     */
     public function fetchItem(int $id)
     {
         return $this->items[$id]??$this->getSource()->get($id);
     }
 
     /**
-     * @return ActiveRow
+     * @return ActiveRow|null
      */
-    public function getItem()
+    public function getItem():?ActiveRow
     {
         return $this->item;
     }
@@ -187,8 +192,11 @@ class Section extends BaseControl
     }
 
 
-    public function getItems()
+    public function getItems():array
     {
+        if (!$this->source) {
+            return [];
+        }
         return $this->items ?: $this->loadItems();
     }
 
@@ -202,6 +210,7 @@ class Section extends BaseControl
             }
         }
         $this->template->selectable = $this->isSelectable();
+        $this->template->selectedItems = $this->session->selection;
         $this->template->columns = $this->columns;
         $this->template->limit = $this->session->limit;
         $this->template->hiddenColumns = $this->session->hiddenColumns;
@@ -252,7 +261,8 @@ class Section extends BaseControl
             throw new BadRequestException(Response::S406_NOT_ACCEPTABLE);
         }
         $this->session->limit = $limit;
-        $this->redrawControl('control');
+        $this->redrawControl('items');
+        $this->redrawControl('paginator');
     }
 
     public function setEditing(int $id, bool $editing = true)
@@ -326,7 +336,6 @@ class Section extends BaseControl
         //$order = filter_var_array($order,FILTER_VALIDATE_INT);
         $this->grid->handleSort(...\func_get_args());
     }
-
 
 
 }
