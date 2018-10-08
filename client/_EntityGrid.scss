@@ -32,6 +32,7 @@ $eg-input-offset-y: 8px !default;
 $eg-input-max-width: 300px !default;
 $eg-input-bg: $eg-gray-lighter !default;
 $eg-input-radius: 0.2em !default;
+$eg-input-height: 24px !default;
 
 // Nevim jeste
 $eg-date-btn-size: 24px !default;
@@ -176,7 +177,7 @@ $eg-fade-overflow: 35px !default; // 'false'
       background-color: $eg-gray-lighter;
       .form-control, .chosen-choices {
         //margin-bottom: $eg-input-offset-y; margin-left: $eg-input-offset-x;
-        height: 30px;
+        height: $eg-input-height;
         //width: calc(100% - #{$eg-input-offset-x});
         min-width: 40px;
         font-size: 12px;
@@ -247,7 +248,7 @@ $eg-fade-overflow: 35px !default; // 'false'
     }
     &-date-to {
       z-index: 1;
-      top: 50%;
+      top: 42%;
       right: 5px;
       transform: translateY(-50%);
       background-color: darken($eg-input-bg, 10%);
