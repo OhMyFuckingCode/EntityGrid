@@ -248,7 +248,7 @@ $eg-fade-overflow: 35px !default; // 'false'
     }
     &-date-to {
       z-index: 1;
-      top: 42%;
+      top: 50%;
       right: 5px;
       transform: translateY(-50%);
       background-color: darken($eg-input-bg, 10%);
