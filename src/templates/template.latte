@@ -2,25 +2,21 @@
 
 <div id="{$uniqueId}" data-control="{$ctrlId}" data-entity-grid class="grid">
     <div n:snippet="control">
-        <div class="grid-header d-flex" n:snippet="bar">
+        <div class="grid-header d-flex">
             <div class="grid-title " n:if="$title">
                 <h2>{$title}</h2>
             </div>
-            <div n:if="$showSelection" class="ml-auto">
-                {_'entityGrid.selection.shown'}
-                <i class="fa fa-exclamation text-danger"></i>
-            </div>
-            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar"
-                                      aria-label="Actions toolbar">
-                <div class="grid-group-actions btn-group  mr-3" n:if="$groupActions" n:snippet="groupActions">
-                    <a n:if="$showSelection" class="btn btn-info ajax" n:href="showSelection! $showSelection"
-                                             data-naja-history="off">
-                        <i class="fa fa-sync" title="{_entityGrid.refresh}"></i>
+            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar" aria-label="Actions toolbar">
+
+                <div class="grid-group-actions btn-group btn-group-sm mr-2" n:if="$groupActions" n:snippet="groupActions">
+                    <span class="btn disabled btn-light">
+                        Hromadný výběr:
+                    </span>
+                    <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection" data-naja-history="off">
+                        <span class="grid-selection-all" data-grid-selection-count title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>
                     </a>
-                    <a class="btn btn-{$showSelection?primary:secondary} ajax" n:href="showSelection! !$showSelection"
-                       data-naja-history="off">
-                        (<span class="grid-selection-all" data-grid-selection-count
-                               title="{_entityGrid.resultCount}">{$control->getUserSelection()->count('*')}</span>)
+                    <a n:if="$showSelection" class="btn btn-light text-success ajax" n:href="showSelection! $showSelection" data-naja-history="off">
+                        <i class="fa fa-sync" title="{_entityGrid.refresh}"></i>
                     </a>
                     {foreach $groupActions as $name=>$action}
                         {if $action->isRenderable()}
@@ -31,7 +27,7 @@
                 <div class="btn-group mr-2">
                     {include #hide}
                 </div>
-                <div class="grid-global-actions">
+                <div class="grid-global-actions btn-group-sm">
                     {foreach $globalActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control globalAction-$name}
@@ -52,9 +48,8 @@
 
                     {* ---- HEADER:NAMES ---- *}
                     <div class="text-muted grid-row grid-header-row">
-                        <div n:if="$selectable"
-                                class="grid-cell grid-header-cell grid-cell--fit" n:snippet="selection" >
-                            <div data-grid-selection="{$control->getSource()->count('*')}"></div>
+                        <div n:if="$selectable" class="grid-cell grid-header-cell grid-cell--fit" n:snippet="selection" >
+                            <div data-grid-selection="{$control->getSource()->count()}"></div>
                             {include #checkbox $selection->exclude,'exclude',('entityGrid.selection.exclude'|translate),'fas fa-hand-pointer'}
                         </div>
                         <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" n:class="$column->type == 'int' ? grid-cell--fit, 'grid-cell grid-header-cell text-nowrap pr-3'">
@@ -85,4 +80,3 @@
         </div>
     </div>
 </div>
-
