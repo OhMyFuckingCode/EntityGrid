@@ -48,10 +48,13 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
             'link' => [
                 'ajax' => false,
                 'icon' => 'fas fa-link',
+                'attrs'=> [
+                    'target'=>'_blank'
+                ],
                 'class' => [
                     'btn',
                     'btn-sm',
-                    'btn-secondary',
+                    //'btn-secondary',
                     'text-success'
                 ],
                 'title' => 'link',
@@ -80,7 +83,7 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                 'class' => [
                     'btn',
                     'btn-sm',
-                    'btn-secondary',
+                    //'btn-secondary',
                     'text-muted'
                 ],
                 'title' => 'edit-in-row',
@@ -91,7 +94,7 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                 'class' => [
                     'btn',
                     'btn-sm',
-                    'btn-secondary',
+                    //'btn-secondary',
                     'text-danger'
                 ],
                 'title' => 'delete',
@@ -113,7 +116,7 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                 'class' => [
                     'btn',
                     'btn-sm',
-                    'btn-secondary',
+                    //'btn-secondary',
                     'text-primary'
                 ],
                 'title' => 'detail',

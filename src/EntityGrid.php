@@ -104,7 +104,7 @@ class EntityGrid extends BaseGrid
             $button->onClick[] = function (Button $button, Action $action) {
                 $this->session->selection->set($this->getPresenter()->getHttpRequest()->getPost());
                 foreach ($this->getUserSelection() as $item) {
-                    $action->onClick($button->getSection(), $item);
+                    $action->perform($this, $button->getSection(), $item);
                 }
             };
             return $button;
@@ -165,10 +165,10 @@ class EntityGrid extends BaseGrid
         $this->model->delete($item);
     }
 
-    public function setValue(ActiveRow $item,string $column, bool $value): void
+    public function setValue(ActiveRow $item, string $column, bool $value): void
     {
-        $this->model->update($item,ArrayHash::from([
-            $column=>$value
+        $this->model->update($item, ArrayHash::from([
+            $column => $value
         ]));
     }
 

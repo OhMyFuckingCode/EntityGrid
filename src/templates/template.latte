@@ -12,8 +12,6 @@
             </div>
             <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar"
                                       aria-label="Actions toolbar">
-
-
                 <div class="grid-group-actions btn-group  mr-3" n:if="$groupActions" n:snippet="groupActions">
                     <a n:if="$showSelection" class="btn btn-info ajax" n:href="showSelection! $showSelection"
                                              data-naja-history="off">
@@ -33,7 +31,7 @@
                 <div class="btn-group mr-2">
                     {include #hide}
                 </div>
-                <div class="grid-global-actions btn-group-sm">
+                <div class="grid-global-actions">
                     {foreach $globalActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control globalAction-$name}

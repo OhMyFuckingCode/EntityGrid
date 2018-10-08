@@ -7,6 +7,7 @@ use Nette\Application\UI\Link;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\SmartObject;
+use Nette\Utils\Callback;
 
 /**
  * Class GridRow
@@ -18,7 +19,7 @@ class Action
 
     use SmartObject;
 
-    const DEFAULT_CLASSES = ['btn', 'btn-sm', 'btn-secondary', 'ajax'];
+    const DEFAULT_CLASSES = ['btn', 'btn-secondary'];
 
     /** @var  callable[] */
     public $onClick;
@@ -61,6 +62,9 @@ class Action
 
     /** @var  string|null */
     protected $callback;
+
+    /** @var  array */
+    protected $attrs;
 
     /**
      * Button constructor.
@@ -349,6 +353,36 @@ class Action
     public function setCallback($callback): Action
     {
         $this->callback = $callback;
+        return $this;
+    }
+
+    public function perform(EntityGrid $grid,Section $section,?ActiveRow $row):void
+    {
+        if($this->onClick){
+            $this->onClick($section,$row);
+        }
+        if(\is_string($this->callback)){
+            Callback::toReflection([$section,$this->callback])->invokeArgs($section,array_merge(['item'=>$row],$this->params));
+        }elseif(\is_callable($this->callback)){
+            Callback::toReflection([$this->callback])->invokeArgs($section,array_merge(['item'=>$row],$this->params));
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttrs(): ?array
+    {
+        return $this->attrs;
+    }
+
+    /**
+     * @param array $attrs
+     * @return Action
+     */
+    public function setAttrs(?array $attrs): Action
+    {
+        $this->attrs = $attrs;
         return $this;
     }
 

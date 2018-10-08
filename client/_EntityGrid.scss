@@ -117,20 +117,22 @@ $eg-fade-overflow: 35px !default; // 'false'
     }
     @if $eg-fade-overflow != false {
       &:nth-last-child(2) {
-        padding-right: $eg-fade-overflow;
+        //padding-right: $eg-fade-overflow;
       }
     }
     &-actions {
       position: sticky;
       right: 0;
+      padding: 0;
       width: 1px;
       background-color: $eg-panel-bg-color;
       border-left: 1px $eg-gray-lighter solid;
       @if $eg-fade-overflow != false {
         &:after {
-          content: '';
+          //content: '';
           position: absolute;
           top: 0;
+          pointer-events: none;
           left: #{($eg-fade-overflow + 1px) * -1};
           width: $eg-fade-overflow;
           height: 100%;
@@ -226,6 +228,8 @@ $eg-fade-overflow: 35px !default; // 'false'
       }
     }
     &-cell {
+
+      padding-top: 0;
       .ss-main.form-control {
         padding: 0;
         margin: 0;

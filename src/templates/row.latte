@@ -2,7 +2,7 @@
 <div n:snippet="row" data-id="{$item->id}" class="grid-row sortable-item">
 
     {if $editMode}
-        {form form class=>'ajax'}
+        {form form class=>'ajax d-contents'}
             <div n:if="$selectable" class="grid-cell">
 
             </div>
@@ -10,7 +10,7 @@
                 {ifset $form[$key]}{if $form[$key]->getOption(type)==='textarea'}{input $key class=>'form-control',rows=>1}{else}{input $key class=>'form-control'}{/if}{/ifset}
             </div>
             <div class="grid-cell grid-cell-actions">
-                <div class="btn-group btn-group-sm">
+                <div class="btn-group">
                     {input submit class=>'btn btn-primary'}
                     {input cancel class=>'btn btn-secondary'}
                 </div>
@@ -24,7 +24,7 @@
             {if !$column->isHidden()}{include #cell column=>$column}{/if}
         {/foreach}
         <div class="grid-cell grid-cell-actions" n:if="$actions">
-            <div class="btn-group btn-group-sm float-right" n:inner-foreach="$actions as $name=>$action" n:inner-if="$action->isRenderable()">
+            <div class="btn-group" n:inner-foreach="$actions as $name=>$action" n:inner-if="$action->isRenderable()">
                 {control action-$name}
             </div>
         </div>
