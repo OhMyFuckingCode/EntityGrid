@@ -25,7 +25,7 @@
                         {/if}
                     {/foreach}
                 </div>
-                <div class="grid-global-actions btn-group">
+                <div class="grid-global-actions mr-3 btn-group">
                     {foreach $globalActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control globalAction-$name}
