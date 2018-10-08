@@ -101,27 +101,23 @@ class EntityGrid extends BaseGrid
         return new Multiplier(function ($name) {
             $action = $this->groupActions[$name];
             $button = new Button($action);
-            $button->onClick[] = function (Button $button,Action $action) {
-                bdump('click');
+            $button->onClick[] = function (Button $button, Action $action) {
                 $this->session->selection->set($this->getPresenter()->getHttpRequest()->getPost());
                 foreach ($this->getUserSelection() as $item) {
-                    bdump($item);
-                    //$action->onClick($this,$item);
+                    $action->onClick($button->getSection(), $item);
                 }
-
             };
             return $button;
         });
     }
 
 
-
     public function handleShowSelection(bool $show): void
     {
         $this->session->selection->set($this->getPresenter()->getHttpRequest()->getPost());
         $this->session->showSelection = $show;
+        $this->redrawControl('bar');
         $this->redrawControl('items');
-        $this->redrawControl('groupActions');
         $this['paginator']->redrawControl();
     }
 
@@ -152,21 +148,28 @@ class EntityGrid extends BaseGrid
         $gridRow->redrawControl('row');
     }
 
+    public function groupDelete(Section $section, ?ActiveRow $row = null)
+    {
+        $this->delete($section, $row);
+    }
 
     public function delete(Section $section, ?ActiveRow $row = null)
     {
-        if ($section instanceof Row) {
-            //$this->deleteEntity($row);
-        } elseif ($section instanceof self) {
-
-        }
-
+        $this->deleteEntity($row);
+        $this->session->selection->remove($row->getPrimary());
         $this->redrawControl('items');
     }
 
     public function deleteEntity(ActiveRow $item): void
     {
         $this->model->delete($item);
+    }
+
+    public function setValue(ActiveRow $item,string $column, bool $value): void
+    {
+        $this->model->update($item,ArrayHash::from([
+            $column=>$value
+        ]));
     }
 
     protected function beforeRender():void

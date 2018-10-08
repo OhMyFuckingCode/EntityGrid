@@ -89,7 +89,7 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                     'btn-danger'
                 ],
                 'title' => 'delete',
-                'confirm' => 'forms.confirm.delete',
+                'confirm' => '//forms.confirm.delete',
             ],
             'groupDelete'=>[
                 'icon' => 'fa fa-trash',
@@ -99,7 +99,7 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                 ],
                 'label' => 'delete',
                 'title' => 'delete',
-                'confirm' => 'forms.confirm.delete',
+                'confirm' => '//forms.confirm.delete',
             ],
             'detail' => [
                 'icon' => 'fas fa-pen',
@@ -133,8 +133,8 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                 'addInteger'
             ],
             'datetimerange' => [
-                'addDateTime',
-                'addDateTime'
+                'addDateTimeOptional',
+                'addDateTimeOptional'
             ],
             'daterange' => [
                 'addDate',

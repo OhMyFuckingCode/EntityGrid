@@ -34,6 +34,11 @@ class BaseGrid extends Section
     /** @var  string|bool|null */
     protected $title;
 
+    /** @var  Selection|null */
+    protected $selection;
+
+    /** @var  Selection|null */
+    protected $userSelection;
 
     /**
      * EntityGrid constructor.
@@ -75,15 +80,16 @@ class BaseGrid extends Section
         return implode('-', [Strings::webalize($this->getPresenter()->getAction(true)), $this->getUniqueId(), $this->model->getTableName()]);
     }
 
+
     /**
      * @return Selection
      */
     public function getSelection():Selection
     {
-        if ($this->session->showSelection) {
-            return $this->getUserSelection();
+        if ($this->selection === null) {
+            $this->selection = clone $this->source;
         }
-        return $this->getSearchSelection();
+        return $this->selection;
     }
 
     /**
@@ -91,19 +97,11 @@ class BaseGrid extends Section
      */
     public function getUserSelection():Selection
     {
-        $selection = clone $this->source;
-        $this->filterSelection($selection);
-        return $selection;
-    }
-
-    /**
-     * @return Selection
-     */
-    public function getSearchSelection():Selection
-    {
-        $selection = clone $this->source;
-        $this['search']->apply($selection);
-        return $selection;
+        if ($this->userSelection === null) {
+            $this->userSelection = clone $this->source;
+            $this->filterSelection($this->userSelection);
+        }
+        return $this->userSelection;
     }
 
 
@@ -112,24 +110,29 @@ class BaseGrid extends Section
         $this->session->selection->filter($source);
     }
 
+
+
     public function loadItems():array
     {
-
-        $source = $this->getSelection();
+        if ($this->session->showSelection) {
+            $source = $this->getUserSelection();
+        } else {
+            $source = $this->getSelection();
+        }
+        $this['search']->apply($source);
         if ($this->tree) {
             $source->where($this->tree, NULL);
         }
         $paginator = $this['paginator']->getPaginator();
-        $paginator->setItemCount($source->count());
-        $this->applyOrder($source);
+        $paginator->setItemCount($source->count('*'));
         $source->limit($paginator->getItemsPerPage(), $paginator->getOffset());
+        $this->applyOrder($source);
         return $this->items = $source->fetchPairs($source->getPrimary());
     }
 
     protected function beforeRender():void
     {
         parent::beforeRender();
-        bdump($this->session->selection);
         $this->template->showSelection = $this->session->showSelection;
         $this->template->uniqueId = $this->getSessionSectionName();
         $this->template->title = $this->title;
@@ -158,9 +161,9 @@ class BaseGrid extends Section
         } else {
             unset($this->session->hiddenColumns[$col]);
         }
-        $this->redrawControl('header');
         $this->redrawControl('controls');
         $this->redrawControl('items');
+        $this->redrawControl('header');
     }
 
 

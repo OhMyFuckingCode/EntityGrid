@@ -12,7 +12,7 @@ use Nette\Utils\Html;
 /**
  * Class GridRow
  * @package Quextum\EntityGrid
- * @method onClick(Button $button,Action $action)
+ * @method onClick(Button $button, Action $action)
  */
 class Button extends Component
 {
@@ -46,7 +46,7 @@ class Button extends Component
 
     public function handleClick():void
     {
-        $this->onClick($this,$this->action);
+        $this->onClick($this, $this->action);
     }
 
     /**
@@ -71,6 +71,11 @@ class Button extends Component
     public function getRow()
     {
         return $this->lookup(Row::class);
+    }
+
+    public function getSection()
+    {
+        return $this->lookup(Section::class);
     }
 
     public function getControl():Html
@@ -105,7 +110,7 @@ class Button extends Component
         $icon && $control->addHtml(Html::el('i')->class($icon)->addClass($label ? 'mr-2' : null));
         $label && $control->addText($this->translate($label));
 
-        $control->data('control',$this->getUniqueId());
+        $control->data('control', $this->getUniqueId());
 
         return $control;
     }

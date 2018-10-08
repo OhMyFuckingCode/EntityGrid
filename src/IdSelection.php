@@ -34,6 +34,18 @@ class IdSelection
         return $this;
     }
 
+    public function add(int $id): self
+    {
+        $this->ids[$id] = true;
+        return $this;
+    }
+
+    public function remove(int $id): self
+    {
+        unset($this->ids[$id]);
+        return $this;
+    }
+
     /**
      * @param boolean $exclude
      * @return IdSelection

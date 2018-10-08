@@ -197,7 +197,7 @@ class Section extends BaseControl
         if (!$this->source) {
             return [];
         }
-        return $this->items ?: $this->loadItems();
+        return $this->items ?? $this->loadItems();
     }
 
     protected function beforeRender():void
@@ -233,22 +233,23 @@ class Section extends BaseControl
         $this->redrawControl('header');
         $this->redrawControl('items');
     }
-/*
-    public function handleSetSelected(int $id, bool $selected = true)
-    {
-        $empty = (bool)$this->session->selection;
-        if ($selected) {
-            $this->session->selection[$id] = TRUE;
-        } else {
-            unset($this->session->selection[$id]);
-        }
-        if ($empty !== $this->session->selection) {
-            $this->redrawControl('groupActions');
-        } else {
-            $this->presenter->terminate();
-        }
 
-    }*/
+    /*
+        public function handleSetSelected(int $id, bool $selected = true)
+        {
+            $empty = (bool)$this->session->selection;
+            if ($selected) {
+                $this->session->selection[$id] = TRUE;
+            } else {
+                unset($this->session->selection[$id]);
+            }
+            if ($empty !== $this->session->selection) {
+                $this->redrawControl('groupActions');
+            } else {
+                $this->presenter->terminate();
+            }
+
+        }*/
 
     public function handleResetOrder()
     {

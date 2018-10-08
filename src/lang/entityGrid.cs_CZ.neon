@@ -6,7 +6,12 @@ show-n-hide-cols: Zobrazit/Skrýt sloupce
 search: Hledat
 no-results: Žádné výsledky
 select: Zvolte
-
+resultCount: Počet výsledků
+refresh: Obnovit
+selection:
+    selectAll: Zvolit vše
+    exclude: Mód excluze/include
+    shown: Je zobrazena současná selekce položek
 btn:
     import: Importovat
     create: Přidat položku

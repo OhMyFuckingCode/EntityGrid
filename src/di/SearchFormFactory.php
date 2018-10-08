@@ -9,6 +9,7 @@
 namespace Quextum\EntityGrid;
 
 
+use App\Utils\Date;
 use Nette\Application\UI\Form;
 use Nette\Database\Context;
 use Nette\Database\SqlLiteral;
@@ -101,6 +102,9 @@ class SearchFormFactory implements ISearchFormFactory
                 $control->setAttribute('class', 'form-control');
             }
         }
+        $form->onError[]=function(Form $form){
+          bdump($form->getErrors());
+        };
         return $form;
     }
 
@@ -117,6 +121,7 @@ class SearchFormFactory implements ISearchFormFactory
 
     /**
      * @param Selection $selection
+     * @param array $config
      * @param ArrayHash $values
      */
     public function apply(Selection $selection,$config, $values)
@@ -146,8 +151,22 @@ class SearchFormFactory implements ISearchFormFactory
                     case 'timerange':
                     case 'daterange':
                     case 'datetimerange':
-                        !empty($value['from']) && $selection->where("$key >= ? ", $value['from']);
-                        !empty($value['to']) && $selection->where("$key <= ? ", $value['to']);
+                        if(!empty($value['from'])){
+                            if($value['from'] instanceof Date){
+                                $key = "DATE($key)";
+                            }
+                            if(empty($value['to'])){
+                                $selection->where("$key = ? ", $value['from']);
+                            }else{
+                                $selection->where("$key >= ? ", $value['from']);
+                            }
+                        }
+                        if(!empty($value['to'])){
+                            if($value['to'] instanceof Date){
+                                $key = "DATE($key)";
+                            }
+                            $selection->where("$key <= ? ", $value['to']);
+                        }
                         break;
                     default:
                         $selection->where([$key => $value]);

@@ -11,7 +11,7 @@ use Nette\SmartObject;
 /**
  * Class GridRow
  * @package Quextum\EntityGrid
- * @method onClick(Section $section)
+ * @method onClick(Section $section,?ActiveRow $item = null)
  */
 class Action
 {
@@ -58,6 +58,9 @@ class Action
 
     /** @var bool  */
     protected $ajax = true;
+
+    /** @var  string|null */
+    protected $callback;
 
     /**
      * Button constructor.
@@ -262,7 +265,7 @@ class Action
     /**
      * @return string|null
      */
-    public function getConfirm()
+    public function getConfirm(): ?string
     {
         return $this->confirm;
     }
@@ -313,9 +316,9 @@ class Action
 
     /**
      * @param boolean $ajax
-     * @return static
+     * @return Action
      */
-    public function setAjax(bool $ajax)
+    public function setAjax(bool $ajax): Action
     {
         $this->ajax = $ajax;
         return $this;
@@ -323,9 +326,31 @@ class Action
 
     /**
      * @param \callable[] $onClick
+     * @return Action
      */
-    public function setOnClick(array $onClick)
+    public function setOnClick(array $onClick): Action
     {
         $this->onClick = $onClick;
+        return $this;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getCallback(): ?string
+    {
+        return $this->callback;
+    }
+
+    /**
+     * @param null|string $callback
+     * @return Action
+     */
+    public function setCallback($callback): Action
+    {
+        $this->callback = $callback;
+        return $this;
+    }
+
+
 }

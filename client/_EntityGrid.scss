@@ -85,10 +85,10 @@ $eg-fade-overflow: 35px !default; // 'false'
     form {
       //.grid-cell:not(:last-of-type) { padding: 0; }
       .grid-cell {
-        .form-control {
-          border: none;
+        /*.form-control {
+          border-color: transparent;
           background-color: transparent;
-        }
+        }*/
         textarea {
           min-height: 35px;
         }
@@ -165,13 +165,12 @@ $eg-fade-overflow: 35px !default; // 'false'
   &-search {
     &-row {
       background-color: $eg-gray-lighter;
-      input:not([type=submit]):not([type=button]):not([type=checkbox]):not([type=radio]), select, .chosen-choices {
+      .form-control, .chosen-choices {
         //margin-bottom: $eg-input-offset-y; margin-left: $eg-input-offset-x;
-        height: 20px;
-        width: calc(100% - #{$eg-input-offset-x});
+        height: 30px;
+        //width: calc(100% - #{$eg-input-offset-x});
         min-width: 40px;
         font-size: 12px;
-        border: none;
         border-radius: 0;
         background: $eg-gray-lighter;
         color: $eg-gray-darker;
@@ -220,12 +219,20 @@ $eg-fade-overflow: 35px !default; // 'false'
       }
     }
     &-cell {
-
-      .collapse {
+      .ss-main.form-control {
+        padding: 0;
+        margin: 0;
+        border-radius: 0;
+      }
+      .collapse, .collapsing input {
         margin-top: 5px;
       }
-      /*padding: 0; border-top-color: $eg-panel-bg-color; top: 34px;
-      &:not(:last-of-type) { border-left-color: $eg-panel-bg-color; }*/
+      //padding: 0;
+      border-top-color: $eg-panel-bg-color;
+      top: 34px;
+      &:not(:last-of-type) {
+        border-left-color: $eg-panel-bg-color;
+      }
     }
     &-date-to {
       z-index: 1;
