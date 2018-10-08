@@ -6,34 +6,33 @@
             <div class="grid-title " n:if="$title">
                 <h2>{$title}</h2>
             </div>
-            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar"
-                                    aria-label="Actions toolbar">
+            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar" aria-label="Actions toolbar">
 
-
-                <div class="grid-group-actions btn-group  mr-3" n:if="$groupActions" n:snippet="groupActions">
-                    <a n:if="$showSelection" class="btn btn-info ajax" n:href="showSelection! $showSelection" data-naja-history="off">
-                        <i class="fa fa-sync"  title="{_entityGrid.refresh}"></i>
+                <div class="grid-group-actions btn-group btn-group-sm mr-2" n:if="$groupActions" n:snippet="groupActions">
+                    <span class="btn disabled btn-light">
+                        Hromadný výběr:
+                    </span>
+                    <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection" data-naja-history="off">
+                        <span class="grid-selection-all" data-grid-selection-count title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>
                     </a>
-                    <a class="btn btn-{$showSelection?primary:secondary} ajax" n:href="showSelection! !$showSelection" data-naja-history="off">
-                        (<span class="grid-selection-all" data-grid-selection-count
-                               title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>)
+                    <a n:if="$showSelection" class="btn btn-light text-success ajax" n:href="showSelection! $showSelection" data-naja-history="off">
+                        <i class="fa fa-sync" title="{_entityGrid.refresh}"></i>
                     </a>
-
                     {foreach $groupActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control groupAction-$name}
                         {/if}
                     {/foreach}
                 </div>
-                <div class="grid-global-actions mr-3 btn-group">
+                <div class="btn-group mr-2">
+                    {include #hide}
+                </div>
+                <div class="grid-global-actions btn-group-sm">
                     {foreach $globalActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control globalAction-$name}
                         {/if}
                     {/foreach}
-                </div>
-                <div class="btn-group">
-                    {include #hide}
                 </div>
             </div>
         </div>

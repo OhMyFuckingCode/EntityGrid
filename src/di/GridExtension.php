@@ -101,9 +101,10 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                 'icon' => 'fa fa-trash',
                 'class' => [
                     'btn',
-                    'btn-danger'
+                    'btn-light',
+                    'text-danger'
                 ],
-                'label' => 'delete',
+                //'label' => 'delete',
                 'title' => 'delete',
                 'confirm' => 'forms.confirm.delete',
             ],

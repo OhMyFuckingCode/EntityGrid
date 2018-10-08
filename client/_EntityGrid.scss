@@ -6,13 +6,6 @@
 $eg-cell-padding-y: 6px !default;
 $eg-cell-padding-x: 12px !default;
 
-// Variables : Inputs
-$eg-input-padding-x: 4px !default;
-$eg-input-padding-y: 2px !default;
-$eg-input-offset-x: 8px !default;
-$eg-input-offset-y: 8px !default;
-$eg-input-max-width: 300px !default;
-
 // Variables : Grays
 $eg-gray: #cccccc !default;
 $eg-gray-light: lighten($eg-gray, 2.5%) !default;
@@ -25,11 +18,20 @@ $eg-color-primary: #ae8745 !default;
 $eg-color-danger: darkred !default;
 $eg-panel-bg-color: whitesmoke !default;
 $eg-panel-border-color: $eg-panel-bg-color !default;
-$eg-content-bg-color: white;
+$eg-content-bg-color: white !default;
 
 // Variables : Tables
 $eg-table-border-width: 1px !default;
 $eg-table-border-color: $eg-gray-lighter !default;
+
+// Variables : Inputs
+$eg-input-padding-x: 4px !default;
+$eg-input-padding-y: 2px !default;
+$eg-input-offset-x: 8px !default;
+$eg-input-offset-y: 8px !default;
+$eg-input-max-width: 300px !default;
+$eg-input-bg: $eg-gray-lighter !default;
+$eg-input-radius: 0.2em !default;
 
 // Nevim jeste
 $eg-date-btn-size: 24px !default;
@@ -94,6 +96,9 @@ $eg-fade-overflow: 35px !default; // 'false'
         }
       }
     }
+    .custom-control-label::before {
+      background: $eg-input-bg;
+    }
   }
 
   &-row {
@@ -125,14 +130,16 @@ $eg-fade-overflow: 35px !default; // 'false'
         &:after {
           content: '';
           position: absolute;
+          top: 0;
           left: #{($eg-fade-overflow + 1px) * -1};
           width: $eg-fade-overflow;
           height: 100%;
           font-size: 0;
-          background-image: linear-gradient(to right, rgba($eg-content-bg-color, 0), $eg-content-bg-color 75%);
+          background-image: linear-gradient(to right, rgba($eg-content-bg-color, 0), $eg-panel-bg-color 75%);
         }
       }
     }
+    .dropdown-toggle { min-width: 40px; }
   }
   &-selection {
     line-height: .9;
@@ -172,8 +179,8 @@ $eg-fade-overflow: 35px !default; // 'false'
         min-width: 40px;
         font-size: 12px;
         border: none;
-        border-radius: 0;
-        background: $eg-gray-lighter;
+        border-radius: $eg-input-radius;
+        background: $eg-input-bg;
         color: $eg-gray-darker;
         padding: $eg-input-padding-x $eg-input-padding-y;
         transition: .6s;
@@ -200,7 +207,6 @@ $eg-fade-overflow: 35px !default; // 'false'
     }
     &-radio {
       position: relative;
-      text-align: center;
       font-size: 12px;
       label {
         position: relative;
@@ -220,10 +226,8 @@ $eg-fade-overflow: 35px !default; // 'false'
       }
     }
     &-cell {
-
-      .collapse {
-        margin-top: 5px;
-      }
+      .collapse { margin-top: 5px; }
+      top: 34px;
       /*padding: 0; border-top-color: $eg-panel-bg-color; top: 34px;
       &:not(:last-of-type) { border-left-color: $eg-panel-bg-color; }*/
     }
@@ -232,7 +236,7 @@ $eg-fade-overflow: 35px !default; // 'false'
       top: 50%;
       right: 5px;
       transform: translateY(-50%);
-      background-color: $eg-gray-light;
+      background-color: darken($eg-input-bg, 10%);
       padding: 4px;
       border-radius: 50%;
       opacity: 0.5;
