@@ -66,7 +66,7 @@
 
 {define hide}
     <div class="d-contents" n:snippet="show-panel" >
-        <button class="btn btn-light text-muted no-radius dropdown-toggle" type="button" title="{_"entityGrid.show-n-hide-cols"}"
+        <button class="btn btn-light btn-sm text-muted dropdown-toggle" type="button" title="{_"entityGrid.show-n-hide-cols"}"
                 id="{$ctrlId}-column-visibility-menu" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
             <i class="fas fa-eye"></i>
@@ -114,7 +114,7 @@
 
 {define cell}
     {var $value = $column->getValue($item)}
-    <div class="grid-cell text-nowrap{if is_string($value)} text-truncate{/if} {$column->getClass()}" >
+    <div n:class="'grid-cell text-nowrap', is_string($value)?text-truncate, $column->getClass()" >
 
         {if $grid->isTree() && $column->position == 1}
             {if $_row->getChildren()->count('*')}
@@ -187,7 +187,7 @@
 <div n:define="images">
     {if $value instanceof Nette\Database\Table\Selection}
         <div class="dropdown" n:if="$count = $value->count()">
-            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="{$ctrlId}-{$column->getName()}-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-light dropdown-toggle btn-sm" type="button" id="{$ctrlId}-{$column->getName()}-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {$count}
             </button>
             <div class="dropdown-menu" aria-labelledby="{$ctrlId}-{$column->getName()}-dropdown">

@@ -6,6 +6,7 @@
             <div class="grid-title " n:if="$title">
                 <h2>{$title}</h2>
             </div>
+<<<<<<< HEAD
             <div n:if="$showSelection" class="ml-auto">
                 {_'entityGrid.selection.shown'}
                 <i class="fa fa-exclamation text-danger"></i>
@@ -23,23 +24,35 @@
                        data-naja-history="off">
                         (<span class="grid-selection-all" data-grid-selection-count
                                title="{_entityGrid.resultCount}">{$control->getUserSelection()->count('*')}</span>)
-                    </a>
+=======
+            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar" aria-label="Actions toolbar">
 
+                <div class="grid-group-actions btn-group btn-group-sm mr-2" n:if="$groupActions" n:snippet="groupActions">
+                    <span class="btn disabled btn-light">
+                        Hromadný výběr:
+                    </span>
+                    <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection" data-naja-history="off">
+                        <span class="grid-selection-all" data-grid-selection-count title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>
+                    </a>
+                    <a n:if="$showSelection" class="btn btn-light text-success ajax" n:href="showSelection! $showSelection" data-naja-history="off">
+                        <i class="fa fa-sync" title="{_entityGrid.refresh}"></i>
+>>>>>>> a87b59b0a545107241eaad5d9385460f9008fcde
+                    </a>
                     {foreach $groupActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control groupAction-$name}
                         {/if}
                     {/foreach}
                 </div>
-                <div class="grid-global-actions btn-group">
+                <div class="btn-group mr-2">
+                    {include #hide}
+                </div>
+                <div class="grid-global-actions btn-group-sm">
                     {foreach $globalActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control globalAction-$name}
                         {/if}
                     {/foreach}
-                </div>
-                <div class="btn-group">
-                    {include #hide}
                 </div>
             </div>
         </div>
