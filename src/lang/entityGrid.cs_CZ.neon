@@ -12,6 +12,7 @@ selection:
     selectAll: Zvolit vše
     exclude: Mód excluze/include
     shown: Je zobrazena současná selekce položek
+    selected: 'Hromadný výběr:'
 btn:
     import: Importovat
     create: Přidat položku
