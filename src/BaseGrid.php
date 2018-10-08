@@ -80,13 +80,41 @@ class BaseGrid extends Section
      */
     public function getSelection():Selection
     {
+        if ($this->session->showSelection) {
+            return $this->getUserSelection();
+        }
+        return $this->getSearchSelection();
+    }
+
+    /**
+     * @return Selection
+     */
+    public function getUserSelection():Selection
+    {
+        $selection = clone $this->source;
+        $this->filterSelection($selection);
+        return $selection;
+    }
+
+    /**
+     * @return Selection
+     */
+    public function getSearchSelection():Selection
+    {
         $selection = clone $this->source;
         $this['search']->apply($selection);
         return $selection;
     }
 
+
+    protected function filterSelection(Selection $source): void
+    {
+        $this->session->selection->filter($source);
+    }
+
     public function loadItems():array
     {
+
         $source = $this->getSelection();
         if ($this->tree) {
             $source->where($this->tree, NULL);
@@ -95,12 +123,14 @@ class BaseGrid extends Section
         $paginator->setItemCount($source->count());
         $this->applyOrder($source);
         $source->limit($paginator->getItemsPerPage(), $paginator->getOffset());
-        return $this->items = $source->fetchPairs('id');
+        return $this->items = $source->fetchPairs($source->getPrimary());
     }
 
     protected function beforeRender():void
     {
         parent::beforeRender();
+        bdump($this->session->selection);
+        $this->template->showSelection = $this->session->showSelection;
         $this->template->uniqueId = $this->getSessionSectionName();
         $this->template->title = $this->title;
         $iterator = 1;
@@ -142,7 +172,7 @@ class BaseGrid extends Section
         };
         $paginator = $vp->getPaginator();
         try {
-            $paginator->setItemCount($this->source->count());
+            $paginator->setItemCount($this->getSelection()->count());
         } catch (DriverException $e) {
             $this->session->search = [];
             $this->session->order = [];
@@ -190,6 +220,7 @@ class BaseGrid extends Section
         $this->model->setOrder($item, $order, $fromItem, $toItem);
         $this->redrawControl('items');
     }
+
 
     /**
      * @return IModel

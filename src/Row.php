@@ -74,15 +74,14 @@ class Row extends Section
     protected function beforeRender():void
     {
         parent::beforeRender();
-        $this->selectable = $this->selectable ?? (bool)$this->groupActions;
         $this->template->editable = $this->isEditable();
         $this->template->columns = $this->columns;
         $this->template->item = $this->item;
-        $this->template->selectable = $this->selectable;
+        $this->template->selectable = $this->selectable = $this->selectable ?? (bool)$this->groupActions;
         $this->template->editMode = isset($this->session->editing[$this->item->id]);
-        $this->template->selected = isset($this->session->selection[$this->item->id]);
+        $this->template->selected = $this->session->selection->has($this->item->id);
         $this->template->expanded = isset($this->session->expandedRows[$this->item->id]);
-        $this->template->_row = $this;
+        $this->template->row = $this;
     }
 
     /**

@@ -210,7 +210,7 @@ class Section extends BaseControl
             }
         }
         $this->template->selectable = $this->isSelectable();
-        $this->template->selectedItems = $this->session->selection;
+        $this->template->selection = $this->session->selection;
         $this->template->columns = $this->columns;
         $this->template->limit = $this->session->limit;
         $this->template->hiddenColumns = $this->session->hiddenColumns;
@@ -233,7 +233,7 @@ class Section extends BaseControl
         $this->redrawControl('header');
         $this->redrawControl('items');
     }
-
+/*
     public function handleSetSelected(int $id, bool $selected = true)
     {
         $empty = (bool)$this->session->selection;
@@ -248,7 +248,7 @@ class Section extends BaseControl
             $this->presenter->terminate();
         }
 
-    }
+    }*/
 
     public function handleResetOrder()
     {

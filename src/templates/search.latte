@@ -1,11 +1,9 @@
+{import @components.latte}
 <div n:snippet="search" class="grid-row grid-search-row">
     {* ---- HEADER:SEARCH ---- *}
     {form searchForm class=>'ajax text-muted d-contents'}
         <div n:if="$selectable" class="grid-cell grid-header-cell grid-cell--fit grid-search-cell text-center">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="{$ctrlId}-selected" data-row-select="all" >
-                <label class="custom-control-label" for="{$ctrlId}-selected">&nbsp;</label>
-            </div>
+            {include #checkbox false,all,('entityGrid.selection.selectAll'|translate)}
         </div>
         <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()"
                 class="grid-cell grid-search-cell grid-header-cell" n:inner-ifset="$form[$key]">
@@ -25,7 +23,6 @@
                     </div>
                 {/formContainer}
             {else}
-
                 {switch $input->getOption(type)}
                     {*case checkbox}
                     {$form[$key]->getControlPart()*}
@@ -37,7 +34,6 @@
                     </div>
                     {default}
                     {input $key}
-
                 {/switch}
                 {if $errors = $input->getErrors()}
                     <ul class="errors">

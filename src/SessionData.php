@@ -2,6 +2,7 @@
 
 namespace Quextum\EntityGrid;
 
+use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
 
 class SessionData extends ArrayHash
@@ -15,8 +16,11 @@ class SessionData extends ArrayHash
     /** @var  int */
     public $limit = BaseGrid::DEFAULT_LIMIT;
 
-    /** @var  boolean[] */
-    public $selection = [];
+    /** @var IdSelection */
+    public $selection;
+
+    /** @var  boolean */
+    public $showSelection = false;
 
     /** @var boolean[] */
     public $editing = [];
@@ -26,5 +30,14 @@ class SessionData extends ArrayHash
 
     /** @var boolean[] */
     public $expandedRows = [];
+
+    /**
+     * SessionData constructor.
+     */
+    public function __construct()
+    {
+        $this->selection = new IdSelection();
+    }
+
 
 }

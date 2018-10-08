@@ -3,53 +3,53 @@
  */
 
 // Variables : Paddings
-$eg-cell-padding-y:         6px !default;
-$eg-cell-padding-x:         12px !default;
+$eg-cell-padding-y: 6px !default;
+$eg-cell-padding-x: 12px !default;
 
 // Variables : Inputs
-$eg-input-padding-x:        4px !default;
-$eg-input-padding-y:        2px !default;
-$eg-input-offset-x:         8px !default;
-$eg-input-offset-y:         8px !default;
-$eg-input-max-width:        300px !default;
+$eg-input-padding-x: 4px !default;
+$eg-input-padding-y: 2px !default;
+$eg-input-offset-x: 8px !default;
+$eg-input-offset-y: 8px !default;
+$eg-input-max-width: 300px !default;
 
 // Variables : Grays
-$eg-gray:                   #cccccc !default;
-$eg-gray-light:             lighten($eg-gray, 2.5%) !default;
-$eg-gray-lighter:           lighten($eg-gray, 12.5%) !default;
-$eg-gray-dark:              darken($eg-gray, .5%) !default;
-$eg-gray-darker:            darken($eg-gray, 25%) !default;
+$eg-gray: #cccccc !default;
+$eg-gray-light: lighten($eg-gray, 2.5%) !default;
+$eg-gray-lighter: lighten($eg-gray, 12.5%) !default;
+$eg-gray-dark: darken($eg-gray, .5%) !default;
+$eg-gray-darker: darken($eg-gray, 25%) !default;
 
 // Variables : Colors
-$eg-color-primary:          #ae8745 !default;
-$eg-color-danger:           darkred !default;
-$eg-panel-bg-color:         whitesmoke !default;
-$eg-panel-border-color:     $eg-panel-bg-color !default;
-$eg-content-bg-color:       white;
+$eg-color-primary: #ae8745 !default;
+$eg-color-danger: darkred !default;
+$eg-panel-bg-color: whitesmoke !default;
+$eg-panel-border-color: $eg-panel-bg-color !default;
+$eg-content-bg-color: white;
 
 // Variables : Tables
-$eg-table-border-width:     1px !default;
-$eg-table-border-color:     $eg-gray-lighter !default;
+$eg-table-border-width: 1px !default;
+$eg-table-border-color: $eg-gray-lighter !default;
 
 // Nevim jeste
-$eg-date-btn-size:          24px !default;
+$eg-date-btn-size: 24px !default;
 
 // Variables : Tree points
-$eg-point-empty-size:       10px !default;
-$eg-point-openable-size:    18px !default;
-$eg-point-fontsize:         10px !default;
-$eg-point-color:            white !default;
-$eg-point-offset:           15px !default;
-$eg-point-radius:           50% !default;
-$eg-point-empty-offset:     ($eg-point-openable-size - $eg-point-empty-size) / 2;
+$eg-point-empty-size: 10px !default;
+$eg-point-openable-size: 18px !default;
+$eg-point-fontsize: 10px !default;
+$eg-point-color: white !default;
+$eg-point-offset: 15px !default;
+$eg-point-radius: 50% !default;
+$eg-point-empty-offset: ($eg-point-openable-size - $eg-point-empty-size) / 2;
 
 // settings
-$eg-fixed-height:           100% !default; // 'false' | value
-$eg-fade-overflow:          35px !default; // 'false'
+$eg-fixed-height: 100% !default; // 'false' | value
+$eg-fade-overflow: 35px !default; // 'false'
 
-
-.sortable-href { margin-right: $eg-input-offset-x; }
-
+.sortable-href {
+  margin-right: $eg-input-offset-x;
+}
 
 /**
  * ==== GRID ====
@@ -65,85 +65,218 @@ $eg-fade-overflow:          35px !default; // 'false'
 
 .grid {
 
-  &-table { display: table; width: 100%;
-    &-footer { display: table-footer-group; width: 100%; }
-    &-body { display: table-row-group; width: 100%; }
-    &-col { display: table-column;
-      &group { display: table-column-group; }
+  &-table {
+    display: table;
+    width: 100%;
+    &-footer {
+      display: table-footer-group;
+      width: 100%;
+    }
+    &-body {
+      display: table-row-group;
+      width: 100%;
+    }
+    &-col {
+      display: table-column;
+      &group {
+        display: table-column-group;
+      }
     }
     form {
-      .grid-cell:not(:last-of-type) { padding: 0; }
+      //.grid-cell:not(:last-of-type) { padding: 0; }
       .grid-cell {
-        .form-control { border: none; background-color: transparent; }
-        textarea { min-height: 35px; }
+        .form-control {
+          border: none;
+          background-color: transparent;
+        }
+        textarea {
+          min-height: 35px;
+        }
       }
     }
   }
 
-  &-row { display: table-row; }
+  &-row {
+    display: table-row;
+  }
 
-  &-cell { position: relative; display: table-cell; vertical-align: middle; padding: $eg-cell-padding-y $eg-cell-padding-x; border-top: $eg-table-border-width solid $eg-table-border-color; max-width: $eg-input-max-width;
-    &--fit { width: 1% }
+  &-cell {
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+    padding: $eg-cell-padding-y $eg-cell-padding-x;
+    border-top: $eg-table-border-width solid $eg-table-border-color;
+    max-width: $eg-input-max-width;
+    &--fit {
+      width: 1%
+    }
     @if $eg-fade-overflow != false {
-      &:nth-last-child(2) { padding-right: $eg-fade-overflow; }
+      &:nth-last-child(2) {
+        padding-right: $eg-fade-overflow;
+      }
     }
-    &-actions { position: sticky; right: 0; width: 1px; background-color: $eg-panel-bg-color; border-left: 1px $eg-gray-lighter solid;
+    &-actions {
+      position: sticky;
+      right: 0;
+      width: 1px;
+      background-color: $eg-panel-bg-color;
+      border-left: 1px $eg-gray-lighter solid;
       @if $eg-fade-overflow != false {
-        &:after { content: ''; position: absolute; left: #{($eg-fade-overflow + 1px) * -1}; width: $eg-fade-overflow; height: 100%; font-size: 0; background-image: linear-gradient(to right, rgba($eg-content-bg-color, 0), $eg-content-bg-color 75%); }
+        &:after {
+          content: '';
+          position: absolute;
+          left: #{($eg-fade-overflow + 1px) * -1};
+          width: $eg-fade-overflow;
+          height: 100%;
+          font-size: 0;
+          background-image: linear-gradient(to right, rgba($eg-content-bg-color, 0), $eg-content-bg-color 75%);
+        }
       }
     }
   }
-  &-selection{
+  &-selection {
     line-height: .9;
 
   }
-  &-header { display: table-header-group; width: 100%;
+  &-header {
+    display: table-header-group;
+    width: 100%;
     &-row {
       &:first-of-type, &:nth-of-type(2) {
-        @if $eg-fade-overflow != false { .cell-actions:after { background-image: linear-gradient(to right, rgba($eg-panel-bg-color, 0), $eg-panel-bg-color 75%); } }
+        @if $eg-fade-overflow != false {
+          .cell-actions:after {
+            background-image: linear-gradient(to right, rgba($eg-panel-bg-color, 0), $eg-panel-bg-color 75%);
+          }
+        }
       }
-      &:first-of-type .grid-cell { top: 0; }
+      &:first-of-type .grid-cell {
+        top: 0;
+      }
     }
-    &-cell { position: sticky; background-color: $eg-panel-bg-color; white-space: nowrap; z-index: 1; border-top: 0px; }
+    &-cell {
+      position: sticky;
+      background-color: $eg-panel-bg-color;
+      white-space: nowrap;
+      z-index: 1;
+      border-top: 0px;
+    }
   }
 
   &-search {
     &-row {
       background-color: $eg-gray-lighter;
-      input:not([type=submit]):not([type=button]), select, .chosen-choices { margin-bottom: $eg-input-offset-y; margin-left: $eg-input-offset-x;
-        height: 20px; width: calc(100% - #{$eg-input-offset-x*2}); min-width: 40px; font-size: 12px;
-        border: none; border-radius: 0;
-        background: $eg-gray-lighter; color: $eg-gray-darker; padding: $eg-input-padding-x $eg-input-padding-y; transition: .6s;
-        @include placeholder { color: $eg-gray; }
-        &:focus, &:hover { background-color: darken($eg-gray-lighter, 2.5%); }
-        .choices__inner { min-height: 0; padding: 0; border: none;
-          .choices__input { margin: 0; }
+      input:not([type=submit]):not([type=button]):not([type=checkbox]):not([type=radio]), select, .chosen-choices {
+        //margin-bottom: $eg-input-offset-y; margin-left: $eg-input-offset-x;
+        height: 20px;
+        width: calc(100% - #{$eg-input-offset-x});
+        min-width: 40px;
+        font-size: 12px;
+        border: none;
+        border-radius: 0;
+        background: $eg-gray-lighter;
+        color: $eg-gray-darker;
+        padding: $eg-input-padding-x $eg-input-padding-y;
+        transition: .6s;
+        @include placeholder {
+          color: $eg-gray;
         }
-        .chosen-choices { padding: 0; min-height: 24px; line-height: 0; }
+        &:focus, &:hover {
+          background-color: darken($eg-gray-lighter, 2.5%);
+        }
+        .choices__inner {
+          min-height: 0;
+          padding: 0;
+          border: none;
+          .choices__input {
+            margin: 0;
+          }
+        }
+        .chosen-choices {
+          padding: 0;
+          min-height: 24px;
+          line-height: 0;
+        }
       }
     }
-    &-radio { position: relative; text-align: center; font-size: 12px;
-      label { position: relative; margin: 0; z-index: 2; }
-      label:first-of-type { width: 100%; position: absolute; opacity: 0; }
-      input:not(:first-of-type):checked + label { z-index: 0; }
-      input:not(:checked) + label { filter: grayscale(100%); }
+    &-radio {
+      position: relative;
+      text-align: center;
+      font-size: 12px;
+      label {
+        position: relative;
+        margin: 0;
+        z-index: 2;
+      }
+      label:first-of-type {
+        width: 100%;
+        position: absolute;
+        opacity: 0;
+      }
+      input:not(:first-of-type):checked + label {
+        z-index: 0;
+      }
+      input:not(:checked) + label {
+        filter: grayscale(100%);
+      }
     }
-    &-cell { padding: 0; border-top-color: $eg-panel-bg-color; top: 34px;
-      &:not(:last-of-type) { border-left-color: $eg-panel-bg-color; }
+    &-cell {
+
+      .collapse {
+        margin-top: 5px;
+      }
+      /*padding: 0; border-top-color: $eg-panel-bg-color; top: 34px;
+      &:not(:last-of-type) { border-left-color: $eg-panel-bg-color; }*/
     }
-    &-date-to { top: 35%; right: 5px; transform: translateY(-50%); background-color: $eg-gray-light; padding: 4px; border-radius: 50%; opacity: 0.5; height: $eg-date-btn-size; width: $eg-date-btn-size; font-size: $eg-date-btn-size/2; text-align: center; transition: .4s;
-      &:hover { opacity: 1; }
+    &-date-to {
+      z-index: 1;
+      top: 50%;
+      right: 5px;
+      transform: translateY(-50%);
+      background-color: $eg-gray-light;
+      padding: 4px;
+      border-radius: 50%;
+      opacity: 0.5;
+      height: $eg-date-btn-size;
+      width: $eg-date-btn-size;
+      font-size: $eg-date-btn-size/2;
+      text-align: center;
+      transition: .4s;
+      &:hover {
+        opacity: 1;
+      }
     }
-    select option:first-child { color: $eg-gray; }
+    select option:first-child {
+      color: $eg-gray;
+    }
   }
 
-  &-point { height: $eg-point-empty-size; width: $eg-point-empty-size; display: inline-block; border-radius: $eg-point-radius; margin-right: $eg-point-offset;
-    &-empty { background-color: $eg-gray-lighter; margin-left: ($eg-point-openable-size - $eg-point-empty-size) / 2; }
-    &-openable { height: $eg-point-openable-size; width: $eg-point-openable-size; background-color: $eg-color-primary; text-align: center; color: white; line-height: $eg-point-openable-size; font-size: $eg-point-fontsize; }
+  &-point {
+    height: $eg-point-empty-size;
+    width: $eg-point-empty-size;
+    display: inline-block;
+    border-radius: $eg-point-radius;
+    margin-right: $eg-point-offset;
+    &-empty {
+      background-color: $eg-gray-lighter;
+      margin-left: ($eg-point-openable-size - $eg-point-empty-size) / 2;
+    }
+    &-openable {
+      height: $eg-point-openable-size;
+      width: $eg-point-openable-size;
+      background-color: $eg-color-primary;
+      text-align: center;
+      color: white;
+      line-height: $eg-point-openable-size;
+      font-size: $eg-point-fontsize;
+    }
     @for $i from 1 through 4 {
       &-depth-#{$i} {
-        &.grid-point-empty { margin-left: $eg-point-empty-offset + ($i * $eg-point-offset); }
-        &.grid-point-openable { margin-left: $i * $eg-point-offset; }
+        &.grid-point-empty {
+          margin-left: $eg-point-empty-offset + ($i * $eg-point-offset);
+        }
+        &.grid-point-openable {
+          margin-left: $i * $eg-point-offset;
+        }
         &:before {
           content: '';
           position: absolute;
@@ -159,8 +292,9 @@ $eg-fade-overflow:          35px !default; // 'false'
   }
 
 }
-.dropdown-checkbox-list{
-  input:checked + .dropdown-item{
+
+.dropdown-checkbox-list {
+  input:checked + .dropdown-item {
     background-color: $primary;
   }
 }

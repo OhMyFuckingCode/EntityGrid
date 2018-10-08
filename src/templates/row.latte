@@ -18,10 +18,7 @@
         {/form}
     {else}
         <div n:if="$selectable" class="grid-cell grid-cell--fit grid-cell-select">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="{$ctrlId}-selected" data-row-select="{$item->id}">
-                <label class="custom-control-label" for="{$ctrlId}-selected">&nbsp;</label>
-            </div>
+            {include #checkbox $selection->isChecked($item->id),$item->id}
         </div>
         {foreach $columns as $key => $column}
             {if !$column->isHidden()}{include #cell column=>$column}{/if}
@@ -33,7 +30,7 @@
         </div>
     {/if}
 </div>
-<div n:if="$grid->isTree()" class="d-contents" n:snippet="items" n:inner-foreach="$control->getItems() as $id => $row" n:inner-if="$expanded"
+<div n:if="$grid->isTree()" class="d-contents" n:snippet="items" n:inner-foreach="$control->getItems() as $id => $_row" n:inner-if="$expanded"
         {if $grid->isSortable()}data-sortable="{$control->link('Sort!')}"  data-control="{$ctrlId}" data-sortable-group="{$item->id}"{/if}>
     {control row-$id}
 </div>

@@ -1,4 +1,9 @@
-
+{define checkbox $checked,$id,$title,$class}
+    <div class="custom-control custom-checkbox" n:attr="title=>$title">
+        <input type="checkbox" n:attr="checked=>$checked"  class="custom-control-input" id="{$ctrlId}-selected-{$id}" data-row-select="{$id}">
+        <label class="custom-control-label d-block {$class}" for="{$ctrlId}-selected-{$id}"></label>
+    </div>
+{/define}
 {*
  * Perpage - sets how many items per page.
  * @var $pp int (inherited)

@@ -11,7 +11,7 @@ use Nette\SmartObject;
 /**
  * Class GridRow
  * @package Quextum\EntityGrid
- * @method onClick(Section $section, ?ActiveRow $item = NULL)
+ * @method onClick(Section $section)
  */
 class Action
 {

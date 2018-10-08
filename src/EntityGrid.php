@@ -101,24 +101,28 @@ class EntityGrid extends BaseGrid
         return new Multiplier(function ($name) {
             $action = $this->groupActions[$name];
             $button = new Button($action);
-            $button->onClick[] = function (Button $button) {
-                $post = $this->getPresenter()->getHttpRequest()->getPost();
-                $post = filter_var_array($post, [
-                    'exclude' => FILTER_VALIDATE_BOOLEAN,
-                    'ids' => [
-                        'filter' => FILTER_VALIDATE_INT,
-                        'flags' => FILTER_FORCE_ARRAY | FILTER_REQUIRE_ARRAY,
-                    ]
-                ]);
-                $source = clone $this->source;
-                $source->where($post['exclude'] ? 'NOT ' : '' . "{$source->getPrimary()} IN ?", array_filter($post['ids']));
-                foreach ($source as $item) {
+            $button->onClick[] = function (Button $button,Action $action) {
+                bdump('click');
+                $this->session->selection->set($this->getPresenter()->getHttpRequest()->getPost());
+                foreach ($this->getUserSelection() as $item) {
                     bdump($item);
-                    //$button->getAction()->onClick($this,$item);
+                    //$action->onClick($this,$item);
                 }
+
             };
             return $button;
         });
+    }
+
+
+
+    public function handleShowSelection(bool $show): void
+    {
+        $this->session->selection->set($this->getPresenter()->getHttpRequest()->getPost());
+        $this->session->showSelection = $show;
+        $this->redrawControl('items');
+        $this->redrawControl('groupActions');
+        $this['paginator']->redrawControl();
     }
 
     /**
@@ -167,7 +171,7 @@ class EntityGrid extends BaseGrid
 
     protected function beforeRender():void
     {
-        if ($this->session->search) {
+        if ($this->session->search || $this->session->showSelection) {
             $this->tree = null;
         }
         parent::beforeRender();
