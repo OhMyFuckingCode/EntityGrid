@@ -83,10 +83,10 @@ export default class EntityGrid {
 	 */
 	constructor(element) {
 		window.grids[element.id] = this;
-
 		if (!element.id) {
 			throw Error('EntityGrid element must have id.');
 		}
+		element.dataGrid = this;
 		this.element = element;
 		this.control = element.dataset.control;
 		this.ids = new GridLocalStorage(element.id + '-ids');
@@ -126,6 +126,13 @@ export default class EntityGrid {
 		}
 	}
 
+	/**
+	 * @param {Number[]} ids
+	 */
+	deselect(ids) {
+		for (let id of ids)this.ids.remove(id);
+	}
+
 	destroy() {
 		delete window.grids[this.element.id];
 	}
@@ -135,17 +142,17 @@ export default class EntityGrid {
 	}
 
 	select(checkbox) {
-		const value = checkbox.dataset.rowSelect, checked = checkbox.checked;
+		const value = Number(checkbox.dataset.rowSelect) || checkbox.dataset.rowSelect, checked = checkbox.checked;
 		if (value === 'exclude') {
 			this.ids.clear();
 			this.status.set('exclude', checked);
 			for (let e of this.getSelects())e.checked = checked;
 			this.element.querySelector(EntityGrid.CHECKBOX_ALL_SELECTOR).checked = checked;
-		}else if (value === 'all') {
-			for (let e of this.getSelects()){
+		} else if (value === 'all') {
+			for (let e of this.getSelects()) {
 				e.checked = checked;
 				this.select(e);
-			};
+			}
 		} else {
 			const exclude = this.status.has('exclude');
 			this.ids.set(value, exclude != checked);
@@ -214,4 +221,34 @@ export default class EntityGrid {
 
 }
 
-export {GridLocalStorage, EntityGrid};
+class GridExtension {
+	constructor(naja) {
+		naja.addEventListener('load', this.initGrids.bind(this));
+		naja.addEventListener('success', this.success.bind(this));
+	}
+
+	initGrids() {
+		for (let e of document.querySelectorAll('[data-entity-grid]')) e.dataGrid || new EntityGrid(e);
+	}
+
+	success({response}) {
+		if (response && response.grid) {
+			for (var id in response.grid) {
+				if (response.grid.hasOwnProperty(id)) {
+					const gridElement = document.getElementById(id);
+					if (gridElement) {
+						const grid = gridElement.dataGrid;
+						const actions = response.grid[id];
+						for (var action in actions) {
+							if (actions.hasOwnProperty(action) && typeof grid[action] === 'function') {
+								grid[action](actions[action]);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+export {GridLocalStorage, EntityGrid, GridExtension};

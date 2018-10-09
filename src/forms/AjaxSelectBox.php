@@ -91,7 +91,7 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
         $do = $this->lookupPath(Presenter::class) . self::NAME_SEPARATOR . static::LOAD_SIGNAL;
         $control->data('select', array_filter(array_merge([
             'data' => $data,
-            'searchHighlight' => true,
+            'searchHighlight' => false,
             'ajax' => $presenter->link('this', [Presenter::SIGNAL_KEY => $do]),
             'placeholderText' => $this->translate($control->placeholder??'//entityGrid.select.placeholder'),
             'searchPlaceholder' => $this->translate('//entityGrid.search'),
@@ -233,20 +233,26 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
             /** @var Presenter $presenter */
             $presenter = $this->lookup(Presenter::class);
             $request = $presenter->getHttpRequest();
-            $response = $this->loadData($request->getQuery('search'));
+            $post = filter_var_array($request->getQuery(),[
+                'search'=>FILTER_REQUIRE_SCALAR,
+                'offset'=>FILTER_VALIDATE_INT
+            ]);
+            $response = $this->loadData($post['search'],$post['offset']);
+            $res = $presenter->getHttpResponse();
+            $res->setExpiration(60*5);
+            $res->addHeader('Cache-Control', 'public');
             $presenter->sendJson($response);
         }
     }
 
-
-    protected function loadData($search = null)
+    protected function loadData($search = null,int $offset = 0)
     {
         $selection = clone $this->selection;
         if (\is_array($search)) {
             $selection->where([$this->valueField => $search]);
         } else {
             $this->onFilter($this, $selection, $search);
-            $selection->limit($this->limit);
+            $selection->limit($this->limit,$offset)->order("$this->valueField ASC");
         }
         return $this->fetchData($selection);
     }
