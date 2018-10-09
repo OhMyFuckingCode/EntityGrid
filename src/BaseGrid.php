@@ -140,7 +140,6 @@ class BaseGrid extends Section
     protected function beforeRender():void
     {
         parent::beforeRender();
-        bdump($this->session->selection);
         $this->template->showSelection = $this->session->showSelection;
         $this->template->uniqueId = $this->getSessionSectionName();
         $this->template->title = $this->title;

@@ -364,7 +364,7 @@ class Action
         if(\is_string($this->callback)){
             Callback::toReflection([$section,$this->callback])->invokeArgs($section,array_merge(['item'=>$row],$this->params));
         }elseif(\is_callable($this->callback)){
-            Callback::toReflection([$this->callback])->invokeArgs($section,array_merge(['item'=>$row],$this->params));
+            Callback::toReflection($this->callback)->invokeArgs($section,array_merge(['item'=>$row],$this->params));
         }
     }
 
