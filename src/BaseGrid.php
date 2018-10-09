@@ -257,6 +257,7 @@ class BaseGrid extends Section
     {
         $this->title = $title;
     }
+
     public function setValue(ActiveRow $item, string $column, bool $value): void
     {
         $this->model->update($item, ArrayHash::from([

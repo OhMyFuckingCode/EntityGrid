@@ -170,7 +170,8 @@ class EntityGrid extends BaseGrid
         $this->model->delete($item);
     }
 
-    public function setValue(EntityGrid $grid,Section $section,ActiveRow $item, string $column, bool $value): void
+    //public function setValue(EntityGrid $grid,Section $section,ActiveRow $item, string $column, bool $value): void
+    public function setValue(ActiveRow $item, string $column, bool $value): void
     {
         $this->model->update($item, ArrayHash::from([
             $column => $value
