@@ -81,7 +81,7 @@ class IdSelection
         if ($this->exclude) {
             $this->ids && $selection->where("NOT {$selection->getPrimary()} IN ?", array_keys($this->ids));
         } else {
-            $selection->where("{$selection->getPrimary()} IN ?", array_keys($this->ids));
+            $selection->where([$selection->getPrimary() => array_keys($this->ids)]);
         }
     }
 

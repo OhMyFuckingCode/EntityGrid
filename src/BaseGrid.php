@@ -40,6 +40,9 @@ class BaseGrid extends Section
     /** @var  Selection|null */
     protected $userSelection;
 
+    /** @var  Control */
+    protected $control;
+
     /**
      * EntityGrid constructor.
      * @param IModel $model
@@ -61,9 +64,13 @@ class BaseGrid extends Section
         $this->session = $session->data instanceof SessionData ? $session->data : $session->data = new SessionData([
             'order' => $this->order
         ]);
+        $this->control = new Control($this->getSessionSectionName());
         parent::presenterAttached($presenter);
     }
-
+    public function afterRender():void
+    {
+        $this->control->send($this->presenter);
+    }
 
     public function isTree(): bool
     {
@@ -133,6 +140,7 @@ class BaseGrid extends Section
     protected function beforeRender():void
     {
         parent::beforeRender();
+        bdump($this->session->selection);
         $this->template->showSelection = $this->session->showSelection;
         $this->template->uniqueId = $this->getSessionSectionName();
         $this->template->title = $this->title;

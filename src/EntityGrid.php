@@ -27,6 +27,8 @@ class EntityGrid extends BaseGrid
     /** @var  array */
     protected $allConfigs;
 
+
+
     public function __construct(array $allConfigs, array $config, IModel $model, Selection $source, $prefix)
     {
         parent::__construct($model, $source, $prefix);
@@ -156,7 +158,8 @@ class EntityGrid extends BaseGrid
     public function delete(Section $section, ?ActiveRow $row = null)
     {
         $this->deleteEntity($row);
-        $this->session->selection->remove($row->getPrimary());
+        $this->session->selection->remove($id = $row->getPrimary());
+        $this->control->deselect[$id];
         $this->redrawControl('items');
     }
 
@@ -179,6 +182,8 @@ class EntityGrid extends BaseGrid
         }
         parent::beforeRender();
     }
+
+
 
 
 }

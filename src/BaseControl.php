@@ -112,13 +112,16 @@ abstract class BaseControl extends Control
             $this->redrawControl('flashes');
         }
     }
-
+    protected function afterRender():void
+    {
+    }
     public function render():void
     {
         $this->init();
         $this->beforeRender();
         $this->template->setFile($this->getTemplateFile());
         $this->template->render();
+        $this->afterRender();
     }
 
     protected function init():void
