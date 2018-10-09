@@ -16,6 +16,8 @@ class Control
     /** @var  string */
     protected $id;
 
+    protected $changed = false;
+
     public $deselect = [];
 
     /**
@@ -31,13 +33,14 @@ class Control
     public function deselect($id):self
     {
         $this->deselect[] = $id;
+        $this->changed = true;
         return $this;
     }
 
 
     public function send(Presenter $presenter):self
     {
-        $presenter->payload->grid[$this->id] = $this;
+        $this->changed && $presenter->payload->grid[$this->id] = $this;
         return $this;
     }
 
