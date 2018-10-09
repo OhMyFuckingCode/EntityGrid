@@ -3,6 +3,7 @@ visible: Zobrazené
 hidden: Skryté
 add-item: Přidat položku
 show-n-hide-cols: Zobrazit/Skrýt sloupce
+switch-value: Určitě přepnout hodnotu sloupečku '%col%' položky '%id%#'?
 search: Hledat
 no-results: Žádné výsledky
 select: Zvolte

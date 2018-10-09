@@ -8,8 +8,10 @@ namespace Quextum\EntityGrid;
 
 use Nette\Application\UI\Presenter;
 use Nette\Database\DriverException;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\InvalidArgumentException;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
 /**
@@ -256,7 +258,12 @@ class BaseGrid extends Section
     {
         $this->title = $title;
     }
-
+    public function setValue(ActiveRow $item, string $column, bool $value): void
+    {
+        $this->model->update($item, ArrayHash::from([
+            $column => $value
+        ]));
+    }
 
 }
 

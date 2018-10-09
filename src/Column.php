@@ -68,6 +68,9 @@ class Column
     /** @var  string */
     protected $class;
 
+    /** @var string */
+    public $handle;
+
     /**
      * GridColumn constructor.
      * @param string $name

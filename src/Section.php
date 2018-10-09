@@ -234,6 +234,10 @@ class Section extends BaseControl
         $this->redrawControl('items');
     }
 
+
+
+
+
     /*
         public function handleSetSelected(int $id, bool $selected = true)
         {

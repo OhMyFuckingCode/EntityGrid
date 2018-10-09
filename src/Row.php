@@ -186,4 +186,10 @@ class Row extends Section
         return $this->setExpanded($expanded);
     }
 
+    public function handleSetValue(string $column, bool $value)
+    {
+        $this->grid->setValue($this->item, $column, $value);
+        $this->redrawControl('row');
+    }
+
 }

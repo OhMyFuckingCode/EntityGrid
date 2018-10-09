@@ -128,7 +128,7 @@
 
         <a n:tag-if="$link = $column->getLink($control,$item)" href="{$link}" class="ajax">
             {if $column->type == 'bool'}
-                {include bool, value=>$value}
+                {include bool, value=>$value, column=>$column}
             {elseif $value!==null}
                 {if $_template = $column->getTemplate()}
                     {include $_template value=>$value,column=>$column}
@@ -233,5 +233,7 @@
  * @edit: jax 20.8.2018
  *}
 {define bool}
-    <i n:class="fas, $value ? 'fa-check text-success' : 'fa-times text-muted faded'" {*ifset $value}title="{$value}"{/ifset*}></i>
+    <a n:tag-if="isset($column->handle)" n:href="setValue!, $column->getColumn(), !$value" data-confirm="{_"entityGrid.switch-value", ['col' => $column->getName(), 'id' => $item]}" class="ajax">
+        <i n:class="fas, $value ? 'fa-check text-success' : 'fa-times text-muted faded'" {*ifset $value}title="{$value}"{/ifset*}></i>
+    </a>
 {/define}
