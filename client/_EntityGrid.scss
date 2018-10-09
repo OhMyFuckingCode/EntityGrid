@@ -36,6 +36,7 @@ $eg-input-height: 24px !default;
 
 // Nevim jeste
 $eg-date-btn-size: 24px !default;
+$eg-scrollbar-size: 4px !default;
 
 // Variables : Tree points
 $eg-point-empty-size: 10px !default;
@@ -58,15 +59,25 @@ $eg-fade-overflow: 35px !default; // 'false'
  * ==== GRID ====
  * basic styles for grid layout
  */
-.table-container {
-  @if $eg-fixed-height != false {
-    height: $eg-fixed-height;
-  }
-  position: relative;
-  border: 1px solid $eg-gray-lighter;
-}
 
 .grid {
+
+  &-container {
+    @if $eg-fixed-height != false { height: $eg-fixed-height; }
+    position: relative;
+    border-radius: $eg-input-radius;
+    border: 1px solid $eg-panel-bg-color;
+    ::-webkit-scrollbar {
+      background: $eg-panel-bg-color;
+      width: $eg-scrollbar-size;
+      height: $eg-scrollbar-size;
+      position: fixed;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: $eg-color-primary;
+      border-radius: $eg-input-radius*2;
+    }
+  }
 
   &-table {
     display: table;
@@ -86,12 +97,7 @@ $eg-fade-overflow: 35px !default; // 'false'
       }
     }
     form {
-      //.grid-cell:not(:last-of-type) { padding: 0; }
       .grid-cell {
-        /*.form-control {
-          border-color: transparent;
-          background-color: transparent;
-        }*/
         textarea {
           min-height: 35px;
         }
@@ -124,7 +130,7 @@ $eg-fade-overflow: 35px !default; // 'false'
     &-actions {
       position: sticky;
       right: 0;
-      padding: 0;
+      padding: 0 $eg-scrollbar-size+2 0 4px;
       width: 1px;
       background-color: $eg-panel-bg-color;
       border-left: 1px $eg-gray-lighter solid;
@@ -306,6 +312,18 @@ $eg-fade-overflow: 35px !default; // 'false'
           height: 1px;
           font-size: 0;
         }
+      }
+    }
+  }
+
+  &-pagination {
+    .page-link { color: $eg-color-primary; }
+    .page-item {
+      &, &.disabled {
+        .page-link { background: $eg-panel-bg-color; border: none; }
+      }
+      &.active {
+        .page-link { background: darken($eg-panel-bg-color,5%); }
       }
     }
   }
