@@ -22,3 +22,6 @@ btn:
     detail: Zobrazit detail
     link: Odkaz
     synchronize: Synchronizovat
+input:
+    date:
+        from-to: Zadat datum OD a DO

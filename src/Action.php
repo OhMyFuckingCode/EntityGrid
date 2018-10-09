@@ -19,7 +19,7 @@ class Action
 
     use SmartObject;
 
-    const DEFAULT_CLASSES = ['btn', 'btn-secondary'];
+    const DEFAULT_CLASSES = ['btn', 'btn-light'];
 
     /** @var  callable[] */
     public $onClick;

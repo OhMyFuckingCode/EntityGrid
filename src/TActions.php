@@ -80,21 +80,6 @@ trait TActions
         return $action;
     }
 
-    public function addAction(string $name, callable $callback = null): Action
-    {
-        return $this->_addAction('actions', $name, $callback);
-    }
-
-    public function addGroupAction(string $name, callable $callback = null): Action
-    {
-        return $this->_addAction('groupActions', $name, $callback);
-    }
-
-    public function addGlobalAction(string $name, callable $callback = null): Action
-    {
-        return $this->_addAction('globalActions', $name, $callback);
-    }
-
     /**
      * @return Action[]
      */

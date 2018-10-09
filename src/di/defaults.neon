@@ -29,7 +29,7 @@ actions:
 		confirm: //forms.confirm.delete
 	groupDelete:
 		icon: fa fa-trash
-		class: [btn,text-danger]
+		class: [btn,btn-light,text-danger]
 		title: delete
 		confirm: group-delete
 	detail:
