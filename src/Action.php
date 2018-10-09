@@ -361,10 +361,15 @@ class Action
         if($this->onClick){
             $this->onClick($section,$row);
         }
+        $args = [
+            'grid'=>$grid,
+            'section'=>$section,
+            'item'=>$row
+        ];
         if(\is_string($this->callback)){
-            Callback::toReflection([$section,$this->callback])->invokeArgs($section,array_merge(['item'=>$row],$this->params));
+            Callback::toReflection([$section,$this->callback])->invokeArgs($section,array_merge($args,$this->params));
         }elseif(\is_callable($this->callback)){
-            Callback::toReflection($this->callback)->invokeArgs($section,array_merge(['item'=>$row],$this->params));
+            Callback::toReflection($this->callback)->invokeArgs($section,array_merge($args,$this->params));
         }
     }
 

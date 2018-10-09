@@ -107,7 +107,9 @@ class EntityGrid extends BaseGrid
                 $this->session->selection->set($this->getPresenter()->getHttpRequest()->getPost());
                 foreach ($this->getUserSelection() as $item) {
                     $action->perform($this, $button->getSection(), $item);
+                    $redraw = true;
                 }
+                isset($redraw) && $this->redrawControl('items');
             };
             return $button;
         });
@@ -159,7 +161,7 @@ class EntityGrid extends BaseGrid
     {
         $this->deleteEntity($row);
         $this->session->selection->remove($id = $row->getPrimary());
-        $this->control->deselect[$id];
+        $this->control->deselect($id);
         $this->redrawControl('items');
     }
 
@@ -168,7 +170,7 @@ class EntityGrid extends BaseGrid
         $this->model->delete($item);
     }
 
-    public function setValue(ActiveRow $item, string $column, bool $value): void
+    public function setValue(EntityGrid $grid,Section $section,ActiveRow $item, string $column, bool $value): void
     {
         $this->model->update($item, ArrayHash::from([
             $column => $value

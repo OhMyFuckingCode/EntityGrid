@@ -1,0 +1,66 @@
+defaults:
+	formatter: @grid.formatter
+options:
+	bootstrap: 4
+actions:
+	link:
+		ajax: false
+		icon: fas fa-link
+		attrs: [target: _blank]
+		class: [btn,btn-sm,text-success]
+		title: link
+		link: [:Front:Entity:detail,[url]]
+		"off": []
+	create:
+		class: [btn,btn-light,text-muted]
+		link: :add
+		icon: fa fa-plus text-success
+		"off": []
+		label: create
+		title: create
+	edit:
+		icon: fa fa-edit
+		class: [btn,btn-sm,text-muted]
+		title: edit-in-row
+	delete:
+		icon: fa fa-trash
+		class: [btn,btn-sm,text-danger]
+		title: delete
+		confirm: //forms.confirm.delete
+	groupDelete:
+		icon: fa fa-trash
+		class: [btn,text-danger]
+		title: delete
+		confirm: group-delete
+	detail:
+		icon: fas fa-pen
+		class: [btn,btn-sm,text-primary]
+		title: detail
+		link: [:detail,[id]]
+		"off": []
+inputs:
+	checkbox: addRadioList
+	like: addText
+	match: addText
+	regexp: addText
+	text: addText
+	article: addTextArea
+	datetime: addDateTime
+	date: addDate
+	time: addTime
+	ajaxselect: addAjaxSelectBox
+	select: addMultiselect
+	int: addInteger
+	range:
+		- addInteger
+		- addInteger
+	datetimerange:
+		- addDateTimeOptional
+		- addDateTimeOptional
+	daterange:
+		- addDate
+		- addDate
+	timerange:
+		- addTime
+		- addTime
+search: null
