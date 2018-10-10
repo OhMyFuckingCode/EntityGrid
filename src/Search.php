@@ -131,4 +131,23 @@ class Search extends BaseControl
         $this->template->search = $this->session->search;
     }
 
+    public function handleUnselectSearch():void
+    {
+        $presenter = $this->getPresenter();
+        $source = $this->grid->getSelection();
+        $this->apply($source);
+        $ids = $source->select('id')->fetchPairs(null,'id');
+        $this->session->selection->removeIds($ids);
+        $presenter->sendJson($ids);
+    }
+    public function handleSelectSearch():void
+    {
+        $presenter = $this->getPresenter();
+        $source = $this->grid->getSelection();
+        $this->apply($source);
+        $ids = $source->select('id')->fetchPairs(null,'id');
+        $this->session->selection->addIds($ids);
+        $presenter->sendJson($ids);
+    }
+
 }

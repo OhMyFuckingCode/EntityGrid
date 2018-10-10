@@ -117,12 +117,14 @@
     <div n:class="'grid-cell text-nowrap', is_string($value)?text-truncate, $column->getClass()" >
 
         {if $grid->isTree() && $column->position == 1}
-            {if $_row->getChildren()->count('*')}
-                <a n:class="'grid-point grid-point-openable ajax', $control->getDepth() ? 'grid-point-depth-'.$control->getDepth()" href="{$control->link('SetExpanded!',[!$_row->isExpanded()])}">
-                    <i class="fas fa-{$_row->isExpanded()?minus:plus}"></i>
+            {var $depth = $control->getDepth()}
+            {if $row->getChildren()->count()}
+                <a n:class="'grid-point grid-point-openable ajax', $depth ? 'grid-point-depth-'.$depth"
+                        href="{$control->link('SetExpanded!',[!$row->isExpanded()])}">
+                    <i class="fas fa-{$row->isExpanded()?minus:plus}"></i>
                 </a>
             {else}
-                <span n:class="'grid-point grid-point-empty', $control->getDepth() ? 'grid-point-depth-'.$control->getDepth()"><span></span></span>
+                <span n:class="'grid-point grid-point-empty', $depth  ? 'grid-point-depth-'.$depth"><span></span></span>
             {/if}
         {/if}
 

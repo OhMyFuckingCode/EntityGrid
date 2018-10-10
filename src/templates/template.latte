@@ -15,6 +15,9 @@
                     <span class="btn disabled btn-light">
                         {_'entityGrid.selection.selected'}
                     </span>
+                    <a class="btn btn-light text-info ajax" data-grid-selection="clean" n:href="cleanSelection!" data-naja-history="off" title="{_'entityGrid.selection.clean'}">
+                        <i class="fa fa-broom"></i>
+                    </a>
                     <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection" data-naja-history="off">
                         <span class="grid-selection-all" data-grid-selection-count title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>
                     </a>
@@ -26,9 +29,6 @@
                             {control groupAction-$name}
                         {/if}
                     {/foreach}
-                </div>
-                <div class="btn-group mr-2">
-                    {include #hide}
                 </div>
                 <div class="grid-global-actions">
                     {foreach $globalActions as $name=>$action}
@@ -51,9 +51,12 @@
 
                     {* ---- HEADER:NAMES ---- *}
                     <div class="text-muted grid-row grid-header-row">
-                        <div n:if="$selectable" class="grid-cell grid-header-cell grid-cell--fit" n:snippet="selection" >
-                            <div data-grid-selection="{$control->getSource()->count()}"></div>
-                            {include #checkbox $selection->exclude,'exclude',('entityGrid.selection.exclude'|translate),'fas fa-hand-pointer'}
+                        <div n:if="$selectable" class="grid-cell grid-header-cell grid-cell--fit " n:snippet="selection" >
+                            <div data-grid-selection="{$control->getSource()->count()}">
+                                {*include #checkbox false,'add-search',('entityGrid.selection.addSearch'|translate),'fas fa-search-plus'*}
+                                {*include #checkbox false,'remove-search',('entityGrid.selection.removeSearch'|translate),'fas fa-search-minus'*}
+                                {include #checkbox false,all,('entityGrid.selection.selectAll'|translate)}
+                            </div>
                         </div>
                         <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()" n:class="$column->type == 'int' ? grid-cell--fit, 'grid-cell grid-header-cell text-nowrap pr-3'">
                             {_$column->getLabel()}
@@ -62,7 +65,7 @@
                                         class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i></a>*}
                         </div>
                         <div class="text-right grid-cell grid-cell-actions grid-header-cell">
-                            {_"entityGrid.actions"}
+                            {*_"entityGrid.actions"*}{include #hide}
                         </div>
                     </div>
                     {* ---- HEADER:SEARCH ---- *}

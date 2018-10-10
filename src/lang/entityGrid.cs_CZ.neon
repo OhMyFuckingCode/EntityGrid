@@ -9,9 +9,13 @@ no-results: Žádné výsledky
 select: Zvolte
 resultCount: Počet výsledků
 refresh: Obnovit
+pagination:
+    site: Strana
+    count: Počet výsledků
 selection:
     selectAll: Zvolit vše
-    exclude: Mód excluze/include
+    selectSearch: Přidat výsledky vyhledávání do selekce
+    unselectSearch: Odebrat výsledky vyhledávání ze selekce
     shown: Je zobrazena současná selekce položek
     selected: 'Hromadný výběr:'
 btn:

@@ -14,22 +14,17 @@ use Nette\Database\Table\Selection;
 class IdSelection
 {
 
-    /** @var  bool */
-    public $exclude;
-
     /** @var  int[] */
     public $ids = [];
 
     public function set($data)
     {
         $post = filter_var_array($data, [
-            'exclude' => FILTER_VALIDATE_BOOLEAN,
             'ids' => [
                 'filter' => FILTER_VALIDATE_INT,
                 'flags' => FILTER_FORCE_ARRAY | FILTER_REQUIRE_ARRAY,
             ]
         ]);
-        $this->setExclude($post['exclude']);
         $this->setIds($post['ids']);
         return $this;
     }
@@ -46,24 +41,9 @@ class IdSelection
         return $this;
     }
 
-    /**
-     * @param boolean $exclude
-     * @return IdSelection
-     */
-    public function setExclude($exclude): self
-    {
-        $this->exclude = (bool)$exclude;
-        return $this;
-    }
-
     public function has(int $id):bool
     {
         return isset($this->ids[$id]);
-    }
-
-    public function isChecked(int $id): bool
-    {
-        return $this->exclude !== $this->has($id);
     }
 
     /**
@@ -76,13 +56,39 @@ class IdSelection
         return $this;
     }
 
-    public function filter(Selection $selection): void
+    /**
+     * @param \int[] $ids
+     * @return IdSelection
+     */
+    public function addIds($ids): self
     {
-        if ($this->exclude) {
-            $this->ids && $selection->where("NOT {$selection->getPrimary()} IN ?", array_keys($this->ids));
-        } else {
-            $selection->where([$selection->getPrimary() => array_keys($this->ids)]);
-        }
+        $this->ids = array_merge(array_flip($ids));
+        return $this;
     }
 
+    /**
+     * @param \int[] $ids
+     * @return IdSelection
+     */
+    public function removeIds($ids): self
+    {
+        $this->ids = array_intersect_key($this->ids, array_flip($ids));
+        return $this;
+    }
+
+    public function filter(Selection $selection): void
+    {
+        $selection->where([$selection->getPrimary() => array_keys($this->ids)]);
+    }
+
+    public function ids():array
+    {
+        return array_keys($this->ids);
+    }
+
+    public function clean()
+    {
+        $this->ids = [];
+        return $this;
+    }
 }

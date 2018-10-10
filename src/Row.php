@@ -57,7 +57,9 @@ class Row extends Section
         $this->columns = $columnDefinitions;
     }
 
-
+    /**
+     * @return GroupedSelection|Selection
+     */
     public function getSource():Selection
     {
         return $this->item->related($this->grid->tree);
@@ -65,10 +67,12 @@ class Row extends Section
 
     /**
      * @param boolean $selected
+     * @return Row
      */
-    public function setSelected(bool $selected = true)
+    public function setSelected(bool $selected = true):self
     {
         $this->selected = $selected;
+        return $this;
     }
 
     protected function beforeRender():void
@@ -86,7 +90,7 @@ class Row extends Section
 
     /**
      * @param boolean $selectable
-     * @return $this|Row
+     * @return Row
      */
     public function setSelectable(bool $selectable = true): self
     {
@@ -104,10 +108,12 @@ class Row extends Section
 
     /**
      * @param boolean $editMode
+     * @return Row
      */
-    public function setEditMode(bool $editMode)
+    public function setEditMode(bool $editMode): self
     {
         $this->editMode = $editMode;
+        return $this;
     }
 
     public function isEditable(): bool
@@ -147,14 +153,14 @@ class Row extends Section
     }
 
     /**
-     * @return mixed
+     * @return Selection|null
      */
-    public function getChildren()
+    public function getChildren():?Selection
     {
         return $this->childes ?: $this->childes = $this->getSource();
     }
 
-    public function getDepth()
+    public function getDepth(): int
     {
         /** @var Row $row */
         $row = $this->lookup(static::class, false);

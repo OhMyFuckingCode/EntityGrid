@@ -28,7 +28,6 @@ class EntityGrid extends BaseGrid
     protected $allConfigs;
 
 
-
     public function __construct(array $allConfigs, array $config, IModel $model, Selection $source, $prefix)
     {
         parent::__construct($model, $source, $prefix);
@@ -185,7 +184,10 @@ class EntityGrid extends BaseGrid
         parent::beforeRender();
     }
 
-
+    public function handleCleanSelection()
+    {
+        $this->session->selection->clean();
+    }
 
 
 }

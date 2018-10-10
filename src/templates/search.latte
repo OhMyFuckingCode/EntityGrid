@@ -2,8 +2,9 @@
 <div n:snippet="search" class="grid-row grid-search-row">
     {* ---- HEADER:SEARCH ---- *}
     {form searchForm class=>'ajax text-muted d-contents'}
-        <div n:if="$selectable" class="grid-cell grid-header-cell grid-cell--fit grid-search-cell text-center">
-            {include #checkbox false,all,('entityGrid.selection.selectAll'|translate)}
+        <div n:if="$selectable" class="grid-cell grid-header-cell grid-cell--fit grid-search-cell text-nowrap">
+            <a data-grid-selection="unselect-search" class="ajax" n:href="UnselectSearch!" title="{_'entityGrid.selection.unselectSearch'}"><i class="fa fa-minus-circle"></i></a>
+            <a data-grid-selection="select-search" class="ajax" n:href="SelectSearch!" title="{_'entityGrid.selection.selectSearch'}"><i class="fa fa-plus-circle"></i></a>
         </div>
         <div n:foreach="$columns as $key => $column" n:if="!$column->isHidden()"
                 class="grid-cell grid-search-cell grid-header-cell" n:inner-ifset="$form[$key]">
@@ -45,7 +46,7 @@
         <div class="grid-cell grid-cell-actions grid-header-cell grid-search-cell">
             <div class="btn-group float-right" role="group">
                 {input submit class=>'btn btn-sm btn-light text-primary'}
-                {if $search}{input cancel class=>'btn btn-secondary'}{/if}
+                {if $search}{input cancel class=>'btn btn-sm btn-secondary'}{/if}
             </div>
         </div>
     {/form}
