@@ -104,11 +104,7 @@ class EntityGrid extends BaseGrid
             $button = new Button($action);
             $button->onClick[] = function (Button $button, Action $action) {
                 $this->session->selection->set($this->getPresenter()->getHttpRequest()->getPost());
-                foreach ($this->getUserSelection() as $item) {
-                    $action->perform($this, $button->getSection(), $item);
-                    $redraw = true;
-                }
-                isset($redraw) && $this->redrawControl('items');
+                $action->perform($this, $button);
             };
             return $button;
         });
@@ -130,30 +126,32 @@ class EntityGrid extends BaseGrid
      * @param ActiveRow $row
      * @param ArrayHash $values
      */
-    public function editFormSucceeded(Row $gridRow, Form $form, ActiveRow $row, ArrayHash $values)
+    public function editFormSucceeded(Row $gridRow, Form $form, ActiveRow $row, ArrayHash $values): void
     {
         $this->model->update($row, $values);
         $this->setEditing($row->id, FALSE);
         $this->redrawControl('items');
     }
 
-    public function addFormSucceeded(Form $form, ArrayHash $values)
+    public function addFormSucceeded(Form $form, ArrayHash $values): void
     {
         $this->model->insert($values);
         $this->redrawControl('items');
     }
 
 
-    public function edit(Row $gridRow, IRow $row)
+    public function edit(Row $gridRow, IRow $row): void
     {
         $gridRow->setEditMode(TRUE);
         $this->setEditing($row->id, TRUE);
         $gridRow->redrawControl('row');
     }
 
-    public function groupDelete(Section $section, ?ActiveRow $row = null)
+    public function groupDelete(Section $section): void
     {
-        $this->delete($section, $row);
+        foreach ($this->getUserSelection() as $row){
+            $this->delete($section, $row);
+        }
     }
 
     public function delete(Section $section, ?ActiveRow $row = null)
@@ -161,7 +159,7 @@ class EntityGrid extends BaseGrid
         $this->deleteEntity($row);
         $this->session->selection->remove($id = $row->getPrimary());
         $this->control->deselect($id);
-        $this->redrawControl('items');
+        $section->redrawControl('items');
     }
 
     public function deleteEntity(ActiveRow $item): void
@@ -184,10 +182,14 @@ class EntityGrid extends BaseGrid
         parent::beforeRender();
     }
 
-    public function handleCleanSelection()
+    public function handleCleanSelection():void
     {
         $this->session->selection->clean();
+        $this->presenter->terminate();
     }
-
-
+    public function handleDumpSelection():void
+    {
+        bdump($this->session->selection);
+        $this->presenter->terminate();
+    }
 }

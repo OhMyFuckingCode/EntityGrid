@@ -15,9 +15,6 @@
                     <span class="btn disabled btn-light">
                         {_'entityGrid.selection.selected'}
                     </span>
-                    <a class="btn btn-light text-info ajax" data-grid-selection="clean" n:href="cleanSelection!" data-naja-history="off" title="{_'entityGrid.selection.clean'}">
-                        <i class="fa fa-broom"></i>
-                    </a>
                     <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection" data-naja-history="off">
                         <span class="grid-selection-all" data-grid-selection-count title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>
                     </a>

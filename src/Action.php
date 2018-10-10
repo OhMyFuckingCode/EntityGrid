@@ -356,15 +356,15 @@ class Action
         return $this;
     }
 
-    public function perform(EntityGrid $grid,Section $section,?ActiveRow $row):void
+    public function perform(EntityGrid $grid,Button $button):void
     {
+        $section = $button->getSection();
         if($this->onClick){
-            $this->onClick($section,$row);
+            $this->onClick($section);
         }
         $args = [
             'grid'=>$grid,
-            'section'=>$section,
-            'item'=>$row
+            'section'=>$section
         ];
         if(\is_string($this->callback)){
             Callback::toReflection([$section,$this->callback])->invokeArgs($section,array_merge($args,$this->params));

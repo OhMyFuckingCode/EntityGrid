@@ -18,7 +18,9 @@ selection:
     unselectSearch: Odebrat výsledky vyhledávání ze selekce
     shown: Je zobrazena současná selekce položek
     selected: 'Hromadný výběr:'
+    clean: Vyčistit
 btn:
+    group-delete: Odstranit zvolené položky
     import: Importovat
     create: Přidat položku
     delete: Odstranit
