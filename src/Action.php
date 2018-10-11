@@ -5,14 +5,13 @@ namespace Quextum\EntityGrid;
 use Nette\Application\UI\Component;
 use Nette\Application\UI\Link;
 use Nette\Database\Table\ActiveRow;
-use Nette\Database\Table\Selection;
 use Nette\SmartObject;
 use Nette\Utils\Callback;
 
 /**
  * Class GridRow
  * @package Quextum\EntityGrid
- * @method onClick(Section $section,?ActiveRow $item = null)
+ * @method onClick(Section $section, ?ActiveRow $item = null)
  */
 class Action
 {
@@ -54,10 +53,10 @@ class Action
     /** @var string[] */
     protected $off = ['history'];
 
-    /** @var array  */
+    /** @var array */
     protected $params = [];
 
-    /** @var bool  */
+    /** @var bool */
     protected $ajax = true;
 
     /** @var  string|null */
@@ -148,12 +147,12 @@ class Action
             return $this->link;
         }
         /** @var Row $row */
-        $row = $component->lookup(Row::class,false);
-        if($row){
+        $row = $component->lookup(Row::class, false);
+        if ($row) {
             /** @var ActiveRow $item */
             $item = $row->getItem();
         }
-        $params = null;
+        $params = [];
         if (\is_array($this->link)) {
             list($destination, $params) = $this->link;
             isset($item) && $params = array_intersect_key($item->toArray(), array_flip($params));
@@ -168,13 +167,15 @@ class Action
         foreach ($this->params as $key => $value) {
             if (is_numeric($key) && isset($item)) {
                 unset($this->params[$key]);
-                $this->params[$value] = $item->$value;
+                $params[$value] = $item->$value;
             } else {
-                $this->params[$key] = $value;
+                $params[$key] = $value;
             }
         }
-
-        return new Link($component, $destination, array_merge((array)$params, $this->params));
+        bdump($component->getParameters());
+        bdump([$destination,$params]);
+        bdump($component->link($destination,$params));
+        return $component->link($destination,$params);
     }
 
     /**
@@ -202,6 +203,7 @@ class Action
     {
         return $this->data;
     }
+
     /**
      * @param \string[] $class
      * @return Action
@@ -261,7 +263,7 @@ class Action
     public function setArgs(array $args)
     {
         foreach ($args as $prop => $arg) {
-            $this->{'set'.ucfirst($prop)}($arg);
+            $this->{'set' . ucfirst($prop)}($arg);
         }
         return $this;
     }
@@ -356,20 +358,20 @@ class Action
         return $this;
     }
 
-    public function perform(EntityGrid $grid,Button $button):void
+    public function perform(EntityGrid $grid, Button $button):void
     {
         $section = $button->getSection();
-        if($this->onClick){
+        if ($this->onClick) {
             $this->onClick($section);
         }
         $args = [
-            'grid'=>$grid,
-            'section'=>$section
+            'grid' => $grid,
+            'section' => $section
         ];
-        if(\is_string($this->callback)){
-            Callback::toReflection([$section,$this->callback])->invokeArgs($section,array_merge($args,$this->params));
-        }elseif(\is_callable($this->callback)){
-            Callback::toReflection($this->callback)->invokeArgs($section,array_merge($args,$this->params));
+        if (\is_string($this->callback)) {
+            Callback::toReflection([$section, $this->callback])->invokeArgs($section, array_merge($args, $this->params));
+        } elseif (\is_callable($this->callback)) {
+            Callback::toReflection($this->callback)->invokeArgs($section, array_merge($args, $this->params));
         }
     }
 
