@@ -1,6 +1,7 @@
 {define checkbox $checked,$id,$title,$class}
     <div class="custom-control custom-checkbox" n:attr="title=>$title">
-        <input type="checkbox" n:attr="checked=>$checked"  class="custom-control-input" id="{$ctrlId}-selected-{$id}" data-row-select="{$id}">
+        <input type="checkbox" n:attr="checked=>$checked" class="custom-control-input" id="{$ctrlId}-selected-{$id}"
+               data-row-select="{$id}">
         <label class="custom-control-label d-block {$class}" for="{$ctrlId}-selected-{$id}"></label>
     </div>
 {/define}
@@ -66,7 +67,8 @@
 
 {define hide}
     <div class="d-contents" n:snippet="show-panel" >
-        <button class="btn btn-light btn-sm text-muted dropdown-toggle" type="button" title="{_"entityGrid.show-n-hide-cols"}"
+        <button class="btn btn-light btn-sm text-muted dropdown-toggle" type="button"
+                title="{_"entityGrid.show-n-hide-cols"}"
                 id="{$ctrlId}-column-visibility-menu" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
             <i class="fas fa-eye"></i>
@@ -104,9 +106,9 @@
         {switch $column->getOrder()}
             {case true}
             <i class="fas fa-sort-up"></i>
-            {case false}
+        {case false}
             <i class="fas fa-sort-down"></i>
-            {default}
+        {default}
             <i class="fas fa-sort"></i>
         {/switch}
     </a>
@@ -154,13 +156,11 @@
                     {/ifset}
                 {elseif $ref = $column->getRelated()}
                     {var $ref = ($ref|before:'.')}
-                    {foreach $value as $rel}
-                        {ifset #$ref}
-                            {include #$ref value=>$rel,column=>$column}
-                        {else}
-                            {include #entity value=>$rel,column=>$column}
-                        {/ifset}
-                    {/foreach}
+                    {ifset #$ref}
+                        {include #$ref value=>$value,column=>$column}
+                    {else}
+                        {include #entity value=>$value,column=>$column}
+                    {/ifset}
                 {else}
                     {if $column->isEscaped()}{$value}{else}{$value|noescape}{/if}
                 {/if}
@@ -183,26 +183,44 @@
 <div class="badge badge-secondary" n:define="site">
     {$value->title}&nbsp;({$value->id})
 </div>
-<div class="badge badge-secondary" n:define="entity">
-    {$format($value)}&nbsp;#{$value->getPrimary(false)}
-</div>
-<div n:define="images">
+{define entity}
     {if $value instanceof Nette\Database\Table\Selection}
         <div class="dropdown" n:if="$count = $value->count()">
-            <button class="btn btn-light dropdown-toggle btn-sm" type="button" id="{$ctrlId}-{$column->getName()}-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-light dropdown-toggle btn-sm" type="button"
+                    id="{$ctrlId}-{$column->getName()}-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
                 {$count}
             </button>
             <div class="dropdown-menu" aria-labelledby="{$ctrlId}-{$column->getName()}-dropdown">
-                <div n:foreach="$value as $_v" class="dropdown-item" >
+                <div n:foreach="$value as $_v" class="dropdown-item">
+                    {$format($_v)}&nbsp;#{$_v->getPrimary(false)}
+                </div>
+            </div>
+        </div>
+    {else}
+        <div class="badge badge-secondary">{$format($value)}&nbsp;#{$value->getPrimary(false)}</div>
+    {/if}
+{/define}
+<div n:define="images">
+    {if $value instanceof Nette\Database\Table\Selection}
+        <div class="dropdown" n:if="$count = $value->count()">
+            <button class="btn btn-light dropdown-toggle btn-sm" type="button"
+                    id="{$ctrlId}-{$column->getName()}-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                {$count}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="{$ctrlId}-{$column->getName()}-dropdown">
+                <div n:foreach="$value as $_v" class="dropdown-item">
                     <div class="row">
                         <div class="col-auto">{include images value=>$image=$_v->image}</div>
-                        <div class="col"><a href="{plink Entity:detail table=>images,id=>$image->id}">#{$image->id}</a></div>
+                        <div class="col"><a href="{plink Entity:detail table=>images,id=>$image->id}">#{$image->id}</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     {else}
-        {var $meta = $value->related('images_meta','image_id')->fetch()}
+    {var $meta = $value->related('images_meta','image_id')->fetch()}
         <img src="{img $value->namespace/$value->filename ,30x30,exact}" width="30" height="30" class="cursor-pointer"
              alt="{$meta?$meta->alt:null}"
              data-toggle="popover" title="{$meta?$meta->alt:null}"
@@ -235,7 +253,8 @@
  * @edit: jax 20.8.2018
  *}
 {define bool}
-    <a n:tag-if="isset($column->handle)" n:href="setValue!, $column->getColumn(), !$value" data-confirm="{_"entityGrid.switch-value", ['col' => $column->getName(), 'id' => $item]}" class="ajax">
+    <a n:tag-if="isset($column->handle)" n:href="setValue!, $column->getColumn(), !$value"
+            data-confirm="{_"entityGrid.switch-value", ['col' => $column->getName(), 'id' => $item]}" class="ajax">
         <i n:class="fas, $value ? 'fa-check text-success' : 'fa-times text-muted faded'" {*ifset $value}title="{$value}"{/ifset*}></i>
     </a>
 {/define}
