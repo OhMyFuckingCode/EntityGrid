@@ -33,6 +33,8 @@
                             {input $input:$_key class=>'sr-only'}{label $input:$_key}
                         {/foreach}
                     </div>
+                    {case select}
+                    {input $key 'data-select'=>'{}'}
                     {default}
                     {input $key}
                 {/switch}

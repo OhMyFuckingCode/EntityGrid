@@ -94,6 +94,7 @@ class SearchFormFactory implements ISearchFormFactory
                     break;
             }
             $this->addInput($form, $def->getMethod(), $column, ...$nextArgs);
+
         }
         $options = $options['options'];
         /** if it is bootstrap, setup classes */

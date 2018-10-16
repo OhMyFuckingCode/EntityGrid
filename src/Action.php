@@ -172,9 +172,6 @@ class Action
                 $params[$key] = $value;
             }
         }
-        bdump($component->getParameters());
-        bdump([$destination,$params]);
-        bdump($component->link($destination,$params));
         return $component->link($destination,$params);
     }
 
