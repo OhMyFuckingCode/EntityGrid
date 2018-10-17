@@ -1,3 +1,4 @@
+imageLink: []
 defaults:
 	formatter: @grid.formatter
 options:
