@@ -30,4 +30,4 @@ btn:
     synchronize: Synchronizovat
 input:
     date:
-        from-to: Zadat datum OD a DO
+        from-to: Zadat rozsah
