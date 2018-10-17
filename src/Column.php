@@ -136,11 +136,14 @@ class Column
         }
         $link = new Link($control, $this->link);
         if ($this->params) {
-            foreach ($this->params as $param) {
-                $link->setParameter($param, $row->$param);
+            foreach ($this->params as $key => $param) {
+                if (is_numeric($key)) {
+                    $link->setParameter($param, $row->$param);
+                } else {
+                    $link->setParameter($key, $row->$param);
+                }
             }
         }
-
         return $link;
     }
 
@@ -285,7 +288,7 @@ class Column
     public function getValue(ActiveRow $row)
     {
         if ($this->type === 'self') {
-            if($this->name !== $this->column){
+            if ($this->name !== $this->column) {
                 return $row->{$this->column}??NULL;
             }
             return $row;

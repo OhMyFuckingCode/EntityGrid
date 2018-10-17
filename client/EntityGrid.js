@@ -1,3 +1,5 @@
+import qwest from "qwest";
+
 window.grids = {}; //For debugging purposes
 /**
  * @extends {Set}
@@ -27,11 +29,11 @@ class GridLocalStorage {
 	}
 
 	add(key) {
-		return this.data.add(key);
+		return this.data.add(Number(key) || key);
 	}
 
 	remove(key) {
-		return this.data.delete(key);
+		return this.data.delete(Number(key) || key);
 	}
 
 	size() {
@@ -43,7 +45,7 @@ class GridLocalStorage {
 	}
 
 	has(key) {
-		return this.data.has(key);
+		return this.data.has(Number(key) || key);
 	}
 
 	values() {
@@ -53,20 +55,15 @@ class GridLocalStorage {
 
 export default class EntityGrid {
 
+	static GRID_SELECTOR = '[data-entity-grid]';
 	static CHECKBOX_SELECTOR = '[data-row-select]';
-	static CHECKBOX_MODE_SELECTOR = '[data-row-select=exclude]';
 	static CHECKBOX_ALL_SELECTOR = '[data-row-select=all]';
-	static CHECKBOX_ROW_SELECTOR = '[data-row-select]:not([data-row-select=all]):not([data-row-select=exclude])';
+	static CHECKBOX_ROW_SELECTOR = '[data-row-select]:not([data-row-select=all])';
 
 	/**
 	 * @type {GridLocalStorage|Set}
 	 */
 	ids;
-
-	/**
-	 * @type {GridLocalStorage|Set}
-	 */
-	status;
 
 	/**
 	 * @type {HTMLDivElement}
@@ -89,8 +86,7 @@ export default class EntityGrid {
 		element.dataGrid = this;
 		this.element = element;
 		this.control = element.dataset.control;
-		this.ids = new GridLocalStorage(element.id + '-ids');
-		this.status = new GridLocalStorage(element.id + '-status');
+		this.ids = new GridLocalStorage(element.id);
 		element.addEventListener('change', this.onChange.bind(this));
 		element.addEventListener('destroy', this.destroy.bind(this));
 		const observer = new MutationObserver(this.observe.bind(this));
@@ -142,31 +138,79 @@ export default class EntityGrid {
 	}
 
 	select(checkbox) {
-		const value = Number(checkbox.dataset.rowSelect) || checkbox.dataset.rowSelect, checked = checkbox.checked;
-		if (value === 'exclude') {
-			this.ids.clear();
-			this.status.set('exclude', checked);
-			for (let e of this.getSelects())e.checked = checked;
-			this.element.querySelector(EntityGrid.CHECKBOX_ALL_SELECTOR).checked = checked;
-		} else if (value === 'all') {
+		const value = checkbox.dataset.rowSelect, checked = checkbox.checked;
+		if (value === 'all') {
 			for (let e of this.getSelects()) {
 				e.checked = checked;
 				this.select(e);
 			}
 		} else {
-			const exclude = this.status.has('exclude');
-			this.ids.set(value, exclude != checked);
+			this.ids.set(value, checked);
 		}
 	}
 
+	/**
+	 * @param {HTMLAnchorElement} a
+	 * @param {Event} e
+	 * @returns {boolean}
+	 */
+	handleGroupAction(a, e) {
+		console.log('handleGroupAction super');
+
+	}
+
+	/**
+	 *
+	 * @param {HTMLAnchorElement} a
+	 * @param {Event} e
+	 * @returns {boolean}
+	 */
+	handleGridSelection(a, e) {
+		console.log('handleGridSelection',a,e);
+		e.preventDefault();
+		e.stopPropagation();
+		const url = a.href, type = a.dataset.gridSelection;
+		switch (type) {
+			case'clean':
+				this.ids.clear();
+				this.updateCheckboxes();
+				this.update();
+				break;
+			case 'select-search':
+				qwest.map('post', url, null, null).then((xhr, response)=> {
+					for (let id of response)this.ids.add(id);
+					this.updateCheckboxes();
+					this.update();
+				});
+				break;
+			case 'unselect-search':
+				qwest.map('post', url, null, null).then((xhr, response)=> {
+					for (let id of response)this.ids.remove(id);
+					this.updateCheckboxes();
+					this.update();
+				});
+				break;
+		}
+		return false;
+	}
+
+	updateCheckboxes() {
+		for (let e of this.getSelects()) e.checked = this.ids.has(e.dataset.rowSelect);
+	}
+
 	init() {
-		const exclude = this.status.has('exclude');
+		for (let a of this.element.querySelectorAll('a[data-grid-selection]')) {
+			a.addEventListener('click', this.handleGridSelection.bind(this, a));
+		}
+		for (let a of this.element.querySelectorAll('a[data-control*=-groupAction-]')) {
+			a.addEventListener('click', this.handleGroupAction.bind(this, a));
+		}
 		for (let e of this.getSelects()) {
 			const cell = e.closest('.grid-cell');
 			cell.addEventListener('mousedown', this.onMouseDown.bind(this, e));
 			cell.addEventListener('mousemove', this.onMouseMove.bind(this, e));
 			cell.addEventListener('mouseup', this.onMouseUp.bind(this, e));
-			e.checked = exclude != this.ids.has(e.dataset.rowSelect);
+			e.checked = this.ids.has(e.dataset.rowSelect);
 		}
 		this.update();
 	}
@@ -174,17 +218,22 @@ export default class EntityGrid {
 	count = true;
 
 	update() {
-		const exclude = this.status.has('exclude');
 		const selection = this.element.querySelector('[data-grid-selection]');
 		const counters = this.element.querySelectorAll('[data-grid-selection-count]');
-		const count = exclude ? selection.dataset.gridSelection - this.ids.size() : this.ids.size();
+		const count = this.ids.size();
 		for (let c of counters)c.textContent = count;
 		if (Boolean(this.count) !== Boolean(count)) {
 			for (let a of this.element.querySelectorAll('a[data-control*=-groupAction-]')) a.classList[count ? 'remove' : 'add']('disabled');
 		}
 		this.count = count;
-		this.element.querySelector(EntityGrid.CHECKBOX_MODE_SELECTOR).checked = exclude;
-		this.updateGroupActions();
+		const checked = this.element.querySelectorAll(EntityGrid.CHECKBOX_ROW_SELECTOR + ':checked').length;
+		const notChecked = this.element.querySelectorAll(EntityGrid.CHECKBOX_ROW_SELECTOR + ':not(:checked)').length;
+		const all = this.element.querySelectorAll(EntityGrid.CHECKBOX_ROW_SELECTOR).length;
+		if (checked === all) {
+			this.element.querySelector(EntityGrid.CHECKBOX_ALL_SELECTOR).checked = true;
+		} else if (notChecked === all) {
+			this.element.querySelector(EntityGrid.CHECKBOX_ALL_SELECTOR).checked = false;
+		}
 	}
 
 	onChange(event) {
@@ -192,15 +241,6 @@ export default class EntityGrid {
 		if (checkbox.matches(EntityGrid.CHECKBOX_SELECTOR)) {
 			this.select(checkbox);
 			this.update();
-		}
-	}
-
-	updateGroupActions() {
-		for (let a of this.element.querySelectorAll('.grid-group-actions a')) {
-			a.dataset.post = JSON.stringify({
-				exclude: Number(this.status.has('exclude')),
-				ids: this.ids.values()
-			});
 		}
 	}
 
@@ -218,17 +258,56 @@ export default class EntityGrid {
 			}
 		}
 	}
-
 }
 
+
 class GridExtension {
+	/**
+	 * @type {Naja}
+	 */
+	naja;
+
+	/**
+	 *
+	 * @param {Naja} naja
+	 */
 	constructor(naja) {
+		this.naja = naja;
 		naja.addEventListener('load', this.initGrids.bind(this));
 		naja.addEventListener('success', this.success.bind(this));
+		naja.addEventListener('before', this.before.bind(this));
+		naja.addEventListener('interaction', this.interaction.bind(this));
+	}
+
+	before(event) {
+		const {options} = event;
+		if (options.groupAction && !event.defaultPrevented) {
+			const settings = options.groupAction;
+			delete options.groupAction;
+			this.naja.makeRequest('POST',settings.url, settings.data, options);
+			event.preventDefault();
+			return false;
+		}
+	}
+
+	interaction(event) {
+		const {element, options} = event;
+		if (element.matches(EntityGrid.GRID_SELECTOR+' [data-grid-selection]')) {
+			event.preventDefault();
+			event.stopPropagation();
+			return false;
+		}else if (element.matches(EntityGrid.GRID_SELECTOR+' .grid-group-actions a')) {
+			options.groupAction = {
+				url: element.dataset.url || element.href,
+				data: {
+					ids: element.closest(EntityGrid.GRID_SELECTOR).dataGrid.ids.values()
+				}
+			};
+		}
 	}
 
 	initGrids() {
-		for (let e of document.querySelectorAll('[data-entity-grid]')) e.dataGrid || new EntityGrid(e);
+		for (let e of document.querySelectorAll(EntityGrid.GRID_SELECTOR)) e.dataGrid || new EntityGrid(e);
 	}
 
 	success({response}) {

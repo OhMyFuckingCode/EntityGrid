@@ -46,9 +46,9 @@ class Row extends Section
      * GridRow constructor.
      * @param IFormFactory $formFactory
      * @param Column[] $columnDefinitions
-     * @param ActiveRow|null $item
+     * @param ActiveRow|IRow $item
      */
-    public function __construct(IFormFactory $formFactory = null, array $columnDefinitions = [], $item)
+    public function __construct(IFormFactory $formFactory = null, array $columnDefinitions = [],IRow $item)
     {
         parent::__construct(null, $formFactory);
         $this->templateName = 'row.latte';

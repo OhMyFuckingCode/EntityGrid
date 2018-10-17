@@ -16,7 +16,7 @@ use Nette\Utils\ArrayHash;
 interface IModel
 {
 
-    public function get($id):?ActiveRow;
+    public function get($id);
 
     public function insert(ArrayHash $values);
 
