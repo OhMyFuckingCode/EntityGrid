@@ -1,6 +1,6 @@
-imageLink: []
 defaults:
 	formatter: @grid.formatter
+	imageLinkProvider: @grid.imageLinkProvider
 options:
 	bootstrap: 4
 actions:

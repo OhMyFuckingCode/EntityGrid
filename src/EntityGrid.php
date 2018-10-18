@@ -36,7 +36,7 @@ class EntityGrid extends BaseGrid
         $this->tree = $config['tree'];
         $this->order = $config['order'];
         $this->sortable = $config['sortable'];
-        $this->imageRenderer = $allConfigs['imageLink']?:null;
+        $this->imageLinkProvider = $config['imageLinkProvider'];
         //$this->view = $this->detectView();
     }
 

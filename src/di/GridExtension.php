@@ -72,6 +72,10 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
         $builder->addDefinition($this->prefix('formatter'))
             ->setType(IFormatter::class)
             ->setFactory(Formatter::class, [$settings['imageLink']]);
+
+        $builder->addDefinition($this->prefix('imageLinkProvider'))
+            ->setType(IImageLinkProvider::class)
+            ->setFactory(Formatter::class, [$settings['imageLink']]);
     }
 
     public function afterCompile(ClassType $classType):void

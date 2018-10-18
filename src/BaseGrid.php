@@ -45,8 +45,8 @@ class BaseGrid extends Section
     /** @var  Control */
     protected $control;
 
-    /** @var  callable */
-    protected $imageRenderer;
+    /** @var  IImageLinkProvider */
+    protected $imageLinkProvider;
 
     /**
      * EntityGrid constructor.
@@ -269,21 +269,19 @@ class BaseGrid extends Section
     }
 
     /**
-     * @return callable
+     * @return IImageLinkProvider
      */
-    public function getImageRenderer(): ?callable
+    public function getImageLinkProvider(): ?IImageLinkProvider
     {
-        return $this->imageRenderer;
+        return $this->imageLinkProvider;
     }
 
     /**
-     * @param callable $imageRenderer
-     * @return static
+     * @param IImageLinkProvider $imageLinkProvider
      */
-    public function setImageRenderer(?callable $imageRenderer)
+    public function setImageLinkProvider(?IImageLinkProvider $imageLinkProvider)
     {
-        $this->imageRenderer = $imageRenderer;
-        return $this;
+        $this->imageLinkProvider = $imageLinkProvider;
     }
 
 

@@ -117,7 +117,7 @@ abstract class BaseControl extends Control
     {
         /** @var Template $template */
         $template =  parent::createTemplate();
-        $template->addFilter('gridImage',$this->grid->getImageRenderer());
+        $template->addFilter('gridImage',[$this->grid->getImageLinkProvider(),'provide']);
         return $template;
     }
 
