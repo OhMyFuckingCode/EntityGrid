@@ -48,7 +48,7 @@ class Row extends Section
      * @param Column[] $columnDefinitions
      * @param ActiveRow|IRow $item
      */
-    public function __construct(IFormFactory $formFactory = null, array $columnDefinitions = [],IRow $item)
+    public function __construct(IFormFactory $formFactory = null, array $columnDefinitions = [], IRow $item)
     {
         parent::__construct(null, $formFactory);
         $this->templateName = 'row.latte';
@@ -196,6 +196,11 @@ class Row extends Section
     {
         $this->grid->setValue($this->item, $column, $value);
         $this->redrawControl('row');
+    }
+
+    public function redrawItems()
+    {
+        $this->grid->isTree() && $this->redrawControl('items');
     }
 
 }

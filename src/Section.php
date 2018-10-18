@@ -235,9 +235,6 @@ class Section extends BaseControl
     }
 
 
-
-
-
     /*
         public function handleSetSelected(int $id, bool $selected = true)
         {
@@ -340,6 +337,11 @@ class Section extends BaseControl
     {
         //$order = filter_var_array($order,FILTER_VALIDATE_INT);
         $this->grid->handleSort(...\func_get_args());
+    }
+
+    public function redrawItems()
+    {
+        $this->redrawControl('items');
     }
 
 

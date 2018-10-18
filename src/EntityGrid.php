@@ -159,7 +159,7 @@ class EntityGrid extends BaseGrid
         $this->deleteEntity($row);
         $this->session->selection->remove($id = $row->getPrimary());
         $this->control->deselect($id);
-        $section->redrawControl('items');
+        $section->redrawItems();
     }
 
     public function deleteEntity(ActiveRow $item): void
