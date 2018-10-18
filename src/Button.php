@@ -81,7 +81,7 @@ class Button extends Component
     public function getControl():Html
     {
         $control = clone $this->control;
-        $item = ($row =  $this->getSection()) ? $row->getItem() : null;
+        $item = ($row = $this->getSection()) ? $row->getItem() : null;
         $action = $this->action;
         //Link
         $link = $action->getLink($this) ?: $this->link('Click!');
@@ -96,7 +96,7 @@ class Button extends Component
         }
         // Confirm
         $confirm = $action->getConfirm();
-        $confirm && $control->data('confirm', $this->translate($confirm,['item'=>$item]));
+        $confirm && $control->data('confirm', $this->translate($confirm, $item ? 1 : 2, ['item' => (string)$item]));
         // Title
         $title = $action->getTitle();
         $title && $control->title($this->translate($title));
@@ -118,9 +118,9 @@ class Button extends Component
         return $control;
     }
 
-    private function translate($key)
+    private function translate($key,...$params)
     {
-        return $this->translator ? $this->translator->translate($key) : $key;
+        return $this->translator ? $this->translator->translate($key,...$params) : $key;
     }
 
     /**
