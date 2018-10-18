@@ -112,6 +112,16 @@ abstract class BaseControl extends Control
             $this->redrawControl('flashes');
         }
     }
+
+    protected function createTemplate()
+    {
+        /** @var Template $template */
+        $template =  parent::createTemplate();
+        $template->addFilter('gridImage',$this->grid->getImageRenderer());
+        return $template;
+    }
+
+
     protected function afterRender():void
     {
     }
