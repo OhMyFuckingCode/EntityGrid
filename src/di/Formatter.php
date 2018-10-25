@@ -8,6 +8,7 @@
 
 namespace Quextum\EntityGrid;
 
+use Brabijan\Images\Image;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\Html;
@@ -15,20 +16,16 @@ use Nette\Utils\Html;
 class Formatter implements IFormatter
 {
 
-    /** @var  callable */
-    protected $imageLinkFactory;
-
-    /** @var  array */
-    protected $imageLinkParams;
+    /** @var  IImageLinkProvider */
+    protected $provider;
 
     /**
      * Formatter constructor.
-     * @param array $imageLinkFactory
+     * @param IImageLinkProvider $provider
      */
-    public function __construct(array $imageLinkFactory)
+    public function __construct(IImageLinkProvider $provider)
     {
-        $this->imageLinkFactory = \array_slice($imageLinkFactory, 0, 2);
-        $this->imageLinkParams = \array_slice($imageLinkFactory, 2);
+        $this->provider = $provider;
     }
 
 
@@ -86,7 +83,7 @@ class Formatter implements IFormatter
     public function image($item, SearchDefinition $column)
     {
         if ($image = $column->getImage()) {
-            return Html::el('img')->setAttribute('src', ($this->imageLinkFactory)($image === true ? $item : $item->$image, ...$this->imageLinkParams));
+            return Html::el('img')->setAttribute('src',$this->provider->provide($image,30,30,\Nette\Utils\Image::EXACT));
         }
         return null;
     }

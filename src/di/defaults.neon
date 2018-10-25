@@ -1,3 +1,4 @@
+imageLinkProvider: @grid.imageLinkProvider
 defaults:
 	formatter: @grid.formatter
 	imageLinkProvider: @grid.imageLinkProvider

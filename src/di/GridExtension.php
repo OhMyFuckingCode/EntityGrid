@@ -65,17 +65,18 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
                 }
             }
         }
-        $builder->addDefinition($this->prefix('factory'))
-            ->setType(IGridFactory::class)
-            ->setFactory(GridFactory::class, ['config' => $config, 'settings' => $settings]);
-
-        $builder->addDefinition($this->prefix('formatter'))
-            ->setType(IFormatter::class)
-            ->setFactory(Formatter::class, [$settings['imageLink']]);
 
         $builder->addDefinition($this->prefix('imageLinkProvider'))
             ->setType(IImageLinkProvider::class)
-            ->setFactory(Formatter::class, [$settings['imageLink']]);
+            ->setFactory(ImageLinkProvider::class);
+
+        $builder->addDefinition($this->prefix('formatter'))
+            ->setType(IFormatter::class)
+            ->setFactory(Formatter::class, [$settings['imageLinkProvider']]);
+
+        $builder->addDefinition($this->prefix('factory'))
+            ->setType(IGridFactory::class)
+            ->setFactory(GridFactory::class, ['config' => $config, 'settings' => $settings]);
     }
 
     public function afterCompile(ClassType $classType):void
