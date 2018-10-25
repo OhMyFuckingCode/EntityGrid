@@ -145,8 +145,8 @@ class Row extends Section
         return new Multiplier(function ($name) {
             $action = $this->actions[$name];
             $button = new Button($action);
-            $button->onClick[] = function (Button $button) {
-                $button->getAction()->onClick($this, $this->item);
+            $button->onClick[] = function (Button $button,Action $action) {
+                $action->perform($this->grid, $button);
             };
             return $button;
         });

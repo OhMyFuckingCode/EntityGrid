@@ -162,6 +162,8 @@ class EntityGrid extends BaseGrid
         $section->redrawControl('items');
     }
 
+
+
     public function deleteEntity(ActiveRow $item): void
     {
         $this->model->delete($item);

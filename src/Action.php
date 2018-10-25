@@ -359,7 +359,7 @@ class Action
     {
         $section = $button->getSection();
         if ($this->onClick) {
-            $this->onClick($section);
+            $this->onClick($section,$section->getItem());
         }
         $args = [
             'grid' => $grid,

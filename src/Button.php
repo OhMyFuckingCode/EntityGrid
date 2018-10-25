@@ -73,6 +73,9 @@ class Button extends Component
         return $this->lookup(Row::class);
     }
 
+    /**
+     * @return Section|null
+     */
     public function getSection()
     {
         return $this->lookup(Section::class);
