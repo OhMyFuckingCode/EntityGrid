@@ -36,7 +36,7 @@ class EntityGrid extends BaseGrid
         $this->tree = $config['tree'];
         $this->order = $config['order'];
         $this->sortable = $config['sortable'];
-
+        $this->imageLinkProvider = $config['imageLinkProvider'];
         //$this->view = $this->detectView();
     }
 
@@ -149,7 +149,7 @@ class EntityGrid extends BaseGrid
 
     public function groupDelete(Section $section): void
     {
-        foreach ($this->getUserSelection() as $row){
+        foreach ($this->getUserSelection() as $row) {
             $this->delete($section, $row);
         }
     }
@@ -159,7 +159,7 @@ class EntityGrid extends BaseGrid
         $this->deleteEntity($row);
         $this->session->selection->remove($id = $row->getPrimary());
         $this->control->deselect($id);
-        $section->redrawControl('items');
+        $section->redrawItems();
     }
 
 
@@ -189,6 +189,7 @@ class EntityGrid extends BaseGrid
         $this->session->selection->clean();
         $this->presenter->terminate();
     }
+
     public function handleDumpSelection():void
     {
         bdump($this->session->selection);

@@ -166,7 +166,6 @@ class Action
         }
         foreach ($this->params as $key => $value) {
             if (is_numeric($key) && isset($item)) {
-                unset($this->params[$key]);
                 $params[$value] = $item->$value;
             } else {
                 $params[$key] = $value;

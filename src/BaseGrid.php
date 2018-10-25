@@ -45,6 +45,9 @@ class BaseGrid extends Section
     /** @var  Control */
     protected $control;
 
+    /** @var  IImageLinkProvider */
+    protected $imageLinkProvider;
+
     /**
      * EntityGrid constructor.
      * @param IModel $model
@@ -69,6 +72,7 @@ class BaseGrid extends Section
         $this->control = new Control($this->getSessionSectionName());
         parent::presenterAttached($presenter);
     }
+
     public function afterRender():void
     {
         $this->control->send($this->presenter);
@@ -118,7 +122,6 @@ class BaseGrid extends Section
     {
         $this->session->selection->filter($source);
     }
-
 
 
     public function loadItems():array
@@ -264,6 +267,23 @@ class BaseGrid extends Section
             $column => $value
         ]));
     }
+
+    /**
+     * @return IImageLinkProvider
+     */
+    public function getImageLinkProvider(): ?IImageLinkProvider
+    {
+        return $this->imageLinkProvider;
+    }
+
+    /**
+     * @param IImageLinkProvider $imageLinkProvider
+     */
+    public function setImageLinkProvider(?IImageLinkProvider $imageLinkProvider)
+    {
+        $this->imageLinkProvider = $imageLinkProvider;
+    }
+
 
 }
 
