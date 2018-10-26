@@ -139,8 +139,10 @@ class Column
             foreach ($this->params as $key => $param) {
                 if (is_numeric($key)) {
                     $link->setParameter($param, $row->$param);
-                } else {
+                } elseif(isset($row->$param)) {
                     $link->setParameter($key, $row->$param);
+                }else{
+                    $link->setParameter($key, $param);
                 }
             }
         }

@@ -61,7 +61,7 @@ class SearchFormFactory implements ISearchFormFactory
                         $belongs = $context->table($t);
                         $nextArgs[] = $belongs;
                     } else {
-                        $items = (clone $grid->getSource())->select('DISTINCT ?', new SqlLiteral($column));
+                        $items = $grid->getSource()->createSelectionInstance()->select('DISTINCT ?', new SqlLiteral($column));
                         $nextArgs[] = $items;
                     }
                     $nextArgs[] = $def->getValue();
@@ -76,7 +76,7 @@ class SearchFormFactory implements ISearchFormFactory
                         $belongs = $context->table($t);
                         $nextArgs[] = $config['formatter']->entities($belongs, $def);
                     } else {
-                        $items = (clone $grid->getSource())->select('DISTINCT ?', new SqlLiteral($column));
+                        $items = $grid->getSource()->createSelectionInstance()->select('DISTINCT ?', new SqlLiteral($column));
                         $nextArgs[] = $config['formatter']->items($items, $def);
                     }
                     $nextArgs[] = $def->getValue();
