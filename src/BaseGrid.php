@@ -6,6 +6,7 @@
 
 namespace Quextum\EntityGrid;
 
+use App\Common\Forms\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Database\DriverException;
 use Nette\Database\Table\ActiveRow;
@@ -283,6 +284,7 @@ class BaseGrid extends Section
     {
         $this->imageLinkProvider = $imageLinkProvider;
     }
+
 
 
 }

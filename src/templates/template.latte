@@ -10,15 +10,20 @@
                 {_'entityGrid.selection.shown'}
                 <i class="fa fa-exclamation"></i>
             </div>
-            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar" aria-label="Actions toolbar">
+            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar"
+                                      aria-label="Actions toolbar">
                 <div class="grid-group-actions btn-group mr-2" n:if="$groupActions" n:snippet="groupActions">
                     <span class="btn disabled btn-light">
                         {_'entityGrid.selection.selected'}
                     </span>
-                    <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection" data-naja-history="off">
-                        <span class="grid-selection-all" data-grid-selection-count title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>
+                    <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection"
+                       data-naja-history="off">
+                        <span class="grid-selection-all" data-grid-selection-count
+                              title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>
                     </a>
-                    <a n:if="$showSelection" class="btn btn-light text-success ajax" n:href="showSelection! $showSelection" data-naja-history="off">
+                    <a n:if="$showSelection"
+                            class="btn btn-light text-success ajax" n:href="showSelection! $showSelection"
+                            data-naja-history="off">
                         <i class="fa fa-sync" title="{_entityGrid.refresh}"></i>
                     </a>
                     {foreach $groupActions as $name=>$action}
@@ -48,7 +53,8 @@
 
                     {* ---- HEADER:NAMES ---- *}
                     <div class="text-muted grid-row grid-header-row">
-                        <div n:if="$selectable" class="grid-cell grid-header-cell grid-cell--fit " n:snippet="selection" >
+                        <div n:if="$selectable"
+                                class="grid-cell grid-header-cell grid-cell--fit " n:snippet="selection" >
                             <div data-grid-selection="{$control->getSource()->count()}">
                                 {*include #checkbox false,'add-search',('entityGrid.selection.addSearch'|translate),'fas fa-search-plus'*}
                                 {*include #checkbox false,'remove-search',('entityGrid.selection.removeSearch'|translate),'fas fa-search-minus'*}
@@ -80,6 +86,49 @@
         <div n:snippet="paginator" class="mt-2">
             {include perpage}
             {control paginator}
+        </div>
+    </div>
+    <div n:snippet="groupEdit" n:inner-if="$groupEdit">
+        <div class="modal show" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{_entityGrid.group-edit}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" n:snippet="groupEditForm">
+                        <form n:name="groupEditForm" class="ajax">
+                            <table>
+                                <tbody>
+                                <tr n:foreach="$form->getComponents() as $cont" n:if="$cont instanceof Nette\Forms\Container">
+                                    <td >
+                                        <div class="custom-control custom-checkbox">
+                                            <input  class="custom-control-input" n:name="$cont['edit']">
+                                            <label class="custom-control-label d-block" for="{$cont['edit']->getHtmlId()}"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {label $cont['value']}
+                                    </td>
+                                    <td>
+                                        {input $cont['value']}
+                                        <ul n:if="$cont['value']->hasErrors()">
+                                            <li n:foreach="$cont['value']->getErrors() as $error">{$error}</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            {input $form['submit'] class=>'btn btn-primary'}
+                            <ul n:if="$errors = $form->getOwnErrors()">
+                                <li n:foreach="$errors as $error">{$error}</li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

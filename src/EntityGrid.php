@@ -27,6 +27,9 @@ class EntityGrid extends BaseGrid
     /** @var  array */
     protected $allConfigs;
 
+    /** @var bool */
+    protected $groupEdit = false;
+
 
     public function __construct(array $allConfigs, array $config, IModel $model, Selection $source, $prefix)
     {
@@ -153,6 +156,35 @@ class EntityGrid extends BaseGrid
             $this->delete($section, $row);
         }
     }
+    public function groupEdit(Section $section): void
+    {
+        if($this->formFactory){
+            $this->groupEdit = true;
+            $this->redrawControl('groupEdit');
+        }
+    }
+
+    public function createComponentGroupEditForm(): Form
+    {
+        $factory = new GroupFormFactory($this->formFactory);
+        $form = $factory->create();
+        $form->getElementPrototype()->addClass('ajax');
+        $form->onSuccess[]=function(Form $form,ArrayHash $values){
+            if(\count($values)){
+                foreach ($this->getUserSelection() as $row) {
+                    $this->model->update($row,$values);
+                }
+            }
+            $this->groupEdit = false;
+            $this->redrawControl('items');
+            $this->redrawControl('groupEdit');
+        };
+        $form->onError[]=function(Form $form){
+            $this->redrawControl('groupEditForm');
+        };
+        $form->addSubmit('submit','submit');
+        return $form;
+    }
 
     public function delete(Section $section, ?ActiveRow $row = null)
     {
@@ -181,6 +213,7 @@ class EntityGrid extends BaseGrid
         if ($this->session->search || $this->session->showSelection) {
             $this->tree = null;
         }
+        $this->template->groupEdit = $this->groupEdit;
         parent::beforeRender();
     }
 

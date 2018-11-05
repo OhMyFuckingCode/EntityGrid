@@ -9,6 +9,7 @@ no-results: Žádné výsledky
 select: Zvolte
 resultCount: Počet výsledků
 refresh: Obnovit
+group-edit: Hromadná editace
 pagination:
     site: Strana
     count: Počet výsledků

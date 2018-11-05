@@ -24,6 +24,10 @@ actions:
 		icon: fa fa-edit
 		class: [btn,btn-sm,text-muted]
 		title: edit-in-row
+	groupEdit:
+		icon: fa fa-edit
+		class: [btn,btn-light,text-muted]
+		title: group-edit
 	delete:
 		icon: fa fa-trash
 		class: [btn,btn-sm,text-danger]
