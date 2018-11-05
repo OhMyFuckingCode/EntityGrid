@@ -106,7 +106,10 @@ class EntityGrid extends BaseGrid
             $action = $this->groupActions[$name];
             $button = new Button($action);
             $button->onClick[] = function (Button $button, Action $action) {
-                $this->session->selection->set($this->getPresenter()->getHttpRequest()->getPost());
+                $post = $this->getPresenter()->getHttpRequest()->getPost();
+                if (array_key_exists('ids', $post)) {
+                    $this->session->selection->set($post);
+                }
                 $action->perform($this, $button);
             };
             return $button;
@@ -156,9 +159,10 @@ class EntityGrid extends BaseGrid
             $this->delete($section, $row);
         }
     }
+
     public function groupEdit(Section $section): void
     {
-        if($this->formFactory){
+        if ($this->formFactory) {
             $this->groupEdit = true;
             $this->redrawControl('groupEdit');
         }
@@ -169,20 +173,20 @@ class EntityGrid extends BaseGrid
         $factory = new GroupFormFactory($this->formFactory);
         $form = $factory->create();
         $form->getElementPrototype()->addClass('ajax');
-        $form->onSuccess[]=function(Form $form,ArrayHash $values){
-            if(\count($values)){
+        $form->onSuccess[] = function (Form $form, ArrayHash $values) {
+            if (\count($values)) {
                 foreach ($this->getUserSelection() as $row) {
-                    $this->model->update($row,$values);
+                    $this->model->update($row, $values);
                 }
             }
             $this->groupEdit = false;
             $this->redrawControl('items');
             $this->redrawControl('groupEdit');
         };
-        $form->onError[]=function(Form $form){
+        $form->onError[] = function (Form $form) {
             $this->redrawControl('groupEditForm');
         };
-        $form->addSubmit('submit','submit');
+        $form->addSubmit('submit', 'submit');
         return $form;
     }
 
@@ -193,7 +197,6 @@ class EntityGrid extends BaseGrid
         $this->control->deselect($id);
         $section->redrawItems();
     }
-
 
 
     public function deleteEntity(ActiveRow $item): void

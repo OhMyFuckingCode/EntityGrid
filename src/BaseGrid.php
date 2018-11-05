@@ -6,8 +6,6 @@
 
 namespace Quextum\EntityGrid;
 
-use App\Common\Forms\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Database\DriverException;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
@@ -64,15 +62,16 @@ class BaseGrid extends Section
         $this->section = $this;
     }
 
-    protected function presenterAttached(Presenter $presenter):void
+    public function loadState(array $params)
     {
+        parent::loadState($params);
         $session = $this->presenter->getSession($this->getSessionSectionName());
         $this->session = $session->data instanceof SessionData ? $session->data : $session->data = new SessionData([
             'order' => $this->order
         ]);
         $this->control = new Control($this->getSessionSectionName());
-        parent::presenterAttached($presenter);
     }
+
 
     public function afterRender():void
     {

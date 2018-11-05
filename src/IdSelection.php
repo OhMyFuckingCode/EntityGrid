@@ -14,6 +14,7 @@ use Nette\Database\Table\Selection;
 class IdSelection
 {
 
+
     /** @var  int[] */
     public $ids = [];
 
@@ -78,7 +79,7 @@ class IdSelection
 
     public function filter(Selection $selection): void
     {
-        $selection->where([$selection->getPrimary() => array_keys($this->ids)]);
+        $selection->where([$selection->getPrimary() => $this->ids()]);
     }
 
     public function ids():array
@@ -91,4 +92,5 @@ class IdSelection
         $this->ids = [];
         return $this;
     }
+
 }
