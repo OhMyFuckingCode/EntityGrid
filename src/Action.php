@@ -154,8 +154,18 @@ class Action
         }
         $params = [];
         if (\is_array($this->link)) {
-            list($destination, $params) = $this->link;
-            isset($item) && $params = array_intersect_key($item->toArray(), array_flip($params));
+            list($destination, $_params) = $this->link;
+            if(isset($item)){
+                foreach ($_params as $param=>$column) {
+                    if(is_numeric($param)){
+                        $params[$column]=$item->$column;
+                    }else{
+                        $params[$param]=$item->$column;
+                    }
+                }
+            }else{
+                $params = (array)$_params;
+            }
         }
         if (\is_string($this->link)) {
             $destination = $this->link;
@@ -164,6 +174,7 @@ class Action
         if (strpos($destination, ':') === 0) {
             $component = $component->getPresenter();
         }
+
         foreach ($this->params as $key => $value) {
             if (is_numeric($key) && isset($item)) {
                 $params[$value] = $item->$value;
