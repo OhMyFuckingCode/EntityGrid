@@ -15,6 +15,9 @@ class GroupFormFactory
     /** @var  IFormFactory */
     protected $originalFactory;
 
+    /** @var string  */
+    protected $prefix;
+
     /**
      * GroupFormFactory constructor.
      * @param IFormFactory $originalFactory
@@ -58,6 +61,7 @@ class GroupFormFactory
                         ->addRule(Form::FILLED);
                 }
                 $container['value'] = $component;
+                //$edit->addCondition(Form::FILLED)->toggle($component->getHtmlId());
             }
         }
         $container->addHidden('id');

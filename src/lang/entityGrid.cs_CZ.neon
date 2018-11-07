@@ -29,6 +29,7 @@ btn:
     detail: Zobrazit detail
     link: Odkaz
     synchronize: Synchronizovat
+    submit: Odeslat
 input:
     date:
         from-to: Zadat rozsah

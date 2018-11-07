@@ -172,6 +172,7 @@ class EntityGrid extends BaseGrid
     {
         $factory = new GroupFormFactory($this->formFactory);
         $form = $factory->create();
+        $form->setTranslator($this->translator->domain($this->prefix));
         $form->getElementPrototype()->addClass('ajax');
         $form->onSuccess[] = function (Form $form, ArrayHash $values) {
             if (\count($values)) {
@@ -186,7 +187,7 @@ class EntityGrid extends BaseGrid
         $form->onError[] = function (Form $form) {
             $this->redrawControl('groupEditForm');
         };
-        $form->addSubmit('submit', 'submit');
+        $form->addSubmit('submit', '//entityGrid.btn.submit');
         return $form;
     }
 

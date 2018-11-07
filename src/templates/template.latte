@@ -113,6 +113,7 @@
                                         {label $cont['value'] for=>$cont['edit']->getHtmlId()}
                                     </td>
                                     <td>
+                                        {php if(!in_array($cont['value']->getOption(type),[checkbox,radio,file]))$cont['value']->getControlPrototype()->addClass('form-control')}
                                         {input $cont['value']}
                                         <ul n:if="$cont['value']->hasErrors()">
                                             <li n:foreach="$cont['value']->getErrors() as $error">{$error}</li>
