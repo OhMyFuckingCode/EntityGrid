@@ -21,6 +21,7 @@ selection:
     selected: 'Hromadný výběr:'
     clean: Vyčistit
 btn:
+    group-edit: Hromadná editace
     group-delete: Odstranit zvolené položky
     import: Importovat
     create: Přidat položku
