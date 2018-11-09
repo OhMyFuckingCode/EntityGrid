@@ -136,11 +136,12 @@ class Column
         }
         $link = new Link($control, $this->link);
         if ($this->params) {
+            $values = (object)$row->toArray();
             foreach ($this->params as $key => $param) {
                 if (is_numeric($key)) {
-                    $link->setParameter($param, $row->$param);
-                } elseif(isset($row->$param)) {
-                    $link->setParameter($key, $row->$param);
+                    $link->setParameter($param, $values->$param);
+                } elseif(isset($values->$param)) {
+                    $link->setParameter($key, $values->$param);
                 }else{
                     $link->setParameter($key, $param);
                 }
