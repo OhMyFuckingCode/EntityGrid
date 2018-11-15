@@ -5,6 +5,10 @@ defaults:
 options:
 	bootstrap: 4
 actions:
+	reload:
+		title: //entityGrid.reload
+		icon: fa fa-sync text-info
+		callback: handleReload
 	link:
 		ajax: false
 		icon: fas fa-link
