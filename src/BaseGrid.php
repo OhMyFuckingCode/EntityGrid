@@ -20,15 +20,13 @@ use Nette\Utils\Strings;
 class BaseGrid extends Section
 {
 
-
-    public const DEFAULT_ORDER = ['id' => true];
     public const DEFAULT_LIMIT = 20;
     public const LIMITS = [10, 20, 30, 40, 50, null];
 
     /** @var IModel */
     protected $model;
 
-    protected $order = self::DEFAULT_ORDER;
+    protected $order;
 
     protected $sortable = false;
 
@@ -67,7 +65,7 @@ class BaseGrid extends Section
         parent::loadState($params);
         $session = $this->presenter->getSession($this->getSessionSectionName());
         $this->session = $session->data instanceof SessionData ? $session->data : $session->data = new SessionData([
-            'order' => $this->order
+            'order' => $this->order ?: reset($this->columns)->getName()
         ]);
         $this->control = new Control($this->getSessionSectionName());
     }
@@ -283,7 +281,6 @@ class BaseGrid extends Section
     {
         $this->imageLinkProvider = $imageLinkProvider;
     }
-
 
 
 }

@@ -181,7 +181,7 @@
     {$value->name}&nbsp;({$value->lang})
 </div>
 <div class="badge badge-secondary" n:define="site">
-    {$value->title}&nbsp;({$value->id})
+    {$value->title}&nbsp;({$value->getPrimary()})
 </div>
 {define entity}
     {if $value instanceof Nette\Database\Table\Selection}

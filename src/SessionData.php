@@ -11,7 +11,7 @@ class SessionData extends ArrayHash
     public $search = [];
 
     /** @var  string[] */
-    public $order = BaseGrid::DEFAULT_ORDER;
+    public $order;
 
     /** @var  int */
     public $limit = BaseGrid::DEFAULT_LIMIT;

@@ -106,7 +106,7 @@ class Section extends BaseControl
 
     protected function createComponentRow(): Multiplier
     {
-        return new Multiplier(function (int $id) {
+        return new Multiplier(function ($id) {
             $row = new Row($this->formFactory, $this->columns, $this->fetchItem($id));
             $row->setSelectable($this->isSelectable());
             $row->onSuccess[] = [$this, 'editFormSucceeded'];
@@ -165,10 +165,10 @@ class Section extends BaseControl
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @return false|ActiveRow
      */
-    public function fetchItem(int $id)
+    public function fetchItem($id)
     {
         return $this->items[$id]??$this->getSource()->get($id);
     }

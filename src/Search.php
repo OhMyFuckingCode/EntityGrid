@@ -136,7 +136,7 @@ class Search extends BaseControl
         $presenter = $this->getPresenter();
         $source = $this->grid->getSelection();
         $this->apply($source);
-        $ids = $source->select('id')->fetchPairs(null,'id');
+        $ids = $source->select($id=$source->getPrimary())->fetchPairs(null,$id);
         $this->session->selection->removeIds($ids);
         $presenter->sendJson($ids);
     }
@@ -145,7 +145,7 @@ class Search extends BaseControl
         $presenter = $this->getPresenter();
         $source = $this->grid->getSelection();
         $this->apply($source);
-        $ids = $source->select('id')->fetchPairs(null,'id');
+        $ids = $source->select($id=$source->getPrimary())->fetchPairs(null,$id);
         $this->session->selection->addIds($ids);
         $presenter->sendJson($ids);
     }

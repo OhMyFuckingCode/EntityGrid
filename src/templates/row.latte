@@ -1,5 +1,5 @@
 {import @components.latte}
-<div n:snippet="row" data-id="{$item->id}" class="grid-row sortable-item">
+<div n:snippet="row" data-id="{$item->getPrimary()}" class="grid-row sortable-item">
 
     {if $editMode}
         {form form class=>'ajax d-contents'}
@@ -18,7 +18,7 @@
         {/form}
     {else}
         <div n:if="$selectable" class="grid-cell grid-cell--fit grid-cell-select">
-            {include #checkbox $selection->has($item->id),$item->id}
+            {include #checkbox $selection->has($item->getPrimary()),$item->getPrimary()}
         </div>
         {foreach $columns as $key => $column}
             {if !$column->isHidden()}{include #cell column=>$column}{/if}
@@ -31,6 +31,6 @@
     {/if}
 </div>
 <div n:if="$grid->isTree()" class="d-contents" n:snippet="items" n:inner-foreach="$control->getChildren() as $id => $_row" n:inner-if="$expanded"
-        {if $grid->isSortable()}data-sortable="{$control->link('Sort!')}"  data-control="{$ctrlId}" data-sortable-group="{$item->id}"{/if}>
+        {if $grid->isSortable()}data-sortable="{$control->link('Sort!')}"  data-control="{$ctrlId}" data-sortable-group="{$item->getPrimary()}"{/if}>
     {control row-$id}
 </div>

@@ -82,9 +82,9 @@ class Row extends Section
         $this->template->columns = $this->columns;
         $this->template->item = $this->item;
         $this->template->selectable = $this->selectable = $this->selectable ?? (bool)$this->groupActions;
-        $this->template->editMode = isset($this->session->editing[$this->item->id]);
-        $this->template->selected = $this->session->selection->has($this->item->id);
-        $this->template->expanded = isset($this->session->expandedRows[$this->item->id]);
+        $this->template->editMode = isset($this->session->editing[$this->item->getPrimary()]);
+        $this->template->selected = $this->session->selection->has($this->item->getPrimary());
+        $this->template->expanded = isset($this->session->expandedRows[$this->item->getPrimary()]);
         $this->template->row = $this;
     }
 

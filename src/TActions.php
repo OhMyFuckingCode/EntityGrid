@@ -1,6 +1,7 @@
 <?php
 
 namespace Quextum\EntityGrid;
+
 use Nette\Application\UI\Multiplier;
 
 
@@ -102,6 +103,35 @@ trait TActions
     public function getGroupActions(): array
     {
         return $this->groupActions;
+    }
+
+    public function addActions(array $config, array $defaults)
+    {
+        foreach (static::$ACTION_TYPES as $type) {
+            foreach ($config[$type] as $column => $callback) {
+                $action = null;
+                if (\is_numeric($column)) {
+                    $column = $callback;
+                    $action = $this->_addAction($type, $column, [$this, $callback]);
+                } elseif ($callback === true) {
+                    $action = $this->_addAction($type, $column, [$this, $column]);
+                } elseif (\is_callable($callback)) {
+                    $action = $this->_addAction($type, $column, $callback);
+                } elseif (\is_array($callback)) {
+                    $this->_addAction($type, $column)->setArgs(array_merge($defaults[$column]??[],$callback));
+                    continue;
+                }
+                self::applyDefaults($action, $defaults[$column]??[]);
+            }
+        }
+    }
+
+    private static function applyDefaults(Action $action, array $defaults)
+    {
+        foreach ($defaults as $prop => $value) {
+            $method = (strpos($prop, 'set') === false && strpos($prop, 'add') === false) ? 'set' . ucfirst($prop) : $prop;
+            $action->$method($value);
+        }
     }
 
 }

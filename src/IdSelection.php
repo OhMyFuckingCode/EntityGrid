@@ -30,19 +30,19 @@ class IdSelection
         return $this;
     }
 
-    public function add(int $id): self
+    public function add($id): self
     {
         $this->ids[$id] = true;
         return $this;
     }
 
-    public function remove(int $id): self
+    public function remove($id): self
     {
         unset($this->ids[$id]);
         return $this;
     }
 
-    public function has(int $id):bool
+    public function has($id):bool
     {
         return isset($this->ids[$id]);
     }
