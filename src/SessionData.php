@@ -31,6 +31,8 @@ class SessionData extends ArrayHash
     /** @var boolean[] */
     public $expandedRows = [];
 
+    public $locale = null;
+
     /**
      * SessionData constructor.
      */

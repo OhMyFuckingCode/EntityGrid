@@ -313,7 +313,6 @@ class Column
             return $row->related($this->related, $this->column);
         }
         if ($this->translation) {
-            bdump($this->locale);
             $el = $row->related($this->translation)->where('lang',$this->locale)->fetch();
             return $el ? $el->{$this->column} : null;
         }

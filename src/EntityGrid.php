@@ -12,6 +12,7 @@ use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 
 
 /**
@@ -61,7 +62,7 @@ class EntityGrid extends BaseGrid
                 $col->setArgs($type);
             }
         }
-        $this->addActions($this->config,$this->allConfigs['actions']);
+        $this->addActions($this->config, $this->allConfigs['actions']);
 
     }
 
@@ -204,11 +205,11 @@ class EntityGrid extends BaseGrid
         $this->template->groupEdit = $this->groupEdit;
 
         if ($this->translator) {
+            $availableLocales = [];
             foreach ($this->translator->getAvailableLocales() as $l) {
-                $available_locales[] = explode("_",$l)[0];
+                $availableLocales[] = Strings::before($l, '_');
             }
-            $this->template->availableLocales = array_diff($available_locales,[$this->locale]);
-            $this->template->locale = $this->locale;
+            $this->template->availableLocales = array_diff($availableLocales, [$this->locale]);
         }
 
         parent::beforeRender();
@@ -217,7 +218,7 @@ class EntityGrid extends BaseGrid
     public function handleSetLocale($locale):void
     {
         $this->session->locale = $locale;
-        $this->redrawControl();
+        $this->redrawControl('control');
     }
 
     public function handleCleanSelection():void

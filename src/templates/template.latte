@@ -28,17 +28,17 @@
                         {/if}
                     {/foreach}
                 </div>
-                <div class="grid-global-actions">
-                    {ifset $availableLocales}
-                        <div class="dropdown mr-2 float-left">
-                            <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" title='{_"entityGrid.locales.select"}'>
-                                {$locale}
-                            </button>
-                            <div class="dropdown-menu">
-                                <a n:foreach="$availableLocales as $l" href="{link setLocale!, $l}" class="dropdown-item ajax" href="#">-- {$l}</a>
-                            </div>
+                <div n:ifset="$availableLocales">
+                    <div class="dropdown mr-2 float-left">
+                        <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" title='{_"entityGrid.locales.select"}'>
+                            {$locale}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a n:foreach="$availableLocales as $l" href="{link setLocale!, $l}" class="dropdown-item ajax" href="#">-- {$l}</a>
                         </div>
-                    {/ifset}
+                    </div>
+                </div>
+                <div class="grid-global-actions">
                     {foreach $globalActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control globalAction-$name}

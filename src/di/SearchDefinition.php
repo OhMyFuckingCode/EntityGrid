@@ -57,7 +57,7 @@ class SearchDefinition
             $this->method = $def['method']??$methods[$this->type]??$this->method;
         }
         if(!isset($methods[$this->type])){
-            throw new InvalidArgumentException("Typ inputu {$this->type} nemá přiřazenu metodu pro přidání inputu.");
+            throw new InvalidArgumentException("Typ inputu {$this->type} nemá přiřazenu metodu pro přidání inputu. Povoleny jsou: ".implode(', ',array_keys($methods)));
         }
     }
 

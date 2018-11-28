@@ -83,7 +83,6 @@ class BaseGrid extends Section
 
     public function addColumn($name, $label, $column = null, $type): Column
     {
-        bdump($this->locale);
         return $this->columns[$name] = new Column($name, $this->prefix . '.' . $label, $column ?: $name, $type, $this->locale);
     }
 

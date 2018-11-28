@@ -112,6 +112,7 @@ abstract class BaseControl extends Control
     protected function beforeRender():void
     {
         $this->onBeforeRender($this, $this->template);
+        $this->template->locale = $this->locale;
         if (isset($this->template->flashes) && $this->getPresenter()->isAjax()) {
             $this->redrawControl('flashes');
         }
