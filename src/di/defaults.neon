@@ -8,6 +8,7 @@ actions:
 	reload:
 		title: //entityGrid.reload
 		icon: fa fa-sync text-info
+		class: [btn,btn-light,ml-2,ajax]
 		callback: handleReload
 	link:
 		ajax: false
