@@ -41,6 +41,9 @@ abstract class BaseControl extends Control
     /** @var  Section */
     protected $section;
 
+    /** @var string */
+    protected $locale = 'en';
+
     public function __construct()
     {
         parent::__construct();
@@ -52,6 +55,7 @@ abstract class BaseControl extends Control
             $this->grid = $grid;
             $this->session = $grid->getSession();
             $this->translator = $grid->getTranslator();
+            $this->locale = $this->session->locale ?: $this->translator->getLocale();
             $this->gridAttached($grid);
         });
         $this->monitor(Section::class, function (Section $section) {
@@ -164,6 +168,7 @@ abstract class BaseControl extends Control
      */
     public function setTranslator(?ITranslator $translator)
     {
+        //$this->locale = $this->session->locale ?: $translator->getLocale();
         $this->translator = $translator;
         return $this;
     }

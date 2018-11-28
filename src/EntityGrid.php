@@ -55,6 +55,7 @@ class EntityGrid extends BaseGrid
     {
         parent::startup();
         foreach ($this->config['columns'] as $column => $type) {
+            $this->locale = !empty($this->session->locale) ? $this->session->locale : $this->translator->getLocale();
             $col = $this->addColumn($column, $column, null, $type);
             if (\is_array($type)) {
                 $col->setArgs($type);
@@ -64,9 +65,9 @@ class EntityGrid extends BaseGrid
 
     }
 
-
-
-
+    /**
+     * @return Search
+     */
     protected function createComponentSearch(): Search
     {
         $vp = new Search($this->config, $this->allConfigs, $this->prefix, $this->session);
@@ -199,8 +200,24 @@ class EntityGrid extends BaseGrid
         if ($this->session->search || $this->session->showSelection) {
             $this->tree = null;
         }
+
         $this->template->groupEdit = $this->groupEdit;
+
+        if ($this->translator) {
+            foreach ($this->translator->getAvailableLocales() as $l) {
+                $available_locales[] = explode("_",$l)[0];
+            }
+            $this->template->availableLocales = array_diff($available_locales,[$this->locale]);
+            $this->template->locale = $this->locale;
+        }
+
         parent::beforeRender();
+    }
+
+    public function handleSetLocale($locale):void
+    {
+        $this->session->locale = $locale;
+        $this->redrawControl();
     }
 
     public function handleCleanSelection():void

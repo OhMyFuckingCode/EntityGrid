@@ -43,8 +43,8 @@ class Column
     /** @var  string */
     protected $translation;
 
-    /** @var  ITranslator|null */
-    protected $translator;
+    /** @var  string|null */
+    protected $locale;
 
     /** @var  bool|null */
     protected $order;
@@ -84,14 +84,14 @@ class Column
      * @param $label
      * @param $column
      * @param $type
-     * @param Translator|bool $translator
+     * @param null $locale
      */
-    public function __construct($name, $label, $column, $type, ?Translator $translator = null)
+    public function __construct($name, $label, $column, $type, $locale = null)
     {
-        $this->name       = $name;
-        $this->column     = $column;
-        $this->label      = $label;
-        $this->translator = $translator;
+        $this->name   = $name;
+        $this->column = $column;
+        $this->label  = $label;
+        $this->locale = $locale;
 
         if (\is_string($type)) {
             $this->type = $this->checkType($type, $column);
@@ -313,7 +313,9 @@ class Column
             return $row->related($this->related, $this->column);
         }
         if ($this->translation) {
-            return $row->related($this->translation)->where('lang',$this->translator->getLocale())->fetch()->{$this->column};
+            bdump($this->locale);
+            $el = $row->related($this->translation)->where('lang',$this->locale)->fetch();
+            return $el ? $el->{$this->column} : null;
         }
         return $row->{$this->column};
     }

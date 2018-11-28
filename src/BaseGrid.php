@@ -83,7 +83,8 @@ class BaseGrid extends Section
 
     public function addColumn($name, $label, $column = null, $type): Column
     {
-        return $this->columns[$name] = new Column($name, $this->prefix . '.' . $label, $column ?: $name, $type, $this->getTranslator());
+        bdump($this->locale);
+        return $this->columns[$name] = new Column($name, $this->prefix . '.' . $label, $column ?: $name, $type, $this->locale);
     }
 
     public function getSessionSectionName():string

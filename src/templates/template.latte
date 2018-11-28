@@ -3,27 +3,23 @@
 <div id="{$uniqueId}" data-control="{$ctrlId}" data-entity-grid class="grid">
     <div n:snippet="control">
         <div class="grid-header d-flex" n:snippet="bar">
-            <div class="grid-title " n:if="$title">
+            <div class="grid-title" n:if="$title">
                 <h2>{$title}</h2>
             </div>
             <div n:if="$showSelection" class="ml-auto alert alert-warning alert-glow">
                 {_'entityGrid.selection.shown'}
                 <i class="fa fa-exclamation"></i>
             </div>
-            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar"
-                                      aria-label="Actions toolbar">
+            <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar" aria-label="Actions toolbar">
                 <div class="grid-group-actions btn-group mr-2" n:if="$groupActions" n:snippet="groupActions">
                     <span class="btn disabled btn-light">
                         {_'entityGrid.selection.selected'}
                     </span>
-                    <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection"
-                       data-naja-history="off">
+                    <a class="btn btn-light text-primary {$showSelection?active} ajax" n:href="showSelection! !$showSelection" data-naja-history="off">
                         <span class="grid-selection-all" data-grid-selection-count
                               title="{_entityGrid.resultCount}">{$control->getUserSelection()->count()}</span>
                     </a>
-                    <a n:if="$showSelection"
-                            class="btn btn-light text-success ajax" n:href="showSelection! $showSelection"
-                            data-naja-history="off">
+                    <a n:if="$showSelection" class="btn btn-light text-success ajax" n:href="showSelection! $showSelection" data-naja-history="off">
                         <i class="fa fa-sync" title="{_entityGrid.refresh}"></i>
                     </a>
                     {foreach $groupActions as $name=>$action}
@@ -33,6 +29,16 @@
                     {/foreach}
                 </div>
                 <div class="grid-global-actions">
+                    {ifset $availableLocales}
+                        <div class="dropdown mr-2 float-left">
+                            <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" title='{_"entityGrid.locales.select"}'>
+                                {$locale}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a n:foreach="$availableLocales as $l" href="{link setLocale!, $l}" class="dropdown-item ajax" href="#">-- {$l}</a>
+                            </div>
+                        </div>
+                    {/ifset}
                     {foreach $globalActions as $name=>$action}
                         {if $action->isRenderable()}
                             {control globalAction-$name}
