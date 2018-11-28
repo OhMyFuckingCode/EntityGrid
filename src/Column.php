@@ -8,6 +8,7 @@ use Nette\Database\IRow;
 use Nette\Database\Table\ActiveRow;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
+use Kdyby\Translation\Translator;
 
 /**
  * Class GridRow
@@ -38,6 +39,12 @@ class Column
 
     /** @var  string|null */
     protected $related;
+
+    /** @var  string */
+    protected $translation;
+
+    /** @var  ITranslator|null */
+    protected $translator;
 
     /** @var  bool|null */
     protected $order;
@@ -72,17 +79,20 @@ class Column
     public $handle;
 
     /**
-     * GridColumn constructor.
-     * @param string $name
-     * @param string $label
-     * @param string $column
-     * @param string|array $type
+     * Column constructor.
+     * @param $name
+     * @param $label
+     * @param $column
+     * @param $type
+     * @param Translator|bool $translator
      */
-    public function __construct($name, $label, $column, $type)
+    public function __construct($name, $label, $column, $type, ?Translator $translator = null)
     {
-        $this->name = $name;
-        $this->column = $column;
-        $this->label = $label;
+        $this->name       = $name;
+        $this->column     = $column;
+        $this->label      = $label;
+        $this->translator = $translator;
+
         if (\is_string($type)) {
             $this->type = $this->checkType($type, $column);
         } elseif (\is_array($type)) {
@@ -302,6 +312,9 @@ class Column
         if ($this->related) {
             return $row->related($this->related, $this->column);
         }
+        if ($this->translation) {
+            return $row->related($this->translation)->where('lang',$this->translator->getLocale())->fetch()->{$this->column};
+        }
         return $row->{$this->column};
     }
 
@@ -311,6 +324,12 @@ class Column
     public function getFilters(): array
     {
         return $this->filters;
+    }
+
+    public function getTranslation()
+    {
+        bd($this->translation);
+        return $this->translation;
     }
 
     /**
