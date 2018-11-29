@@ -300,6 +300,8 @@ class Column
      */
     public function getValue(ActiveRow $row)
     {
+        //bdump($row);
+        $col = Strings::after($this->column,'.')?:$this->column;
         if ($this->type === 'self') {
             if ($this->name !== $this->column) {
                 return $row->{$this->column}??NULL;
@@ -313,10 +315,11 @@ class Column
             return $row->related($this->related, $this->column);
         }
         if ($this->translation) {
+           /* bdump($this->locale,'getValue');*/
             $el = $row->related($this->translation)->where('lang',$this->locale)->fetch();
-            return $el ? $el->{$this->column} : null;
+            return $el ? $el->{$col} : null;
         }
-        return $row->{$this->column};
+        return $row->{$col};
     }
 
     /**
@@ -329,7 +332,6 @@ class Column
 
     public function getTranslation()
     {
-        bd($this->translation);
         return $this->translation;
     }
 

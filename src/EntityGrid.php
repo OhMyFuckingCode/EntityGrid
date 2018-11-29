@@ -56,7 +56,6 @@ class EntityGrid extends BaseGrid
     {
         parent::startup();
         foreach ($this->config['columns'] as $column => $type) {
-            $this->locale = !empty($this->session->locale) ? $this->session->locale : $this->translator->getLocale();
             $col = $this->addColumn($column, $column, null, $type);
             if (\is_array($type)) {
                 $col->setArgs($type);
@@ -204,22 +203,23 @@ class EntityGrid extends BaseGrid
 
         $this->template->groupEdit = $this->groupEdit;
 
-        if ($this->translator) {
+        /*if ($this->translator) {
             $availableLocales = [];
             foreach ($this->translator->getAvailableLocales() as $l) {
                 $availableLocales[] = Strings::before($l, '_');
             }
             $this->template->availableLocales = array_diff($availableLocales, [$this->locale]);
-        }
+        }*/
 
         parent::beforeRender();
     }
 
-    public function handleSetLocale($locale):void
+    /*public function handleSetLocale($locale):void
     {
         $this->session->locale = $locale;
+        bdump($this->session->locale,'handle');
         $this->redrawControl('control');
-    }
+    }*/
 
     public function handleCleanSelection():void
     {

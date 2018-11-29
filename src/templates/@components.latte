@@ -115,6 +115,7 @@
 {/define}
 
 {define cell}
+    {*$locale*}
     {var $value = $column->getValue($item)}
     <div n:class="'grid-cell text-nowrap', is_string($value)?text-truncate, $column->getClass()" >
 

@@ -16,6 +16,7 @@ use Nette\Database\SqlLiteral;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Html;
+use Nette\Utils\Strings;
 
 class SearchFormFactory implements ISearchFormFactory
 {
@@ -54,6 +55,7 @@ class SearchFormFactory implements ISearchFormFactory
         foreach ($search as $_column => $def) {
             $nextArgs = [];
             $column = $def->getColumn();
+            /*bdump($column,'a');*/
             switch ($def->getType()) {
                 case 'ajaxselect':
                     $context = $this->context;
@@ -106,17 +108,19 @@ class SearchFormFactory implements ISearchFormFactory
         $form->onError[]=function(Form $form){
           bdump($form->getErrors());
         };
+       // bdump($form);exit;
         return $form;
     }
 
     protected function addInput(Form $form, $method, string $column, ...$nextArgs): void
     {
+        //bdump($column,'y');
         if (\is_array($method)) {
             $cont = $form->addContainer($column);
             $cont->{$method[0]}('from', 'from', ...$nextArgs);
             $cont->{$method[1]}('to', 'to', ...$nextArgs);
         } else {
-            $form->$method($column, $column, ...$nextArgs);
+            $form->$method(Strings::after($column,'.') ?: $column, $column, ...$nextArgs);
         }
     }
 
@@ -128,6 +132,7 @@ class SearchFormFactory implements ISearchFormFactory
     public function apply(Selection $selection,$config, $values)
     {
         if ($values) {
+            //bdump($values,'x');
             foreach ($values as $key => $value) {
                 if($value === null || $value === 'null'){
                     $selection->where([$key => null]);
@@ -137,7 +142,19 @@ class SearchFormFactory implements ISearchFormFactory
                     $selection->where(["$key IS NOT NULL"]);
                     continue;
                 }
+
+                // Search napříč joined table
+                if (empty($config['search'][$key])) {
+                    foreach ($config['columns'] as $s_key => $type) {
+                        if (strpos($s_key, ".$key") !== false) {
+                            $key = $s_key;
+                        }
+                    }
+                }
+
                 $def = $config['search'][$key];
+                ///
+
                 switch ($def->getType()) {
                     case 'regexp':
                         $selection->where("$key REGEXP ?", $value);

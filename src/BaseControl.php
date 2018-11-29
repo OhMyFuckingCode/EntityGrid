@@ -55,7 +55,8 @@ abstract class BaseControl extends Control
             $this->grid = $grid;
             $this->session = $grid->getSession();
             $this->translator = $grid->getTranslator();
-            $this->locale = $this->session->locale ?: $this->translator->getLocale();
+            /*$this->locale = $this->session->locale ?: $this->translator->getLocale();
+            bdump($this->locale,'construct');*/
             $this->gridAttached($grid);
         });
         $this->monitor(Section::class, function (Section $section) {
@@ -112,6 +113,7 @@ abstract class BaseControl extends Control
     protected function beforeRender():void
     {
         $this->onBeforeRender($this, $this->template);
+        /*bdump($this->locale,'beforeRender');*/
         $this->template->locale = $this->locale;
         if (isset($this->template->flashes) && $this->getPresenter()->isAjax()) {
             $this->redrawControl('flashes');
@@ -130,6 +132,7 @@ abstract class BaseControl extends Control
     protected function afterRender():void
     {
     }
+
     public function render():void
     {
         $this->init();
