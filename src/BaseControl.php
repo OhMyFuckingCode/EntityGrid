@@ -48,10 +48,8 @@ abstract class BaseControl extends Control
     protected $locale = 'en';
 
     /** @var  array */
-    protected $customGlobalActions;
+    protected $customGlobalActions = [];
 
-    /** @var  array */
-    protected $dropdowns;
 
     public function __construct()
     {
@@ -193,14 +191,5 @@ abstract class BaseControl extends Control
     public function addCustomGlobalAction($source, $key = null)
     {
         $this->customGlobalActions[$key] = $source;
-    }
-
-    public function addDropdown($key, $label, $values)
-    {
-        foreach ($values as $v) {
-            if (empty($v['label']) || empty($v['link'])) throw new InvalidArgumentException('Missing required parameters [label, link] of $values');
-        }
-        $this->dropdowns[$key]['label'] = $label;
-        $this->dropdowns[$key]['values'] = $values;
     }
 }
