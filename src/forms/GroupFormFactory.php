@@ -5,6 +5,7 @@ namespace Quextum\EntityGrid;
 
 use Nette\Application\UI\Form;
 use Nette\Database\Row;
+use Nette\Forms\Container;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Utils\ArrayHash;
 
@@ -15,7 +16,7 @@ class GroupFormFactory
     /** @var  IFormFactory */
     protected $originalFactory;
 
-    /** @var string  */
+    /** @var string */
     protected $prefix;
 
     /**
@@ -37,35 +38,76 @@ class GroupFormFactory
             public function getValues($asArray = false)
             {
                 $values = $asArray ? [] : new ArrayHash;
-                foreach (parent::getValues($asArray) as $name => $value) {
-                    if ($value['edit'] ) {
-                        $values[$name] = $value['value'];
+                $original = parent::getValues($asArray);
+                unset($original['id']);
+                bdump($original);
+                self::parseValues($original);
+                bdump($original);
+                return $original;
+            }
+
+            private static function parseValues(&$values): void
+            {
+                foreach ($values as $name => $value) {
+                    if(self::isset($value, '_edit')){
+                        if($value['_edit']){
+                            $values[$name]=$value['_value'];
+                        }else{
+                            unset($values[$name]);
+                        }
+                    }elseif($value instanceof \Traversable){
+                        static::parseValues($value);
+                        if(\count($value)){
+                            unset($values[$name]);
+                        }
                     }
                 }
-                return $values;
+            }
+
+            private static function isset($array, string $offset):?bool
+            {
+                if (\is_object($array)) {
+                    return property_exists($array, $offset);
+                }
+                if (\is_array($array)) {
+                    return array_key_exists($offset, $array);
+                }
+                return null;
             }
         };
 
-        /**
-         * @var string $name
-         * @var BaseControl $component
-         */
-        foreach ($original->getComponents() as $name => $component) {
-            if(!$component->isDisabled() && !$component->isOmitted()){
-                $component->setParent(null);
-                $container = $form->addContainer($name);
-                $edit = $container->addCheckbox('edit', 'edit');
-                if ($component->isRequired()) {
-                    $component->setRequired(false);
-                    $component->addConditionOn($edit, Form::FILLED)
-                        ->addRule(Form::FILLED);
-                }
-                $container['value'] = $component;
-                //$edit->addCondition(Form::FILLED)->toggle($component->getHtmlId());
-            }
-        }
-        $container->addHidden('id');
+        self::processContainer($form, $original);
+        $form->addHidden('id');
         return $form;
 
+    }
+
+    public static function processContainer(Container $newContainer, Container $oldContainer): void
+    {
+        foreach ($oldContainer->getComponents() as $name => $component) {
+            if ($component instanceof Container) {
+                self::processContainer($newContainer->addContainer($name), $component);
+            } else {
+                self::createInput($newContainer, $oldContainer, $name, $component);
+            }
+        }
+    }
+
+    public static function createInput(Container $newContainer, Container $oldContainer, string $name, BaseControl $component): void
+    {
+        if (!$component->isDisabled() && !$component->isOmitted()) {
+            //$component->setParent(null);
+            $oldContainer->removeComponent($component);
+            $container = $newContainer->addContainer($name);
+
+            $edit = $container->addCheckbox('_edit', 'edit');
+            if ($component->isRequired()) {
+                $component->setRequired(false);
+                $component->addConditionOn($edit, Form::FILLED)
+                    ->addRule(Form::FILLED);
+            }
+            $container['_value'] = $component;
+            //$edit->addCondition(Form::FILLED)->toggle($component->getHtmlId());
+        }
     }
 }

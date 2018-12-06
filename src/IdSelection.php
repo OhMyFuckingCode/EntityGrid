@@ -79,7 +79,8 @@ class IdSelection
 
     public function filter(Selection $selection): void
     {
-        $selection->where([$selection->getPrimary() => $this->ids()]);
+
+        $selection->where(["{$selection->getName()}.{$selection->getPrimary()}" => $this->ids()]);
     }
 
     public function ids():array

@@ -101,28 +101,7 @@
                     </div>
                     <div class="modal-body" n:snippet="groupEditForm">
                         <form n:name="groupEditForm" class="ajax">
-                            <table>
-                                <tbody>
-                                <tr n:foreach="$form->getComponents() as $cont" n:if="$cont instanceof Nette\Forms\Container">
-                                    <td >
-                                        <div class="custom-control custom-checkbox">
-                                            <input  class="custom-control-input" n:name="$cont['edit']">
-                                            <label class="custom-control-label d-block" for="{$cont['edit']->getHtmlId()}"></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {label $cont['value'] for=>$cont['edit']->getHtmlId()}
-                                    </td>
-                                    <td>
-                                        {php if(!in_array($cont['value']->getOption(type),[checkbox,radio,file]))$cont['value']->getControlPrototype()->addClass('form-control')}
-                                        {input $cont['value']}
-                                        <ul n:if="$cont['value']->hasErrors()">
-                                            <li n:foreach="$cont['value']->getErrors() as $error">{$error}</li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            {include groupEditFormContainer $form}
                             {input $form['submit'] class=>'btn btn-primary'}
                             <ul n:if="$errors = $form->getOwnErrors()">
                                 <li n:foreach="$errors as $error">{$error}</li>
@@ -134,3 +113,35 @@
         </div>
     </div>
 </div>
+<table n:define="groupEditFormContainer, $form" class="w-100">
+    <tbody>
+    <tr n:foreach="$form->getComponents() as $cont" n:if="$cont instanceof Nette\Forms\Container">
+        {if isset($cont[_edit])}
+            {var $edit = $cont[_edit]}
+            {var $input = $cont[_value]}
+            <td >
+                <div class="custom-control custom-checkbox">
+                    <input  class="custom-control-input" n:name="$edit">
+                    <label class="custom-control-label d-block" for="{$edit->getHtmlId()}"></label>
+                </div>
+            </td>
+            <td>
+                {label $input for=>$edit->getHtmlId()}
+            </td>
+            <td>
+                {php if(!in_array($input->getOption(type),[checkbox,radio,file]))$input->getControlPrototype()->addClass('form-control')}
+                {input $input}
+                <ul n:if="$input->hasErrors()">
+                    <li n:foreach="$input->getErrors() as $error">{$error}</li>
+                </ul>
+            </td>
+        {else}
+            <td colspan="3">
+                <div class="pt-1 border-top">
+                    {include groupEditFormContainer $cont}
+                </div>
+            </td>
+        {/if}
+    </tr>
+    </tbody>
+</table>
