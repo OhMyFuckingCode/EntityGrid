@@ -64,12 +64,18 @@ class BaseGrid extends Section
     {
         parent::loadState($params);
         $session = $this->presenter->getSession($this->getSessionSectionName());
-        $this->session = $session->data instanceof SessionData ? $session->data : $session->data = new SessionData([
-            'order' => $this->order ?: reset($this->columns)->getName()
-        ]);
+        $this->session = $session->data instanceof SessionData ? $session->data : $this->resetSession();
         $this->control = new Control($this->getSessionSectionName());
+        $this->resetSession();
     }
 
+    protected function resetSession()
+    {
+        $session = $this->presenter->getSession($this->getSessionSectionName());
+        return $this->session = $session->data = SessionData::from([
+            'order' => $this->order ?: [reset($this->columns)->getName() => true]
+        ], false);
+    }
 
     public function afterRender():void
     {
@@ -85,7 +91,10 @@ class BaseGrid extends Section
     {
         /*$this->loa
         bdump($this->locale,'addColumn');*/
-        return $this->columns[$name] = new Column($name, $this->prefix . '.' . $label, $column ?: $name, $type, $this->locale);
+        $column = $column ?: $name;
+        $table = Strings::before($column,'.')?:$this->source->getName();
+
+        return $this->columns[$name] = new Column($name, $this->prefix . '.' . $label, $column,$table, $type, $this->locale);
     }
 
     public function getSessionSectionName():string
@@ -139,7 +148,13 @@ class BaseGrid extends Section
         $paginator->setItemCount($source->count('*'));
         $source->limit($paginator->getItemsPerPage(), $paginator->getOffset());
         $this->applyOrder($source);
-        return $this->items = $source->fetchPairs($source->getPrimary());
+        try {
+            return $this->items = $source->fetchPairs($source->getPrimary());
+        } catch (DriverException $exception) {
+            $this->resetSession();
+            throw $exception;
+        }
+
     }
 
     protected function beforeRender():void

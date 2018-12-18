@@ -8,7 +8,6 @@ use Nette\Database\IRow;
 use Nette\Database\Table\ActiveRow;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
-use Kdyby\Translation\Translator;
 
 /**
  * Class GridRow
@@ -75,6 +74,9 @@ class Column
     /** @var  string */
     protected $class;
 
+    /** @var  string */
+    protected $table;
+
     /** @var string */
     public $handle;
 
@@ -83,14 +85,16 @@ class Column
      * @param $name
      * @param $label
      * @param $column
+     * @param $table
      * @param $type
      * @param null $locale
      */
-    public function __construct($name, $label, $column, $type, $locale = null)
+    public function __construct($name, $label, $column, $table, $type, $locale = null)
     {
-        $this->name   = $name;
+        $this->name = $name;
         $this->column = $column;
-        $this->label  = $label;
+        $this->table = $table;
+        $this->label = $label;
         $this->locale = $locale;
 
         if (\is_string($type)) {
@@ -150,9 +154,9 @@ class Column
             foreach ($this->params as $key => $param) {
                 if (is_numeric($key)) {
                     $link->setParameter($param, $values->$param);
-                } elseif(isset($values->$param)) {
+                } elseif (isset($values->$param)) {
                     $link->setParameter($key, $values->$param);
-                }else{
+                } else {
                     $link->setParameter($key, $param);
                 }
             }
@@ -301,7 +305,7 @@ class Column
     public function getValue(ActiveRow $row)
     {
         //bdump($row);
-        $col = Strings::after($this->column,'.')?:$this->column;
+        $col = Strings::after($this->column, '.') ?: $this->column;
         if ($this->type === 'self') {
             if ($this->name !== $this->column) {
                 return $row->{$this->column}??NULL;
@@ -315,8 +319,8 @@ class Column
             return $row->related($this->related, $this->column);
         }
         if ($this->translation) {
-           /* bdump($this->locale,'getValue');*/
-            $el = $row->related($this->translation)->where('lang',$this->locale)->fetch();
+            /* bdump($this->locale,'getValue');*/
+            $el = $row->related($this->translation)->where('lang', $this->locale)->fetch();
             return $el ? $el->{$col} : null;
         }
         return $row->{$col};
@@ -430,4 +434,29 @@ class Column
     {
         $this->class = $class;
     }
+
+    /**
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    /**
+     * @param string $table
+     * @return static
+     */
+    public function setTable(string $table)
+    {
+        $this->table = $table;
+        return $this;
+    }
+
+    public function __toString():string
+    {
+        return $this->table ? "{$this->table}.{$this->column}" : $this->column;
+    }
+
+
 }

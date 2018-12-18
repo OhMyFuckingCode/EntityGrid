@@ -149,6 +149,7 @@ class Section extends BaseControl
     {
         if ($order = $this->session->order) {
             foreach ($order as $column => $direction) {
+                $column = (string)$this->columns[$column];
                 $source->order("$column " . ($direction ? 'ASC' : 'DESC'));
             }
         }
