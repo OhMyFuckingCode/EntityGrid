@@ -221,10 +221,8 @@
             </div>
         </div>
     {else}
-    {var $meta = $value->related('images_meta','image_id')->fetch()}
         <img src="{$value,30,30,exact|gridImage}" width="30" height="30" class="cursor-pointer"
-             alt="{$meta?$meta->alt:null}"
-             data-toggle="popover" title="{$meta?$meta->alt:null}"
+             data-toggle="popover"
              data-content="<img class='img-fluid' src='{$value,250,250,fit|gridImage}'>"
              data-html="true"
              data-modal="<a class='ajax' href='{plink Entity:detail table=>images,id=>$value->id}'><img class='img-fluid' src='{$value|gridImage}'></a>">
@@ -234,7 +232,6 @@
 <div n:define="_tree">
     {control action-expand}
 </div>
-
 
 <div n:define="youtube">
     <img class="cursor-pointer" src="{$helpers::YOU_TUBE_THUMB}{$value}/default.jpg" width="40" height="30"

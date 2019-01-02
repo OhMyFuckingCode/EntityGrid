@@ -30,6 +30,8 @@ class EntityGrid extends BaseGrid
 
     /** @var bool */
     protected $groupEdit = false;
+    /** @var callable */
+    protected $formatterCallback;
 
 
     public function __construct(array $allConfigs, array $config, IModel $model, Selection $source, $prefix)

@@ -108,13 +108,13 @@ class SearchFormFactory implements ISearchFormFactory
         $form->onError[]=function(Form $form){
           bdump($form->getErrors());
         };
-       // bdump($form);exit;
+
         return $form;
     }
 
     protected function addInput(Form $form, $method, string $column, ...$nextArgs): void
     {
-        //bdump($column,'y');
+
         if (\is_array($method)) {
             $cont = $form->addContainer($column);
             $cont->{$method[0]}('from', 'from', ...$nextArgs);
@@ -132,7 +132,7 @@ class SearchFormFactory implements ISearchFormFactory
     public function apply(Selection $selection,$config, $values)
     {
         if ($values) {
-            //bdump($values,'x');
+
             foreach ($values as $key => $value) {
                 if($value === null || $value === 'null'){
                     $selection->where([$key => null]);

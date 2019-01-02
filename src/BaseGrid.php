@@ -60,7 +60,7 @@ class BaseGrid extends Section
         $this->section = $this;
     }
 
-    public function loadState(array $params)
+    public function loadState(array $params):void
     {
         parent::loadState($params);
         $session = $this->presenter->getSession($this->getSessionSectionName());
@@ -92,9 +92,9 @@ class BaseGrid extends Section
         /*$this->loa
         bdump($this->locale,'addColumn');*/
         $column = $column ?: $name;
-        $table = Strings::before($column,'.')?:$this->source->getName();
+        $table = Strings::before($column, '.') ?: $this->source->getName();
 
-        return $this->columns[$name] = new Column($name, $this->prefix . '.' . $label, $column,$table, $type, $this->locale);
+        return $this->columns[$name] = new Column($name, $this->prefix . '.' . $label, $column, $table, $type, $this->locale);
     }
 
     public function getSessionSectionName():string
