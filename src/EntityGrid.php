@@ -12,7 +12,6 @@ use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Strings;
 
 
 /**
@@ -54,9 +53,12 @@ class EntityGrid extends BaseGrid
     /**
      * Metoda pro sestavení definic sloupců.
      */
-    protected function startup()
+    protected function startup():void
     {
         parent::startup();
+        foreach ($this->config['alias'] as $alias => $tableChain) {
+            $this->source->alias($tableChain, $alias);
+        }
         foreach ($this->config['columns'] as $column => $type) {
             $col = $this->addColumn($column, $column, null, $type);
             if (\is_array($type)) {
