@@ -13,6 +13,12 @@ use Nette\Utils\ArrayHash;
 
 class Helpers
 {
+
+    public const FLASH_TYPES_MAP = [
+        null => 'info',
+        'error' => 'danger'
+    ];
+
     /**
      * Removes empty values recursively
      * @param ArrayHash|array $array
@@ -31,6 +37,11 @@ class Helpers
             $result[$key] = $value;
         }
         return $result;
+    }
+
+    public static function flashType(?string $type = null)
+    {
+        return self::FLASH_TYPES_MAP[$type]??$type;
     }
 
 }

@@ -160,6 +160,7 @@ class BaseGrid extends Section
     protected function beforeRender():void
     {
         parent::beforeRender();
+        $this->template->addFilter('gridFlashType', Helpers::class . '::flashType');
         $this->template->showSelection = $this->session->showSelection;
         $this->template->uniqueId = $this->getSessionSectionName();
         $this->template->title = $this->title;
@@ -297,6 +298,14 @@ class BaseGrid extends Section
     public function setImageLinkProvider(?IImageLinkProvider $imageLinkProvider)
     {
         $this->imageLinkProvider = $imageLinkProvider;
+    }
+
+    public function flashMessage($message, $type = 'info'):\stdClass
+    {
+        if ($this->presenter->isAjax()) {
+            $this->redrawControl('flashes');
+        }
+        return parent::flashMessage($message, $type);
     }
 
 

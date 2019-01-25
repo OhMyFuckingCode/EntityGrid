@@ -34,3 +34,5 @@ btn:
 input:
     date:
         from-to: Zadat rozsah
+messages:
+    unable_to_delete: Tuto položku nebylo možné odstranit

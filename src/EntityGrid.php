@@ -8,11 +8,11 @@ namespace Quextum\EntityGrid;
 
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Multiplier;
+use Nette\Database\ForeignKeyConstraintViolationException;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Strings;
 
 
 /**
@@ -54,7 +54,7 @@ class EntityGrid extends BaseGrid
     /**
      * Metoda pro sestavení definic sloupců.
      */
-    protected function startup()
+    protected function startup():void
     {
         parent::startup();
         foreach ($this->config['columns'] as $column => $type) {
@@ -138,12 +138,7 @@ class EntityGrid extends BaseGrid
         $gridRow->redrawControl('row');
     }
 
-    public function groupDelete(Section $section): void
-    {
-        foreach ($this->getUserSelection() as $row) {
-            $this->delete($section, $row);
-        }
-    }
+
 
     public function groupEdit(Section $section): void
     {
@@ -176,7 +171,7 @@ class EntityGrid extends BaseGrid
         return $form;
     }
 
-    public function delete(Section $section, ?ActiveRow $row = null)
+    public function delete(Section $section, ?ActiveRow $row = null): void
     {
         $this->deleteEntity($row);
         $this->session->selection->remove($id = $row->getPrimary());
@@ -184,6 +179,12 @@ class EntityGrid extends BaseGrid
         $section->redrawItems();
     }
 
+    public function groupDelete(Section $section): void
+    {
+        foreach ($this->getUserSelection() as $row) {
+            $this->delete($section, $row);
+        }
+    }
 
     public function deleteEntity(ActiveRow $item): void
     {
@@ -202,26 +203,9 @@ class EntityGrid extends BaseGrid
         if ($this->session->search || $this->session->showSelection) {
             $this->tree = null;
         }
-
         $this->template->groupEdit = $this->groupEdit;
-
-        /*if ($this->translator) {
-            $availableLocales = [];
-            foreach ($this->translator->getAvailableLocales() as $l) {
-                $availableLocales[] = Strings::before($l, '_');
-            }
-            $this->template->availableLocales = array_diff($availableLocales, [$this->locale]);
-        }*/
-
         parent::beforeRender();
     }
-
-    /*public function handleSetLocale($locale):void
-    {
-        $this->session->locale = $locale;
-        bdump($this->session->locale,'handle');
-        $this->redrawControl('control');
-    }*/
 
     public function handleCleanSelection():void
     {

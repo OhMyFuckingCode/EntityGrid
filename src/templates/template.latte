@@ -43,6 +43,12 @@
             </div>
         </div>
 
+        <div n:snippet="flashes" n:inner-ifset="$flashes">
+            <div n:foreach="$flashes as $flash" class="alert alert-{$flash->type|gridFlashType}" role="alert">
+                {_"entityGrid.{$flash->message}"}
+            </div>
+        </div>
+
         <div class="grid-container table-responsive mb-1">
             <div class="grid-table" n:snippet="grid">
                 <div class="grid-table-colgroup">

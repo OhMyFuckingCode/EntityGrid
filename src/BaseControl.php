@@ -3,13 +3,10 @@
 namespace Quextum\EntityGrid;
 
 
-use Latte\Runtime\Html;
 use Nette\Application\UI\Control;
-use Nette\Application\UI\IRenderable;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Database\Table\ActiveRow;
-use Nette\InvalidArgumentException;
 use Nette\Localization\ITranslator;
 use Nette\Security\User;
 
@@ -96,7 +93,7 @@ abstract class BaseControl extends Control
      */
     public function getTemplateFile()
     {
-        return __DIR__ . '/templates/'. $this->templateName;
+        return __DIR__ . '/templates/' . $this->templateName;
     }
 
     /**
@@ -120,18 +117,13 @@ abstract class BaseControl extends Control
     protected function beforeRender():void
     {
         $this->onBeforeRender($this, $this->template);
-        /*bdump($this->locale,'beforeRender');*/
-        $this->template->locale = $this->locale;
-        if (isset($this->template->flashes) && $this->getPresenter()->isAjax()) {
-            $this->redrawControl('flashes');
-        }
     }
 
     protected function createTemplate()
     {
         /** @var Template $template */
-        $template =  parent::createTemplate();
-        $template->addFilter('gridImage',[$this->grid->getImageLinkProvider(),'provide']);
+        $template = parent::createTemplate();
+        $template->addFilter('gridImage', [$this->grid->getImageLinkProvider(), 'provide']);
         return $template;
     }
 
