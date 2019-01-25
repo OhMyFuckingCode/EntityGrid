@@ -57,6 +57,9 @@ class EntityGrid extends BaseGrid
     protected function startup():void
     {
         parent::startup();
+        foreach ($this->config['alias'] as $alias => $tableChain) {
+            $this->source->alias($tableChain, $alias);
+        }
         foreach ($this->config['columns'] as $column => $type) {
             $col = $this->addColumn($column, $column, null, $type);
             if (\is_array($type)) {

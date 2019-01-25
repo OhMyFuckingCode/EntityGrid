@@ -66,7 +66,6 @@ class BaseGrid extends Section
         $session = $this->presenter->getSession($this->getSessionSectionName());
         $this->session = $session->data instanceof SessionData ? $session->data : $this->resetSession();
         $this->control = new Control($this->getSessionSectionName());
-        $this->resetSession();
     }
 
     protected function resetSession()

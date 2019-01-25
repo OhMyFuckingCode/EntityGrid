@@ -37,7 +37,8 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
         'actions' => [],
         'link' => ['id', 'name'],
         'globalActions' => [],
-        'groupActions' => []
+        'groupActions' => [],
+        'alias' => [],
     ];
 
     public static function itemFormatter($items)
