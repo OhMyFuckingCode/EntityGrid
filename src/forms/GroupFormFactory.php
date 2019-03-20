@@ -7,6 +7,7 @@ use Nette\Application\UI\Form;
 use Nette\Database\Row;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\IControl;
 use Nette\Utils\ArrayHash;
 
 class GroupFormFactory
@@ -93,15 +94,15 @@ class GroupFormFactory
         }
     }
 
-    public static function createInput(Container $newContainer, Container $oldContainer, string $name, BaseControl $component): void
+    public static function createInput(Container $newContainer, Container $oldContainer, string $name, IControl $component): void
     {
-        if (!$component->isDisabled() && !$component->isOmitted()) {
+        if (!$component->isOmitted() && (!method_exists($component,'isDisabled') || !$component->isDisabled())) {
             //$component->setParent(null);
             $oldContainer->removeComponent($component);
             $container = $newContainer->addContainer($name);
 
             $edit = $container->addCheckbox('_edit', 'edit');
-            if ($component->isRequired()) {
+            if (method_exists($component,'isRequired') &&  $component->isRequired()) {
                 $component->setRequired(false);
                 $component->addConditionOn($edit, Form::FILLED)
                     ->addRule(Form::FILLED);

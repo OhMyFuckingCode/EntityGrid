@@ -160,7 +160,7 @@ class EntityGrid extends BaseGrid
         $form->onSuccess[] = function (Form $form, ArrayHash $values) {
             if (\count($values)) {
                 foreach ($this->getUserSelection() as $row) {
-                    $this->model->update($row, $values);
+                    $this->model->update($row,clone $values);
                 }
             }
             $this->groupEdit = false;

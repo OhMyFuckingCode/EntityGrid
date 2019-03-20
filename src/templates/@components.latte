@@ -223,6 +223,7 @@
     {else}
         <img src="{$value,30,30,exact|gridImage}" width="30" height="30" class="cursor-pointer"
              data-toggle="popover"
+             data-triger="hover"
              data-content="<img class='img-fluid' src='{$value,250,250,fit|gridImage}'>"
              data-html="true"
              data-modal="<a class='ajax' href='{plink Entity:detail table=>images,id=>$value->id}'><img class='img-fluid' src='{$value|gridImage}'></a>">
