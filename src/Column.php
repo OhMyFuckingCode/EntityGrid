@@ -80,6 +80,9 @@ class Column
     /** @var string */
     public $handle;
 
+    /** @var  string[] */
+    protected $aliases;
+
     /**
      * Column constructor.
      * @param $name
@@ -316,7 +319,11 @@ class Column
             return $row->ref($this->ref, $this->column);
         }
         if ($this->related) {
-            return $row->related($this->related, $this->column);
+            $related=$row->related($this->related, $this->column);
+            foreach ((array)$this->aliases as $alias=>$def) {
+                $related->alias($def,$alias);
+            }
+            return $related;
         }
         if ($this->translation) {
             /* bdump($this->locale,'getValue');*/

@@ -55,12 +55,17 @@ class SearchFormFactory implements ISearchFormFactory
         foreach ($search as $_column => $def) {
             $nextArgs = [];
             $column = $def->getColumn();
-            /*bdump($column,'a');*/
+            preg_match('/(:?(?<table>\w+)(:(?<over>\w+))?\.)?(?<column>\w+)/', $column, $m);
+            list('table' => $table, 'over' => $over, 'column' => $column) = $m;
             switch ($def->getType()) {
                 case 'ajaxselect':
                     $context = $this->context;
-                    if ($t = $context->getStructure()->getBelongsToReference( $grid->getSource()->getName(), $column)) {
-                        $belongs = $context->table($t);
+                    if ($table || ($table = $context->getStructure()->getBelongsToReference($grid->getSource()->getName(), $column))) {
+                        $belongs = $context->table($table);
+                        if($over){
+                            $source = $grid->getSource();
+                            $belongs->joinWhere($over,[$column=>"{$source->getName()}.{$source->getPrimary()}"]);
+                        }
                         $nextArgs[] = $belongs;
                     } else {
                         $items = $grid->getSource()->createSelectionInstance()->select('DISTINCT ?', new SqlLiteral($column));
@@ -74,8 +79,8 @@ class SearchFormFactory implements ISearchFormFactory
                     break;
                 case 'select':
                     $context = $this->context;
-                    if ($t = $context->getStructure()->getBelongsToReference( $grid->getSource()->getName(), $column)) {
-                        $belongs = $context->table($t);
+                    if ($table || ($table = $context->getStructure()->getBelongsToReference($grid->getSource()->getName(), $column))) {
+                        $belongs = $context->table($table);
                         $nextArgs[] = $config['formatter']->entities($belongs, $def);
                     } else {
                         $items = $grid->getSource()->createSelectionInstance()->select('DISTINCT ?', new SqlLiteral($column));
@@ -105,8 +110,8 @@ class SearchFormFactory implements ISearchFormFactory
                 $control->setAttribute('class', 'form-control');
             }
         }
-        $form->onError[]=function(Form $form){
-          bdump($form->getErrors());
+        $form->onError[] = function (Form $form) {
+            bdump($form->getErrors());
         };
 
         return $form;
@@ -120,7 +125,7 @@ class SearchFormFactory implements ISearchFormFactory
             $cont->{$method[0]}('from', 'from', ...$nextArgs);
             $cont->{$method[1]}('to', 'to', ...$nextArgs);
         } else {
-            $form->$method(Strings::after($column,'.') ?: $column, $column, ...$nextArgs);
+            $form->$method(Strings::after($column, '.') ?: $column, $column, ...$nextArgs);
         }
     }
 
@@ -129,65 +134,69 @@ class SearchFormFactory implements ISearchFormFactory
      * @param array $config
      * @param ArrayHash $values
      */
-    public function apply(Selection $selection,$config, $values)
+    public function apply(Selection $selection, $config, $values)
     {
         if ($values) {
 
             foreach ($values as $key => $value) {
-                if($value === null || $value === 'null'){
-                    $selection->where([$key => null]);
+
+                $def = $config['search'][$key];
+
+                $column = $def->getColumn();
+                //preg_match('/(:?(?<table>\w+)(:(?<over>\w+))?\.)?(?<column>\w+)/', $column, $m);
+                //list('table' => $table, 'over' => $over, 'column' => $column) = $m;
+
+                if ($value === null || $value === 'null') {
+                    $selection->where([$column => null]);
                     continue;
                 }
-                if($value === 'not null'){
-                    $selection->where(["$key IS NOT NULL"]);
+                if ($value === 'not null') {
+                    $selection->where(["$column IS NOT NULL"]);
                     continue;
                 }
 
                 // Search napříč joined table
-                if (empty($config['search'][$key])) {
+                /*if (empty($config['search'][$key])) {
                     foreach ($config['columns'] as $s_key => $type) {
                         if (strpos($s_key, ".$key") !== false) {
                             $key = $s_key;
                         }
                     }
-                }
-
-                $def = $config['search'][$key];
-                ///
+                }*/
 
                 switch ($def->getType()) {
                     case 'regexp':
-                        $selection->where("$key REGEXP ?", $value);
+                        $selection->where("$column REGEXP ?", $value);
                         break;
                     case 'match':
-                        $selection->where(" MATCH ($key) AGAINST ?", $value);
+                        $selection->where(" MATCH ($column) AGAINST ?", $value);
                         break;
                     case 'like':
-                        $selection->where("$key LIKE ?", "%$value%");
+                        $selection->where("$column LIKE ?", "%$value%");
                         break;
                     case 'range':
                     case 'timerange':
                     case 'daterange':
                     case 'datetimerange':
-                        if(!empty($value['from'])){
-                            if($value['from'] instanceof Date){
-                                $key = "DATE($key)";
+                        if (!empty($value['from'])) {
+                            if ($value['from'] instanceof Date) {
+                                $column = "DATE($column)";
                             }
-                            if(empty($value['to'])){
-                                $selection->where("$key = ? ", $value['from']);
-                            }else{
-                                $selection->where("$key >= ? ", $value['from']);
+                            if (empty($value['to'])) {
+                                $selection->where("$column = ? ", $value['from']);
+                            } else {
+                                $selection->where("$column >= ? ", $value['from']);
                             }
                         }
-                        if(!empty($value['to'])){
-                            if($value['to'] instanceof Date){
-                                $key = "DATE($key)";
+                        if (!empty($value['to'])) {
+                            if ($value['to'] instanceof Date) {
+                                $column = "DATE($column)";
                             }
-                            $selection->where("$key <= ? ", $value['to']);
+                            $selection->where("$column <= ? ", $value['to']);
                         }
                         break;
                     default:
-                        $selection->where([$key => $value]);
+                        $selection->where([$column => $value]);
                         break;
                 }
             }

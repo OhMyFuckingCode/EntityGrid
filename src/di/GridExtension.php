@@ -8,19 +8,15 @@
 
 namespace Quextum\EntityGrid;
 
-use Kdyby\Translation\DI\ITranslationProvider;
-use Kdyby\Translation\Dumper\NeonFileDumper;
-use Kdyby\Translation\Translator;
+
 use Nette\DI\CompilerExtension;
 use Nette\DI\Config\Helpers;
-use Nette\Neon\Neon;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpLiteral;
-use Nette\Utils\FileSystem;
 use Quextum\EntityGrid\Forms\AjaxSelectBox;
 use Quextum\EntityGrid\Forms\DropDownCheckboxList;
 
-class GridExtension extends CompilerExtension implements ITranslationProvider
+class GridExtension extends CompilerExtension
 {
 
     public const defaultGridConfig = [
@@ -96,7 +92,7 @@ class GridExtension extends CompilerExtension implements ITranslationProvider
      *
      * @return string[]
      */
-    public function getTranslationResources():array
+    public static function getTranslationResources():array
     {
         return [__DIR__ . '/../lang'];
     }

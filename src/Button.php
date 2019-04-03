@@ -3,7 +3,6 @@
 namespace Quextum\EntityGrid;
 
 
-use Kdyby\Translation\Translator;
 use Nette\Application\UI\Component;
 use Nette\Localization\ITranslator;
 use Nette\Utils\Html;
@@ -24,7 +23,7 @@ class Button extends Component
 
     protected $control;
 
-    /** @var  ITranslator|Translator */
+    /** @var  ITranslator */
     protected $translator;
 
     /**
@@ -127,12 +126,12 @@ class Button extends Component
     }
 
     /**
-     * @param Translator|ITranslator $translator
+     * @param ITranslator $translator
      * @return static
      */
     public function setTranslator($translator)
     {
-        if ($translator instanceof Translator) {
+        if (method_exists($translator,'domain')) {
             $translator = $translator->domain('entityGrid.btn');
         }
         $this->translator = $translator;
