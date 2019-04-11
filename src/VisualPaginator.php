@@ -34,8 +34,11 @@ class VisualPaginator extends BaseControl
     /** @var Paginator */
     private $paginator;
 
-    /** @persistent */
-    public $page;
+    /**
+     * @persistent
+     * @var int
+     */
+    public $page = 1;
 
     /** @var  callable */
     public $onChange;
@@ -90,7 +93,7 @@ class VisualPaginator extends BaseControl
     public function loadState(array $params):void
     {
         parent::loadState($params);
-        $this->getPaginator()->page = $this->page;
+        $this->getPaginator()->page = $this->page ?:1;
 
     }
 

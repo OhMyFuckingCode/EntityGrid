@@ -120,7 +120,7 @@ class Search extends BaseControl
      */
     public function apply(Selection $source): void
     {
-        $this->formFactory->apply($source, $this->config,$this->session->search);
+        $this->formFactory->apply($this->grid,$source, $this->config,$this->session->search);
     }
 
     protected function beforeRender():void

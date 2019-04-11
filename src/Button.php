@@ -32,7 +32,6 @@ class Button extends Component
      */
     public function __construct(Action $action)
     {
-        parent::__construct();
         $this->control = Html::el('a');
         $this->action = $action;
         $this->monitor(BaseControl::class, [$this, 'onAttached']);

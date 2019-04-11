@@ -4,6 +4,7 @@ namespace Quextum\EntityGrid;
 
 
 use Nette\Application\UI\Control;
+use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Database\Table\ActiveRow;
@@ -50,7 +51,6 @@ abstract class BaseControl extends Control
 
     public function __construct()
     {
-        parent::__construct();
         $this->monitor(Presenter::class, function (Presenter $presenter) {
             $this->presenterAttached($presenter);
             $this->onPresenterAttached($presenter);
@@ -119,7 +119,7 @@ abstract class BaseControl extends Control
         $this->onBeforeRender($this, $this->template);
     }
 
-    protected function createTemplate()
+    protected function createTemplate():ITemplate
     {
         /** @var Template $template */
         $template = parent::createTemplate();

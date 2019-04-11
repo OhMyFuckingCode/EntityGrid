@@ -107,7 +107,7 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
      * Returns selected keys.
      * @return array
      */
-    public function getValue()
+    public function getValue():array
     {
        /* if($this->value){
             return array_values((clone $this->selection)->select($this->valueField)->where([$this->valueField => $this->value])->fetchPairs($this->valueField, $this->valueField));

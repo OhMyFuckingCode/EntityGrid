@@ -21,12 +21,14 @@ interface ISearchFormFactory
      * @param array $options
      * @return Form
      */
-    public function create(BaseGrid $grid,$config,$options):Form;
+    public function create(BaseGrid $grid, $config, $options):Form;
 
     /**
+     * @param BaseGrid $grid
      * @param Selection $selection
+     * @param $config
      * @param ArrayHash $values
      */
-    public function apply(Selection $selection,$config, $values);
+    public function apply(BaseGrid $grid, Selection $selection, $config, $values):void;
 
 }

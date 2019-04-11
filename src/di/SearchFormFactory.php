@@ -14,6 +14,9 @@ use Nette\Application\UI\Form;
 use Nette\Database\Context;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\Selection;
+use Nette\Forms\Controls\ChoiceControl;
+use Nette\Forms\Controls\MultiChoiceControl;
+use Nette\Forms\IControl;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
@@ -62,9 +65,9 @@ class SearchFormFactory implements ISearchFormFactory
                     $context = $this->context;
                     if ($table || ($table = $context->getStructure()->getBelongsToReference($grid->getSource()->getName(), $column))) {
                         $belongs = $context->table($table);
-                        if($over){
+                        if ($over) {
                             $source = $grid->getSource();
-                            $belongs->joinWhere($over,[$column=>"{$source->getName()}.{$source->getPrimary()}"]);
+                            $belongs->joinWhere($over, [$column => "{$source->getName()}.{$source->getPrimary()}"]);
                         }
                         $nextArgs[] = $belongs;
                     } else {
@@ -86,8 +89,8 @@ class SearchFormFactory implements ISearchFormFactory
                         $items = $grid->getSource()->createSelectionInstance()->select('DISTINCT ?', new SqlLiteral($column));
                         $nextArgs[] = $config['formatter']->items($items, $def);
                     }
-                    $nextArgs[] = $def->getValue();
-                    $nextArgs[] = $def->getLabel();
+                  //  $nextArgs[] = $def->getValue();
+                   // $nextArgs[] = $def->getLabel();
                     $def->getImage() && $nextArgs[] = function ($item) use ($config, $def) {
                         return $config['formatter']->image($item, $def);
                     };
@@ -100,7 +103,7 @@ class SearchFormFactory implements ISearchFormFactory
                     ];
                     break;
             }
-            $this->addInput($form, $def->getMethod(), $column, ...$nextArgs);
+            $input = $this->addInput($form, $def->getMethod(), $column, ...$nextArgs);
 
         }
         $options = $options['options'];
@@ -110,6 +113,11 @@ class SearchFormFactory implements ISearchFormFactory
                 $control->setAttribute('class', 'form-control');
             }
         }
+        foreach ($form->getControls() as $control) {
+            if ($control instanceof ChoiceControl || $control instanceof MultiChoiceControl) {
+                $control->checkDefaultValue(false);
+            }
+        }
         $form->onError[] = function (Form $form) {
             bdump($form->getErrors());
         };
@@ -117,34 +125,46 @@ class SearchFormFactory implements ISearchFormFactory
         return $form;
     }
 
-    protected function addInput(Form $form, $method, string $column, ...$nextArgs): void
+    /**
+     * @param Form $form
+     * @param $method
+     * @param string $column
+     * @param array ...$nextArgs
+     * @return \Nette\Forms\Container|IControl
+     */
+    protected function addInput(Form $form, $method, string $column, ...$nextArgs)
     {
 
         if (\is_array($method)) {
             $cont = $form->addContainer($column);
             $cont->{$method[0]}('from', 'from', ...$nextArgs);
             $cont->{$method[1]}('to', 'to', ...$nextArgs);
-        } else {
-            $form->$method(Strings::after($column, '.') ?: $column, $column, ...$nextArgs);
+            return $cont;
         }
+        return $form->$method(Strings::after($column, '.') ?: $column, $column, ...$nextArgs);
     }
 
     /**
+     * @param BaseGrid $grid
      * @param Selection $selection
      * @param array $config
      * @param ArrayHash $values
      */
-    public function apply(Selection $selection, $config, $values)
+    public function apply(BaseGrid $grid, Selection $selection, $config, $values):void
     {
         if ($values) {
 
             foreach ($values as $key => $value) {
-
                 $def = $config['search'][$key];
+                $column = (string)$grid->getColumns()[$key];
 
-                $column = $def->getColumn();
-                //preg_match('/(:?(?<table>\w+)(:(?<over>\w+))?\.)?(?<column>\w+)/', $column, $m);
-                //list('table' => $table, 'over' => $over, 'column' => $column) = $m;
+                /* $column = $def->getColumn();
+                 preg_match('/(:?(?<table>\w+)(:(?<over>\w+))?\.)?(?<column>\w+)/', $column, $m);
+                 list('table' => $table, 'over' => $over, 'column' => $col) = $m;
+
+                 if (!$table && !$over) {
+                     $column = $selection->getName() . '.' . $column;
+                 }*/
 
                 if ($value === null || $value === 'null') {
                     $selection->where([$column => null]);
