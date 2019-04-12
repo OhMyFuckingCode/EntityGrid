@@ -38,6 +38,7 @@ class SearchFormFactory implements ISearchFormFactory
     }
 
 
+
     /**
      * @param BaseGrid $grid
      * @param array $config
@@ -63,7 +64,7 @@ class SearchFormFactory implements ISearchFormFactory
             switch ($def->getType()) {
                 case 'ajaxselect':
                     $context = $this->context;
-                    if ($table || ($table = $context->getStructure()->getBelongsToReference($grid->getSource()->getName(), $column))) {
+                    if ($table || ($table = $context->getStructure()->getBelongsToReference($grid->getSource()->getName())[$column]??null)) {
                         $belongs = $context->table($table);
                         if ($over) {
                             $source = $grid->getSource();

@@ -47,14 +47,14 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
     public function __construct(string $label, Selection $items, string $valueField, string $labelFiled, ?callable $imageCallback = null, ?array $searchFields = null)
     {
         parent::__construct($label, []);
-        $this->checkAllowedValues = false;
+        $this->checkDefaultValue(false);
         $this->controlPrototype->data('provide', 'select');
         $this->selection = $items;
         $this->valueField = $valueField;
         $this->labelField = $labelFiled;
         $this->imageCallback = $imageCallback;
         $this->searchFields = $searchFields ?? [$valueField, $labelFiled];
-        $this->onFilter = [function (AjaxSelectBox $box, Selection $selection, ?string $search) {
+        $this->onFilter = [static function (AjaxSelectBox $box, Selection $selection, ?string $search) {
             if ($search) {
                 $val = "%$search%";
                 $x = [];
