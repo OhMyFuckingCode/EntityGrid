@@ -92,7 +92,7 @@ class SearchFormFactory implements ISearchFormFactory
                     }
                   //  $nextArgs[] = $def->getValue();
                    // $nextArgs[] = $def->getLabel();
-                    $def->getImage() && $nextArgs[] = function ($item) use ($config, $def) {
+                    $def->getImage() && $nextArgs[] = static function ($item) use ($config, $def) {
                         return $config['formatter']->image($item, $def);
                     };
                     break;
@@ -115,11 +115,14 @@ class SearchFormFactory implements ISearchFormFactory
             }
         }
         foreach ($form->getControls() as $control) {
-            if ($control instanceof ChoiceControl || $control instanceof MultiChoiceControl) {
-                $control->checkDefaultValue(false);
+            switch (true){
+                case $control instanceof MultiChoiceControl:
+                    $control->setHtmlAttribute('size',1);
+                case $control instanceof ChoiceControl:
+                    $control->checkDefaultValue(false);
             }
         }
-        $form->onError[] = function (Form $form) {
+        $form->onError[] = static function (Form $form) {
             bdump($form->getErrors());
         };
 
@@ -190,7 +193,7 @@ class SearchFormFactory implements ISearchFormFactory
                         $selection->where("$column REGEXP ?", $value);
                         break;
                     case 'match':
-                        $selection->where(" MATCH ($column) AGAINST ?", $value);
+                        $selection->where(" MATCH ($column) AGAINST (?)", $value);
                         break;
                     case 'like':
                         $selection->where("$column LIKE ?", "%$value%");

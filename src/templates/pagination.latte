@@ -7,23 +7,20 @@
             {if $paginator->isFirst()}
                 <span class="page-link"><i class="fas fa-angle-left"></i></span>
             {else}
-                <a n:href="this,'page'=>$paginator->page - 1" class="page-link ajax"
-                                                              data-post="{['_do'=>$path.'goTo',$path.'page'=>$paginator->page - 1 ]|json}">
+                <a n:href="this,'page'=>$paginator->page - 1" class="page-link ajax">
                     <i class="fas fa-angle-left"></i>
                 </a>
             {/if}
 
         </li>
         <li n:foreach="$steps as $step" n:class="page-item, $step == $paginator->page ? active">
-            <a n:href="this, 'page' => $step" class="page-link ajax"
-                                              data-post="{['_do'=>$path.'goTo',$path.'page'=>$step ]|json}">{$step}</a>
+            <a n:href="this, 'page' => $step" class="page-link ajax">{$step}</a>
         </li>
         <li n:class="page-item,$paginator->isLast()?disabled">
             {if $paginator->isLast()}
                 <span class="page-link"><i class="fas fa-angle-right"></i></span>
             {else}
-                <a n:href="this,'page'=>$p = $paginator->page + 1" class="page-link ajax"
-                                                                   data-post="{['_do'=>$path.'goTo',$path.'page'=>$paginator->page + 1 ]|json}">
+                <a n:href="this,'page'=>$p = $paginator->page + 1" class="page-link ajax">
                     <i class="fas fa-angle-right"></i>
                 </a>
             {/if}

@@ -38,7 +38,7 @@ class VisualPaginator extends BaseControl
      * @persistent
      * @var int
      */
-    public $page = 1;
+    public $page = 0;
 
     /** @var  callable */
     public $onChange;
@@ -94,14 +94,12 @@ class VisualPaginator extends BaseControl
     {
         parent::loadState($params);
         $this->getPaginator()->page = $this->page ?:1;
+        if(isset($params['page'])){
+            $this->onChange($this->page);
+            $this->redrawControl();
+        }
 
     }
 
-    public function handleGoTo(?int $page): void
-    {
-        $this->page = $page;
-        $this->onChange($page);
-        $this->redrawControl();
-    }
 
 }

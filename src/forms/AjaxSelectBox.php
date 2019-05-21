@@ -49,6 +49,7 @@ class AjaxSelectBox extends MultiSelectBox implements ISignalReceiver
         parent::__construct($label, []);
         $this->checkDefaultValue(false);
         $this->controlPrototype->data('provide', 'select');
+        $this->setHtmlAttribute('size',1);
         $this->selection = $items;
         $this->valueField = $valueField;
         $this->labelField = $labelFiled;
