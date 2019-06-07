@@ -9,6 +9,7 @@
             <div n:if="$showSelection" class="ml-auto alert alert-warning alert-glow">
                 {_'entityGrid.selection.shown'}
                 <i class="fa fa-exclamation"></i>
+                <a n:href="showSelection! false" class="small ml-3">{_'entityGrid.back'}</a>
             </div>
             <div n:snippet="controls" class="ml-auto grid-actions clearfix btn-toolbar mb-3" role="toolbar" aria-label="Actions toolbar">
                 <div class="grid-group-actions btn-group mr-2" n:if="$groupActions" n:snippet="groupActions">
