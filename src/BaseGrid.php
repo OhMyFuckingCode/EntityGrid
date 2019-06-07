@@ -68,7 +68,7 @@ class BaseGrid extends Section
         $this->control = new Control($this->getSessionSectionName());
     }
 
-    protected function resetSession()
+    public function resetSession()
     {
         $session = $this->presenter->getSession($this->getSessionSectionName());
         return $this->session = $session->data = SessionData::from([

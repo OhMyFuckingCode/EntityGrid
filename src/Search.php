@@ -113,6 +113,7 @@ class Search extends BaseControl
     public function searchFormSucceeded(Form $form): void
     {
         $this->onSuccess($this, Helpers::array_filter_recursive($form->getValues()));
+        $this->redrawControl('search');
     }
 
     /**

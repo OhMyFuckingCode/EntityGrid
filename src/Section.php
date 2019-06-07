@@ -198,7 +198,13 @@ class Section extends BaseControl
         if (!$this->source) {
             return [];
         }
-        return $this->items ?? $this->loadItems();
+        try {
+            return $this->items ?? $this->loadItems();
+        } catch (\Exception $exception) {
+            $this->grid->resetSession();
+            $this->flashMessage('unknown_error');
+            throw $exception;
+        }
     }
 
     protected function beforeRender():void
