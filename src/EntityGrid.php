@@ -103,6 +103,17 @@ class EntityGrid extends BaseGrid
             return $button;
         });
     }
+    protected function createComponentGlobalAction(): Multiplier
+    {
+        return new Multiplier(function ($name) {
+            $action = $this->globalActions[$name];
+            $button = new Button($action);
+            $button->onClick[] = function (Button $button, Action $action) {
+                $action->perform($this, $button);
+            };
+            return $button;
+        });
+    }
 
 
     public function handleShowSelection(bool $show): void
