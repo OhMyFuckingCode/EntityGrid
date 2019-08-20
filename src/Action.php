@@ -3,6 +3,7 @@
 namespace Quextum\EntityGrid;
 
 use Nette\Application\UI\Component;
+use Nette\Application\UI\InvalidLinkException;
 use Nette\Application\UI\Link;
 use Nette\Database\Table\ActiveRow;
 use Nette\SmartObject;
@@ -155,15 +156,15 @@ class Action
         $params = [];
         if (\is_array($this->link)) {
             list($destination, $_params) = $this->link;
-            if(isset($item)){
-                foreach ($_params as $param=>$column) {
-                    if(is_numeric($param)){
-                        $params[$column]=$item->$column;
-                    }else{
-                        $params[$param]=$item->$column;
+            if (isset($item)) {
+                foreach ($_params as $param => $column) {
+                    if (is_numeric($param)) {
+                        $params[$column] = $item->$column;
+                    } else {
+                        $params[$param] = $item->$column;
                     }
                 }
-            }else{
+            } else {
                 $params = (array)$_params;
             }
         }
@@ -182,7 +183,7 @@ class Action
                 $params[$key] = $value;
             }
         }
-        return $component->link($destination,$params);
+        return @$component->link($destination, $params);
     }
 
     /**
@@ -365,11 +366,11 @@ class Action
         return $this;
     }
 
-    public function perform(EntityGrid $grid, Button $button):void
+    public function perform(EntityGrid $grid, Button $button): void
     {
         $section = $button->getSection();
         if ($this->onClick) {
-            $this->onClick($section,$section->getItem());
+            $this->onClick($section, $section->getItem());
         }
         $args = [
             'grid' => $grid,

@@ -189,7 +189,10 @@ class Row extends Section
      */
     public function handleSetExpanded(bool $expanded = true): Section
     {
-        return $this->setExpanded($expanded);
+        $this->setExpanded($expanded);
+        $this->redrawControl('row');
+        $this->redrawControl('items');
+        return $this;
     }
 
     public function handleSetValue(string $column, bool $value)
