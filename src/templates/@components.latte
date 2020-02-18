@@ -67,26 +67,28 @@
 
 {define hide}
     <div class="d-contents" n:snippet="show-panel" >
-        <button class="btn btn-light btn-sm text-muted dropdown-toggle" type="button"
-                title="{_"entityGrid.show-n-hide-cols"}"
-                id="{$ctrlId}-column-visibility-menu" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-            <i class="fas fa-eye"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="{$ctrlId}-column-visibility-menu">
-            <h6 class="dropdown-header">{_"entityGrid.visible"}</h6>
-            <a n:foreach="$columns as $key => $column" n:if="!$column->isHidden()"
-                    href="{link HideCol!, $column->getName(),!$column->isHidden()}"
-                    class="dropdown-item ajax" data-naja-history="off">
-                <i class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i>&nbsp;{_$column->getLabel()}
-            </a>
-            <div class="dropdown-divider" n:if="count($hiddenColumns)" ></div>
-            <h6 n:if="count($hiddenColumns)" class="dropdown-header">{_"entityGrid.hidden"}</h6>
-            <a n:foreach="$columns as $key => $column" n:if="$column->isHidden()"
-                    href="{link HideCol!, $column->getName(),!$column->isHidden()}"
-                    class="dropdown-item ajax" data-naja-history="off">
-                <i class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i>&nbsp;{_$column->getLabel()}
-            </a>
+        <div class="btn-group">
+            <button class="btn btn-light btn-sm text-muted dropdown-toggle" type="button"
+                    title="{_"entityGrid.show-n-hide-cols"}"
+                    id="{$ctrlId}-column-visibility-menu" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                <i class="fas fa-eye"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="{$ctrlId}-column-visibility-menu">
+                <h6 class="dropdown-header">{_"entityGrid.visible"}</h6>
+                <a n:foreach="$columns as $key => $column" n:if="!$column->isHidden()"
+                        href="{link HideCol!, $column->getName(),!$column->isHidden()}"
+                        class="dropdown-item ajax" data-naja-history="off">
+                    <i class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i>&nbsp;{_$column->getLabel()}
+                </a>
+                <div class="dropdown-divider" n:if="count($hiddenColumns)" ></div>
+                <h6 n:if="count($hiddenColumns)" class="dropdown-header">{_"entityGrid.hidden"}</h6>
+                <a n:foreach="$columns as $key => $column" n:if="$column->isHidden()"
+                        href="{link HideCol!, $column->getName(),!$column->isHidden()}"
+                        class="dropdown-item ajax" data-naja-history="off">
+                    <i class="fas fa-eye{$column->isHidden()?'':'-slash'}"></i>&nbsp;{_$column->getLabel()}
+                </a>
+            </div>
         </div>
     </div>
 {/define}
