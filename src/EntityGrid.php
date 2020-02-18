@@ -229,9 +229,12 @@ class EntityGrid extends BaseGrid
 
     public function handleReload():void
     {
+        $this->reload();
+    }
+    public function reload():void
+    {
         $this->redrawControl();
     }
-
     public function handleDumpSelection():void
     {
         $this->presenter->terminate();
